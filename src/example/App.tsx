@@ -17,6 +17,7 @@ import FlexExample from './Flex';
 import VariablesExample from './Variables';
 import RadioExample from './Radio';
 import SelectExample from './Select';
+import EmptyExample from './Empty';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -32,22 +33,23 @@ const App: React.FC = () => {
     const menuItems = [
         { id: 'intro', name: '简介', description: 'IDP Design 组件库介绍' },
         { id: 'install', name: '安装', description: '如何安装和引用' },
-        { id: 'icon', name: 'Icon', description: '图标组件' },
         { id: 'button', name: 'Button', description: '按钮组件' },
+        { id: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
+        { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
+        { id: 'divider', name: 'Divider', description: '分割线组件' },
+        { id: 'empty', name: 'Empty', description: '空状态组件' },
         { id: 'flex', name: 'Flex', description: 'Flex布局组件' },
+        { id: 'icon', name: 'Icon', description: '图标组件' },
         { id: 'input', name: 'Input', description: '输入框组件' },
+        { id: 'marquee', name: 'Marquee', description: '跑马灯组件' },
+        { id: 'message', name: 'Message', description: '消息提示组件' },
+        { id: 'modal', name: 'Modal', description: '弹窗组件' },
+        { id: 'notice', name: 'Notice', description: '公告栏组件' },
+        { id: 'notification', name: 'Notification', description: '通知组件' },
         { id: 'radio', name: 'Radio', description: '单选框组件' },
         { id: 'select', name: 'Select', description: '选择器组件' },
-        { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
-        { id: 'notice', name: 'Notice', description: '公告栏组件' },
-        { id: 'marquee', name: 'Marquee', description: '跑马灯组件' },
         { id: 'table', name: 'Table', description: '表格组件' },
         { id: 'top', name: 'Top', description: '回到顶部组件' },
-        { id: 'divider', name: 'Divider', description: '分割线组件' },
-        { id: 'modal', name: 'Modal', description: '弹窗组件' },
-        { id: 'notification', name: 'Notification', description: '通知组件' },
-        { id: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
-        { id: 'message', name: 'Message', description: '消息提示组件' },
         { id: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
         { id: 'api', name: 'API 参考', description: '所有组件的 API 文档' },
     ];
@@ -67,19 +69,21 @@ const App: React.FC = () => {
 
     const components: ComponentItem[] = [
         { id: 'button', name: 'Button', description: '按钮组件' },
+        { id: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
+        { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
+        { id: 'divider', name: 'Divider', description: '分割线组件' },
+        { id: 'empty', name: 'Empty', description: '空状态组件' },
         { id: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { id: 'input', name: 'Input', description: '输入框组件' },
-        { id: 'radio', name: 'Radio', description: '单选框组件' },
-        { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
-        { id: 'notice', name: 'Notice', description: '公告栏组件' },
         { id: 'marquee', name: 'Marquee', description: '跑马灯组件' },
+        { id: 'message', name: 'Message', description: '消息提示组件' },
+        { id: 'modal', name: 'Modal', description: '弹窗组件' },
+        { id: 'notice', name: 'Notice', description: '公告栏组件' },
+        { id: 'notification', name: 'Notification', description: '通知组件' },
+        { id: 'radio', name: 'Radio', description: '单选框组件' },
+        { id: 'select', name: 'Select', description: '选择器组件' },
         { id: 'table', name: 'Table', description: '表格组件' },
         { id: 'top', name: 'Top', description: '回到顶部组件' },
-        { id: 'divider', name: 'Divider', description: '分割线组件' },
-        { id: 'modal', name: 'Modal', description: '弹窗组件' },
-        { id: 'notification', name: 'Notification', description: '通知组件' },
-        { id: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
-        { id: 'message', name: 'Message', description: '消息提示组件' },
         { id: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
     ];
 
@@ -242,6 +246,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <CopyToClipboardExample />;
             case 'message':
                 return <MessageExample />;
+            case 'empty':
+                return <EmptyExample />;
             case 'variables':
                 return <VariablesExample />;
             default:
@@ -280,21 +286,22 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                                     {item.id === 'intro' && '📖'}
                                     {item.id === 'install' && '📦'}
                                     {item.id === 'button' && '🔘'}
+                                    {item.id === 'colorpicker' && '🎨'}
+                                    {item.id === 'copytoclipboard' && '📋'}
+                                    {item.id === 'divider' && '➖'}
+                                    {item.id === 'empty' && '📭'}
                                     {item.id === 'flex' && '🧱'}
-                                    {item.id === 'notice' && '📢'}
+                                    {item.id === 'icon' && '🖼️'}
+                                    {item.id === 'input' && '🔤'}
                                     {item.id === 'marquee' && '📜'}
+                                    {item.id === 'message' && '💬'}
+                                    {item.id === 'modal' && '🪟'}
+                                    {item.id === 'notice' && '📢'}
+                                    {item.id === 'notification' && '🔔'}
+                                    {item.id === 'radio' && '🔘'}
+                                    {item.id === 'select' && '🔽'}
                                     {item.id === 'table' && '📊'}
                                     {item.id === 'top' && '⬆️'}
-                                    {item.id === 'modal' && '🪟'}
-                                    {item.id === 'icon' && '🖼️'}
-                                    {item.id === 'divider' && '➖'}
-                                    {item.id === 'input' && '🔤'}
-                                    {item.id === 'radio' && '🔘'}
-                                    {item.id === 'copytoclipboard' && '📋'}
-                                    {item.id === 'notification' && '🔔'}
-                                    {item.id === 'colorpicker' && '🎨'}
-                                    {item.id === 'message' && '💬'}
-                                    {item.id === 'select' && '🔽'}
                                     {item.id === 'variables' && '🎨'}
                                     {item.id === 'api' && '📋'}
                                 </span>

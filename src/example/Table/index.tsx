@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button } from '../../components';
+import { Table, Button, Empty, Icon } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -95,7 +95,8 @@ const TableExample: React.FC = () => {
         { name: 'scroll', type: '{ x?: number | string; y?: number | string }', default: '{}', description: '滚动配置，x为横向滚动宽度，y为纵向滚动高度' },
         { name: 'rowKey', type: 'string | ((record, index) => string | number)', default: "'key'", description: '行唯一标识，可以是字段名或函数' },
         { name: 'className', type: 'string', default: "''", description: '自定义CSS类名' },
-        { name: 'pagination', type: 'PaginationProps | false', default: '-', description: '分页配置，false表示禁用分页' }
+        { name: 'pagination', type: 'PaginationProps | false', default: '-', description: '分页配置，false表示禁用分页' },
+        { name: 'empty', type: 'ReactNode', default: '-', description: '自定义空状态组件，当dataSource为空时显示' }
     ];
 
     const columnApiDataSource = [
@@ -434,6 +435,33 @@ const TableExample: React.FC = () => {
                             email: `user${i + 1}@example.com`
                         }))}
                         pagination={false}
+                    />
+                </div>
+            </section>
+
+            <section style={{ marginBottom: '40px' }}>
+                <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>12. 自定义空状态</h2>
+                <p>通过 empty 属性自定义数据为空时的显示内容</p>
+                <div style={{ 
+                    backgroundColor: '#fff', 
+                    padding: '20px', 
+                    borderRadius: '8px', 
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    marginTop: '16px'
+                }}>
+                    <Table
+                        columns={basicColumns}
+                        dataSource={[]}
+                        empty={
+                            <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                                <Empty
+                                    icon={<Icon type="search" size={48} color="#d9d9d9" />}
+                                    description="没有找到相关数据"
+                                >
+                                    <Button variant="primary">重新加载</Button>
+                                </Empty>
+                            </div>
+                        }
                     />
                 </div>
             </section>

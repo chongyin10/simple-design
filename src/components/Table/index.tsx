@@ -1,14 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ReactNode } from 'react';
+import Empty from '../Empty';
 import './Table.css';
 
 export interface Column {
     key?: string;
     dataIndex?: string;
-    title?: React.ReactNode;
+    title?: ReactNode;
     width?: number | string;
     align?: 'left' | 'center' | 'right';
     fixed?: boolean | 'start' | 'end';
-    render?: (value: any, record: any, index: number) => React.ReactNode;
+    render?: (value: any, record: any, index: number) => ReactNode;
     [key: string]: any;
 }
 
@@ -31,6 +32,8 @@ interface TableProps {
     rowKey?: string | ((record: any, index: number) => string | number);
     className?: string;
     pagination?: PaginationProps | false;
+    /** 自定义空状态组件 */
+    empty?: ReactNode;
 }
 
 const Table = ({
@@ -40,7 +43,8 @@ const Table = ({
     scroll = {},
     rowKey = 'key',
     className = '',
-    pagination
+    pagination,
+    empty
 }: TableProps) => {
     const [fixedLeftColumns, setFixedLeftColumns] = useState<Column[]>([]);
     const [fixedRightColumns, setFixedRightColumns] = useState<Column[]>([]);
@@ -369,7 +373,7 @@ const Table = ({
 
             {displayData.length === 0 && (
                 <div className="custom-table-empty">
-                    暂无数据
+                    {empty || <Empty size="small" description="暂无数据" />}
                 </div>
             )}
 

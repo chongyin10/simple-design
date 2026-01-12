@@ -29,7 +29,7 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     compress: true,
-    port: 9090,
+    port: 9091,
     hot: true,
     open: true,
   },
