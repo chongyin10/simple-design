@@ -8,10 +8,10 @@ IDP Design 是一个基于 React 的现代化 UI 组件库，提供了一系列�
 
 ```bash
 # 使用 npm 安装
-npm install idp-design
+npm i @zjpcy/simple-design
 
 # 使用 yarn 安装
-yarn add idp-design
+yarn add @zjpcy/simple-design
 ```
 
 ## 3. 组件文档
@@ -22,7 +22,7 @@ yarn add idp-design
 
 ```tsx
 import React from 'react';
-import { Button } from 'idp-design';
+import { Button } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -37,7 +37,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Button } from 'idp-design';
+import { Button } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -56,7 +56,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Button } from 'idp-design';
+import { Button } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -73,7 +73,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Button } from 'idp-design';
+import { Button } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -88,7 +88,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Button } from 'idp-design';
+import { Button } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -108,7 +108,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Marquee } from 'idp-design';
+import { Marquee } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return <Marquee />;
@@ -119,7 +119,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Marquee } from 'idp-design';
+import { Marquee } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   const customItems = [
@@ -140,7 +140,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Marquee } from 'idp-design';
+import { Marquee } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -155,7 +155,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Marquee } from 'idp-design';
+import { Marquee } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -171,7 +171,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Marquee } from 'idp-design';
+import { Marquee } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   const handleClose = () => {
@@ -193,7 +193,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Notification } from 'idp-design';
+import { Notification } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -208,7 +208,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Notification } from 'idp-design';
+import { Notification } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -226,7 +226,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Notification } from 'idp-design';
+import { Notification } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -244,7 +244,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Radio } from 'idp-design';
+import { Radio } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -259,7 +259,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Radio } from 'idp-design';
+import { Radio } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -276,7 +276,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Radio } from 'idp-design';
+import { Radio } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -307,7 +307,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Radio } from 'idp-design';
+import { Radio } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -342,7 +342,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Radio } from 'idp-design';
+import { Radio } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -374,7 +374,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React from 'react';
-import { Radio } from 'idp-design';
+import { Radio } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   return (
@@ -409,7 +409,7 @@ const App: React.FC = () => {
 
 ```tsx
 import React, { useState } from 'react';
-import { Radio } from 'idp-design';
+import { Radio } from '@zjpcy/simple-design';
 
 const App: React.FC = () => {
   const [value, setValue] = useState<string>('option1');
@@ -537,10 +537,10 @@ IDP Design 组件库支持通过 CSS 变量和自定义类名进行样式定制�
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-repo/idp-design.git
+git clone https://github.com/your-repo/@zjpcy/simple-design.git
 
 # 安装依赖
-cd idp-design
+cd @zjpcy/simple-design
 npm install
 
 # 启动开发服务器
@@ -574,7 +574,7 @@ MIT License
 
 如有问题或建议，请通过以下方式联系我们：
 
-- GitHub Issues: https://github.com/your-repo/idp-design/issues
+- GitHub Issues: https://github.com/your-repo/@zjpcy/simple-design/issues
 - 邮箱: support@idp-studio.com
 
 ---
