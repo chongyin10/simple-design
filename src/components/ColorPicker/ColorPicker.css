@@ -1,0 +1,389 @@
+/* ColorPicker 组件样式 */
+
+/* 主容器样式 */
+.idp-color-picker {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+}
+
+/* 变体样式 */
+.idp-color-picker--primary {
+  /* 主色变体样式 */
+}
+
+.idp-color-picker--secondary {
+  /* 次色变体样式 */
+}
+
+.idp-color-picker--danger {
+  /* 危险色变体样式 */
+}
+
+.idp-color-picker--success {
+  /* 成功色变体样式 */
+}
+
+.idp-color-picker--warning {
+  /* 警告色变体样式 */
+}
+
+/* 尺寸样式 */
+.idp-color-picker--large {
+  /* 大尺寸样式 */
+}
+
+.idp-color-picker--small {
+  /* 小尺寸样式 */
+}
+
+.idp-color-picker--middle {
+  /* 中尺寸样式 */
+}
+
+/* 禁用状态 */
+.idp-color-picker--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 打开状态 */
+.idp-color-picker--open {
+  /* 打开状态样式 */
+}
+
+/* 触发器样式 */
+.idp-color-picker-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #1890ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.idp-color-picker-trigger:hover {
+  border-color: #40a9ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.idp-color-picker-trigger:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.idp-color-picker-trigger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 颜色文本样式 */
+.idp-color-picker-text {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+/* 弹出层样式 */
+.idp-color-picker-popup {
+  position: absolute;
+  z-index: 1050;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+}
+
+/* 弹出层内容 */
+.idp-color-picker-content {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* 颜色值输入组样式 */
+.idp-color-picker-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.idp-color-picker-input-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.idp-color-picker-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.idp-color-picker-input:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.idp-color-picker-input:hover {
+  border-color: #40a9ff;
+}
+
+/* 预设颜色样式 */
+.idp-color-picker-presets-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.idp-color-picker-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.idp-color-picker-preset {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #d9d9d9;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.idp-color-picker-preset:hover {
+  transform: scale(1.1);
+  border-color: #40a9ff;
+}
+
+/* 遮罩层样式 */
+.idp-color-picker-overlay {
+ 
+}
+
+/* 触发器容器样式 */
+.idp-color-picker-trigger-container {
+  cursor: pointer;
+}
+
+/* 默认触发器样式 */
+.idp-color-picker-default-trigger {
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+}
+
+/* 操作按钮容器样式 */
+.idp-color-picker-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.idp-color-picker-preview-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 颜色预览样式 */
+.idp-color-picker-preview {
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+.idp-color-picker-solid-preview {
+  flex: 1;
+  height: 24px;
+}
+
+.idp-color-picker-gradient-preview {
+  flex: 1;
+  height: 24px;
+}
+
+/* 按钮组样式 */
+.idp-color-picker-button-group {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* react-colorful 样式覆盖 */
+.react-colorful {
+  width: 208px;
+  height: 180px;
+}
+
+.react-colorful__saturation {
+  border-radius: 6px 6px 0 0;
+  height: 140px;
+}
+
+.react-colorful__hue {
+  height: 12px;
+  border-radius: 0 0 6px 6px;
+  margin-top: 8px;
+}
+
+.react-colorful__alpha {
+  height: 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.react-colorful__pointer {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.react-colorful__hue-pointer {
+  width: 14px;
+  height: 16px;
+  border: 1px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.react-colorful__alpha-pointer {
+  width: 14px;
+  height: 16px;
+  border: 1px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 渐变色相关样式 */
+/* 模式切换按钮容器 */
+.idp-color-picker-mode-toggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+/* 渐变色选择器容器 */
+.idp-color-picker-gradient {
+  display: flex;
+  gap: 16px;
+}
+
+/* 渐变色项 */
+.idp-color-picker-gradient-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 渐变色标签 */
+.idp-color-picker-gradient-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* 渐变色方向调整 */
+.idp-color-picker-gradient-direction {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* 渐变色方向标签 */
+.idp-color-picker-gradient-direction-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 渐变色方向滑块 */
+.idp-color-picker-gradient-range {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #f0f0f0;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* WebKit滑块样式 */
+.idp-color-picker-gradient-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1890ff;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+/* Firefox滑块样式 */
+.idp-color-picker-gradient-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1890ff;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+/* 滑块悬停样式 */
+.idp-color-picker-gradient-range::-webkit-slider-thumb:hover {
+  background: #40a9ff;
+  transform: scale(1.1);
+}
+
+.idp-color-picker-gradient-range::-moz-range-thumb:hover {
+  background: #40a9ff;
+  transform: scale(1.1);
+}
+
+/* 颜色类型显示 */
+.idp-color-picker-type {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}

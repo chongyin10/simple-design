@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist/types",
+    "types": []
+  },
+  "include": [
+    "src/components/**/*"
+  ],
+  "exclude": [
+    "src/example/**/*",
+    "src/main.tsx",
+    "vite.config.ts",
+    "webpack.config.js",
+    "node_modules",
+    "dist"
+  ]
+}

@@ -1,0 +1,109 @@
+/* 消息提示框基础样式 */
+.idp-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  width: auto;
+  max-width: 800px;
+  min-width: 100px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1050;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+}
+
+/* 显示状态 */
+.idp-message--show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 消息内容容器 */
+.idp-message-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 20px;
+}
+
+/* 消息文本 */
+.idp-message-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+  flex: 1;
+  text-align: left;
+}
+
+/* 成功类型样式 */
+.idp-message--success {
+  background-color: #fff;
+  border: 1px solid #b7eb8f;
+}
+
+.idp-message--success .idp-message-text {
+  color: #52c41a;
+}
+
+/* 警告类型样式 */
+.idp-message--warning {
+  background-color: #fff;
+  border: 1px solid #ffe58f;
+}
+
+.idp-message--warning .idp-message-text {
+  color: #faad14;
+}
+
+/* 错误类型样式 */
+.idp-message--error {
+  background-color: #fff;
+  border: 1px solid #ffccc7;
+}
+
+.idp-message--error .idp-message-text {
+  color: #f5222d;
+}
+
+/* 动画效果 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%);
+  }
+}
+
+/* 显示动画 */
+.idp-message--show {
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 隐藏动画 */
+.idp-message:not(.idp-message--show) {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

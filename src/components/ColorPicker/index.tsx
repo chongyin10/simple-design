@@ -1,0 +1,239 @@
+import React, { useState, useEffect, useRef } from 'react';
+import classNames from 'classnames';
+import { SketchPicker } from 'react-color';
+import { ColorPickerProps } from './types';
+import './ColorPicker.css';
+import Button from '../Button';
+
+const ColorPickerComponent: React.FC<ColorPickerProps> = ({
+    color,
+    onChange,
+    onColorChange,
+    disabled = false,
+    className,
+    style,
+    alpha = false,
+    presetColors = [],
+    gradient = false,
+    children
+}) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [tempColor, setTempColor] = useState(color);
+    const [gradientColors, setGradientColors] = useState([color, '#ffffff']);
+    const [gradientDirection, setGradientDirection] = useState(90);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLDivElement>(null);
+
+    // 构建类名
+    const classes = classNames(
+        'idp-color-picker',
+        {
+            'idp-color-picker--disabled': disabled,
+            'idp-color-picker--open': isOpen
+        },
+        className
+    );
+
+    // 处理颜色变化
+    const handleColorChange = (colorObject: any, index?: number) => {
+        if (gradient && index !== undefined) {
+            // 更新渐变色中的某个颜色
+            const newGradientColors = [...gradientColors];
+            newGradientColors[index] = colorObject.hex;
+            setGradientColors(newGradientColors);
+            updateGradient();
+        } else {
+            // 更新纯色
+            setTempColor(colorObject.hex);
+            onColorChange?.(colorObject.hex);
+        }
+    };
+
+    // 更新渐变色字符串
+    const updateGradient = () => {
+        const gradientValue = `linear-gradient(${gradientDirection}deg, ${gradientColors[0]}, ${gradientColors[1]})`;
+        setTempColor(gradientValue);
+        onColorChange?.(gradientValue);
+    };
+
+
+
+    // 确认选择颜色
+    const confirmColor = () => {
+        onChange(tempColor);
+        setIsOpen(false);
+    };
+
+    // 取消选择，恢复初始颜色
+    const cancelColor = () => {
+        setTempColor(color);
+        if (gradient) {
+            setGradientColors([color, '#ffffff']);
+            setGradientDirection(90);
+        }
+        setIsOpen(false);
+    };
+
+    // 切换颜色选择器显示状态
+    const togglePicker = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!disabled) {
+            setIsOpen(!isOpen);
+        }
+    };
+
+    // 点击外部关闭颜色选择器
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const isClickOnContent = contentRef.current && contentRef.current.contains(event.target as Node);
+            const isClickOnTrigger = triggerRef.current && triggerRef.current.contains(event.target as Node);
+
+            if (!isClickOnContent && !isClickOnTrigger) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('click', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isOpen]);
+
+    // 初始化渐变色状态
+    useEffect(() => {
+        if (gradient && color && color.startsWith('linear-gradient')) {
+            // 简单解析渐变色字符串
+            const match = color.match(/linear-gradient\((\d+)deg,\s*(#[0-9a-fA-F]+),\s*(#[0-9a-fA-F]+)\)/);
+            if (match) {
+                setGradientDirection(parseInt(match[1]));
+                setGradientColors([match[2], match[3]]);
+            }
+        }
+    }, [color, gradient]);
+
+    return (
+        <div className={classes} style={style}>
+            {children ? (
+                <div ref={triggerRef} className="idp-color-picker-trigger-container" onClick={togglePicker}>
+                    {children}
+                </div>
+            ) : (
+                <div ref={triggerRef} className="idp-color-picker-default-trigger" style={{ background: color }} onClick={togglePicker} />
+            )}
+            {isOpen && (
+                <div className="idp-color-picker-popup">
+                    <div className="idp-color-picker-content" ref={contentRef}>
+
+
+                        {/* 颜色选择器 */}
+                        {gradient ? (
+                            <>
+                                <div className="idp-color-picker-gradient">
+                                    <div className="idp-color-picker-gradient-item">
+                                        <div className="idp-color-picker-gradient-label">起始颜色</div>
+                                        <SketchPicker
+                                            color={gradientColors[0]}
+                                            onChange={(colorObject) => {
+                                                handleColorChange(colorObject, 0);
+                                            }}
+                                            disableAlpha={!alpha}
+                                        />
+                                    </div>
+                                    <div className="idp-color-picker-gradient-item">
+                                        <div className="idp-color-picker-gradient-label">结束颜色</div>
+                                        <SketchPicker
+                                            color={gradientColors[1]}
+                                            onChange={(colorObject) => {
+                                                handleColorChange(colorObject, 1);
+                                            }}
+                                            disableAlpha={!alpha}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* 渐变方向调整 */}
+                                <div className="idp-color-picker-gradient-direction">
+                                    <div className="idp-color-picker-gradient-direction-label">渐变方向: {gradientDirection}°</div>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="360"
+                                        value={gradientDirection}
+                                        onChange={(e) => {
+                                            setGradientDirection(parseInt(e.target.value));
+                                            updateGradient();
+                                        }}
+                                        className="idp-color-picker-gradient-range"
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            /* 纯色选择器 */
+                            <SketchPicker
+                                color={tempColor}
+                                onChange={(colorObject) => {
+                                    handleColorChange(colorObject);
+                                }}
+                                disableAlpha={!alpha}
+                            />
+                        )}
+
+                        {/* 预设颜色 */}
+                        {presetColors.length > 0 && (
+                            <div>
+                                <div className="idp-color-picker-presets-label">预设颜色</div>
+                                <div className="idp-color-picker-presets">
+                                    {presetColors.map((preset, index) => (
+                                        <div
+                                            key={index}
+                                            className="idp-color-picker-preset"
+                                            style={{ backgroundColor: preset }}
+                                            onClick={() => handleColorChange({ hex: preset })}
+                                            title={preset}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 操作按钮 */}
+                        <div className="idp-color-picker-actions">
+                            {/* 颜色预览 */}
+                            <div className="idp-color-picker-preview-label">参考值：</div>
+                            <div
+                                className={`idp-color-picker-preview ${gradient ? 'idp-color-picker-gradient-preview' : 'idp-color-picker-solid-preview'}`}
+                                style={{ background: tempColor }}
+                            />
+                            <div className="idp-color-picker-button-group">
+                                <Button
+                                    size="small"
+                                    onClick={cancelColor}
+                                >
+                                    取消
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    size="small"
+                                    onClick={confirmColor}
+                                >
+                                    确认
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 点击外部关闭 */}
+                    <div
+                        className="idp-color-picker-overlay"
+                        onClick={() => setIsOpen(false)}
+                    />
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default ColorPickerComponent;

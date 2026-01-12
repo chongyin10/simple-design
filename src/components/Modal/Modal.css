@@ -1,0 +1,238 @@
+@import '../variables.css';
+
+.idp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--idp-modal-mask-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--idp-z-index-modal);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--idp-transition-duration) var(--idp-transition-timing-function), visibility var(--idp-transition-duration) var(--idp-transition-timing-function);
+}
+
+.idp-modal-overlay--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.idp-modal-overlay--closing {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.idp-modal-container {
+    background-color: var(--idp-modal-container-bg);
+    border-radius: var(--idp-border-radius-lg);
+    box-shadow: var(--idp-shadow-md);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform-origin: center center;
+    position: relative;
+}
+
+/* 当设置了top属性时，移除flex居中，使用绝对定位 */
+.idp-modal-overlay--custom-top {
+    align-items: flex-start;
+    justify-content: center;
+}
+
+/* 中心动画 */
+.idp-modal-container--center {
+    animation: centerAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes centerAnimateIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 正常动画 */
+.idp-modal-container--normal {
+    animation: normalAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes normalAnimateIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 右上角动画 */
+.idp-modal-container--top-right {
+    animation: topRightAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes topRightAnimateIn {
+    from {
+        transform: translate(100%, -100%) scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* 右下角动画 */
+.idp-modal-container--bottom-right {
+    animation: bottomRightAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes bottomRightAnimateIn {
+    from {
+        transform: translate(100%, 100%) scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* 中心消失 */
+.idp-modal-container--closing-center {
+    animation: centerAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes centerAnimateOut {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* 正常消失 */
+.idp-modal-container--closing-normal {
+    animation: normalAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes normalAnimateOut {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* 右上角消失 */
+.idp-modal-container--closing-top-right {
+    animation: topRightAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes topRightAnimateOut {
+    from {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translate(100%, -100%) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* 右下角消失 */
+.idp-modal-container--closing-bottom-right {
+    animation: bottomRightAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes bottomRightAnimateOut {
+    from {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translate(100%, 100%) scale(0.5);
+        opacity: 0;
+    }
+}
+
+.idp-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px 0 20px;
+    border-bottom: 1px solid var(--idp-border-color);
+    background-color: var(--idp-modal-header-bg);
+    flex-shrink: 0;
+}
+
+.idp-modal-header__left {
+    display: flex;
+    align-items: center;
+}
+
+.idp-modal-header__right {
+    display: flex;
+    align-items: center;
+    margin-right: 0;
+}
+
+.idp-modal-header__title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--idp-text-color);
+}
+
+.idp-modal-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.idp-modal-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+    background-color: var(--idp-modal-footer-bg);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.idp-modal-footer__divider {
+    height: 1px;
+    background-color: var(--idp-border-color);
+    margin-bottom: 12px;
+}
+
+.idp-modal-footer__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-bottom: 12px;
+}
+
+.idp-modal-footer__custom {
+    justify-content: center;
+    align-items: center;
+    flex-flow: nowrap;
+}

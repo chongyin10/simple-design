@@ -1,0 +1,270 @@
+.input-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-wrapper:hover {
+    box-shadow: 0 0 0 2px rgba(51, 154, 240, 0.2);
+    border-color: #339af0;
+}
+
+.input-inner {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-inner::placeholder {
+    color: #bfbfbf;
+    opacity: 1;
+}
+
+.input-inner::-webkit-input-placeholder {
+    color: #bfbfbf;
+}
+
+.input-inner::-moz-placeholder {
+    color: #bfbfbf;
+    opacity: 1;
+}
+
+.input-inner:-ms-input-placeholder {
+    color: #bfbfbf;
+}
+
+.input-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #909399;
+    margin: 0 0 0 6px;
+}
+
+.input-prefix .icon-container {
+    padding: 0;
+}
+
+.input-suffix-group {
+    display: flex;
+    align-items: center;
+    margin: 0 4px;
+}
+
+.input-suffix-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1890ff;
+    cursor: pointer;
+    margin-right: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.input-suffix-clear.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.input-suffix-clear .icon-container {
+    padding: 0;
+}
+
+.input-suffix-clear .icon {
+    fill: #1890ff;
+}
+
+.input-suffix-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #909399;
+    cursor: pointer;
+}
+
+.input-suffix-content .icon-container {
+    padding: 0;
+}
+
+/* 兼容旧的suffix样式 */
+.input-suffix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #909399;
+    cursor: pointer;
+    margin: 0 8px;
+}
+
+.input-suffix .icon-container {
+    padding: 0;
+}
+
+/* NumberInput组件样式 */
+.number-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* 错误状态样式 */
+.input-error {
+    border-color: #f5222d !important;
+}
+
+.input-error:hover,
+.input-error:focus-within {
+    border-color: #f5222d !important;
+    box-shadow: 0 0 0 2px rgba(245, 34, 45, 0.2) !important;
+}
+
+/* 错误消息样式 */
+.input-error-message {
+    font-size: 12px;
+    color: #f5222d;
+    line-height: 1.5;
+    padding: 4px 8px;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transform: scaleX(0);
+    transform-origin: left center;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(245, 34, 45, 0.1);
+    transition: 
+        opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 50px;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    float: left;
+    clear: left;
+    position: relative;
+    z-index: 10;
+}
+
+/* 当错误消息显示时，左右逐渐淡入 */
+.input-error-message.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scaleX(1);
+    width: auto;
+    max-height: 50px;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 当错误消息消失时，左右逐渐淡出 */
+.input-error-message:not(.visible) {
+    opacity: 0;
+    visibility: hidden;
+    transform: scaleX(0);
+    width: 0;
+    max-height: 50px;
+    transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* 禁用和只读状态 */
+.input-wrapper.input-disabled {
+    background-color: #f5f5f5;
+    border-color: #d9d9d9;
+    color: #bfbfbf;
+    cursor: not-allowed;
+}
+
+.input-wrapper.input-disabled:hover {
+    box-shadow: none;
+    border-color: #d9d9d9;
+}
+
+.input-wrapper.input-disabled .input-inner {
+    background-color: transparent;
+    color: #bfbfbf;
+    cursor: not-allowed;
+}
+
+.input-wrapper.input-readonly {
+    background-color: #f5f5f5;
+    border-color: #d9d9d9;
+    cursor: default;
+}
+
+.input-wrapper.input-readonly:hover {
+    box-shadow: none;
+    border-color: #d9d9d9;
+}
+
+.input-wrapper.input-readonly .input-inner {
+    background-color: transparent;
+    cursor: default;
+}
+
+/* 聚焦状态 */
+.input-wrapper:focus-within {
+    border-color: #339af0;
+    box-shadow: 0 0 0 2px rgba(51, 154, 240, 0.2);
+}
+
+/* 兼容旧的input样式，确保现有代码继续工作 */
+.input {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    outline: none;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.input:hover {
+    box-shadow: 0 0 0 2px rgba(51, 154, 240, 0.2);
+    border-color: #339af0;
+}
+
+.input:focus {
+    border-color: #339af0;
+    box-shadow: 0 0 0 2px rgba(51, 154, 240, 0.2);
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.search-input-suffix {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.search-input-suffix svg {
+    pointer-events: all;
+}

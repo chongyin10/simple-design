@@ -1,0 +1,278 @@
+/* Radio组件样式 */
+.idp-radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-right: 16px;
+  margin-bottom: 8px;
+  transition: all var(--idp-transition-duration) var(--idp-transition-timing-function);
+}
+
+/* 按钮样式的Radio - 支持自定义宽度高度 */
+.idp-radio-group--button .idp-radio {
+  border: 1px solid var(--idp-border-color-extra-light);
+  border-radius: var(--idp-border-radius-sm);
+  padding: 4px 16px;
+  margin-right: 0;
+  margin-bottom: 0;
+  transition: all var(--idp-transition-duration) var(--idp-transition-timing-function);
+  /* 按钮类型支持自定义宽高 */
+  width: auto;
+  height: auto;
+  min-width: 60px;
+}
+
+/* 默认样式的Radio - 固定宽高 */
+.idp-radio-group:not(.idp-radio-group--button) .idp-radio {
+  /* 默认类型固定宽高，不支持自定义 */
+  width: auto;
+  height: auto;
+}
+
+/* 按钮样式的Radio - 尺寸样式调整 */
+.idp-radio-group--button .idp-radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* 按钮样式的Radio - 移除默认的margin */
+.idp-radio-group--button .idp-radio {
+  margin-right: -1px;
+  margin-bottom: 0;
+}
+
+/* 按钮样式的Radio - 第一个和最后一个的圆角处理 */
+.idp-radio-group--button .idp-radio:first-child {
+  border-top-left-radius: var(--idp-border-radius-sm);
+  border-bottom-left-radius: var(--idp-border-radius-sm);
+}
+
+.idp-radio-group--button .idp-radio:last-child {
+  border-top-right-radius: var(--idp-border-radius-sm);
+  border-bottom-right-radius: var(--idp-border-radius-sm);
+  margin-right: 0;
+}
+
+/* 按钮样式的Radio选中状态 */
+.idp-radio-group--button .idp-radio--checked {
+  background-color: var(--idp-primary-color);
+  border-color: var(--idp-primary-color);
+  color: var(--idp-bg-color-white);
+}
+
+.idp-radio-group--button .idp-radio--checked .idp-radio__inner {
+  background-color: var(--idp-bg-color-white);
+  border-color: var(--idp-bg-color-white);
+}
+
+/* 按钮样式的Radio标签 */
+.idp-radio-group--button .idp-radio__label {
+  margin: 0;
+  color: inherit;
+}
+
+/* 按钮样式的Radio悬停状态 */
+.idp-radio-group--button .idp-radio:not(.idp-radio--disabled):hover {
+  border-color: var(--idp-primary-hover-color);
+}
+
+.idp-radio-group--button .idp-radio--checked:not(.idp-radio--disabled):hover {
+  background-color: var(--idp-primary-hover-color);
+  border-color: var(--idp-primary-hover-color);
+}
+
+/* 按钮样式的Radio禁用状态 */
+.idp-radio-group--button .idp-radio--disabled {
+  background-color: var(--idp-bg-color-light);
+  border-color: var(--idp-border-color-light);
+  color: var(--idp-text-color-light);
+}
+
+/* 大小样式 */
+/* 大尺寸 */
+.idp-radio-group--large .idp-radio {
+  height: 40px;
+}
+
+.idp-radio-group--large .idp-radio__inner {
+  width: 20px;
+  height: 20px;
+}
+
+.idp-radio-group--large .idp-radio--checked .idp-radio__inner::after {
+  width: 8px;
+  height: 8px;
+}
+
+.idp-radio-group--large .idp-radio__label {
+  font-size: 16px;
+}
+
+/* 大尺寸按钮样式 */
+.idp-radio-group--button.idp-radio-group--large .idp-radio {
+  padding: 8px 20px;
+  height: 40px;
+  font-size: 16px;
+}
+
+/* 小尺寸 */
+.idp-radio-group--small .idp-radio {
+  height: 24px;
+}
+
+.idp-radio-group--small .idp-radio__inner {
+  width: 14px;
+  height: 14px;
+}
+
+.idp-radio-group--small .idp-radio--checked .idp-radio__inner::after {
+  width: 5px;
+  height: 5px;
+}
+
+.idp-radio-group--small .idp-radio__label {
+  font-size: 12px;
+}
+
+/* 小尺寸按钮样式 */
+.idp-radio-group--button.idp-radio-group--small .idp-radio {
+  padding: 2px 12px;
+  height: 24px;
+  font-size: 12px;
+}
+
+/* 中等尺寸（默认） */
+.idp-radio-group--middle .idp-radio {
+  height: 32px;
+}
+
+.idp-radio-group--middle .idp-radio__inner {
+  width: 16px;
+  height: 16px;
+}
+
+.idp-radio-group--middle .idp-radio--checked .idp-radio__inner::after {
+  width: 6px;
+  height: 6px;
+}
+
+.idp-radio-group--middle .idp-radio__label {
+  font-size: 14px;
+}
+
+/* 中等尺寸按钮样式 */
+.idp-radio-group--button.idp-radio-group--middle .idp-radio {
+  padding: 4px 16px;
+  height: 32px;
+  font-size: 14px;
+}
+
+/* Radio输入框隐藏 */
+.idp-radio__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Radio内部圆圈 */
+.idp-radio__inner {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--idp-border-color-extra-light);
+  border-radius: 50%;
+  background-color: var(--idp-bg-color-white);
+  transition: all var(--idp-transition-duration) var(--idp-transition-timing-function);
+  margin-right: 8px;
+}
+
+/* 选中状态的内部圆圈 */
+.idp-radio--checked .idp-radio__inner {
+  border-color: var(--idp-primary-color);
+  background-color: var(--idp-primary-color);
+}
+
+/* 选中状态的内部圆点 */
+.idp-radio--checked .idp-radio__inner::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--idp-bg-color-white);
+  animation: idp-radio-checked 0.2s ease-in-out;
+}
+
+/* 选中动画 */
+@keyframes idp-radio-checked {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Radio标签 */
+.idp-radio__label {
+  color: var(--idp-text-color);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: color var(--idp-transition-duration) var(--idp-transition-timing-function);
+}
+
+/* 禁用状态 */
+.idp-radio--disabled {
+  cursor: not-allowed;
+}
+
+.idp-radio--disabled .idp-radio__inner {
+  border-color: var(--idp-border-color-light);
+  background-color: var(--idp-bg-color-light);
+}
+
+.idp-radio--disabled .idp-radio__label {
+  color: var(--idp-text-color-light);
+}
+
+.idp-radio--disabled.idp-radio--checked .idp-radio__inner {
+  background-color: var(--idp-border-color-light);
+  border-color: var(--idp-border-color-light);
+}
+
+.idp-radio--disabled.idp-radio--checked .idp-radio__inner::after {
+  background-color: var(--idp-text-color-light);
+}
+
+/* 悬停效果 */
+.idp-radio:not(.idp-radio--disabled):hover .idp-radio__inner {
+  border-color: var(--idp-primary-hover-color);
+}
+
+/* Radio Group样式 */
+.idp-radio-group {
+  display: inline-block;
+}
+
+/* 垂直排列的Group */
+.idp-radio-group--vertical .idp-radio {
+  display: block;
+  margin-right: 0;
+}
+
+/* 水平排列的Group */
+.idp-radio-group--horizontal .idp-radio {
+  display: inline-block;
+  margin-right: 16px;
+}

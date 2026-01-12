@@ -1,0 +1,26 @@
+/* CopyToClipboard 组件样式 */
+.idp-copy-to-clipboard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.idp-copy-to-clipboard:hover {
+  opacity: 0.8;
+}
+
+.idp-copy-to-clipboard:active {
+  transform: translateY(1px);
+}
+
+.idp-copy-to-clipboard-text {
+  font-size: 14px;
+  color: #1890ff;
+}
+
+.idp-copy-to-clipboard-text:hover {
+  text-decoration: underline;
+}

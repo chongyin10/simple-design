@@ -1,0 +1,46 @@
+.icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    background-color: transparent;
+    border-radius: 4px;
+    padding: 4px;
+    position: relative;
+}
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    fill: #339af0;
+    transition: fill 0.2s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.icon-spin {
+    animation: icon-spin 1s infinite linear;
+}
+
+@keyframes icon-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+/* 对齐方式 */
+.icon-container.align-left {
+    justify-content: flex-start;
+}
+
+.icon-container.align-center {
+    justify-content: center;
+}
+
+.icon-container.align-right {
+    justify-content: flex-end;
+}

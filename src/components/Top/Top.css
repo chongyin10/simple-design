@@ -1,0 +1,27 @@
+.top-button-wrapper {
+    z-index: 1000;
+}
+
+.top-button-wrapper-container {
+    float: right;
+    clear: both;
+}
+
+.top-button {
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.top-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.top-button:active {
+    transform: translateY(0);
+}
