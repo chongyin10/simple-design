@@ -18,6 +18,7 @@ import VariablesExample from './Variables';
 import RadioExample from './Radio';
 import SelectExample from './Select';
 import EmptyExample from './Empty';
+import TypographyExample from './Typography';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -50,6 +51,7 @@ const App: React.FC = () => {
         { id: 'select', name: 'Select', description: '选择器组件' },
         { id: 'table', name: 'Table', description: '表格组件' },
         { id: 'top', name: 'Top', description: '回到顶部组件' },
+        { id: 'typography', name: 'Typography', description: '排版组件' },
         { id: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
         { id: 'api', name: 'API 参考', description: '所有组件的 API 文档' },
     ];
@@ -84,6 +86,7 @@ const App: React.FC = () => {
         { id: 'select', name: 'Select', description: '选择器组件' },
         { id: 'table', name: 'Table', description: '表格组件' },
         { id: 'top', name: 'Top', description: '回到顶部组件' },
+        { id: 'typography', name: 'Typography', description: '排版组件' },
         { id: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
     ];
 
@@ -248,6 +251,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <MessageExample />;
             case 'empty':
                 return <EmptyExample />;
+            case 'typography':
+                return <TypographyExample />;
             case 'variables':
                 return <VariablesExample />;
             default:
@@ -302,6 +307,7 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                                     {item.id === 'select' && '🔽'}
                                     {item.id === 'table' && '📊'}
                                     {item.id === 'top' && '⬆️'}
+                                    {item.id === 'typography' && '📝'}
                                     {item.id === 'variables' && '🎨'}
                                     {item.id === 'api' && '📋'}
                                 </span>

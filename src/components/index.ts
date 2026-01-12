@@ -15,3 +15,4 @@ export { default as Radio } from './Radio';
 export { default as Select } from './Select';
 export { default as Table } from './Table';
 export { default as Top } from './Top';
+export { default as Typography } from './Typography';
