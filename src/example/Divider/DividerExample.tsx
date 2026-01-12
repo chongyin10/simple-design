@@ -124,7 +124,7 @@ const DividerExample: React.FC = () => {
       <div style={{ marginBottom: '40px' }}>
         <h3>代码示例</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-{`import { Divider } from '@idp-studio/design';
+{`import { Divider } from '@zjpcy/simple-design';
 
 // 基本用法
 <Divider />
@@ -159,19 +159,19 @@ const DividerExample: React.FC = () => {
         <div style={{ margin: '15px 0' }}>
           <h4>1. 安装</h4>
           <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-              {`npm install @idp-studio/design`}
+              {`npm i @zjpcy/simple-design`}
           </SyntaxHighlighter>
         </div>
         <div>
           <h4>2. 引用组件</h4>
           <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
-import Divider from '@idp-studio/design/lib/Divider';
-import '@idp-studio/design/lib/Divider/Divider.css';
+import Divider from '@zjpcy/simple-design/lib/Divider';
+import '@zjpcy/simple-design/lib/Divider/Divider.css';
 
 // 方式二：批量引入
-import { Divider } from '@idp-studio/design';
-import '@idp-studio/design/lib/index.css';`}
+import { Divider } from '@zjpcy/simple-design';
+import '@zjpcy/simple-design/lib/index.css';`}
           </SyntaxHighlighter>
         </div>
       </div>

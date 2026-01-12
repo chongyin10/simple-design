@@ -571,7 +571,7 @@ const NotificationExample: React.FC = () => {
       <div style={{ marginBottom: '40px' }}>
         <h3>代码示例</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-{`import { Notification } from '@idp-studio/design';
+{`import { Notification } from '@zjpcy/simple-design';
 
 // 非受控模式 - 无需 open 属性，默认显示，3秒后自动关闭
 <Notification 
@@ -823,19 +823,19 @@ const [isOpen, setIsOpen] = useState(false);
         <div style={{ margin: '15px 0' }}>
           <h4>1. 安装</h4>
           <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-            {`npm install @idp-studio/design`}
+            {`npm i @zjpcy/simple-design`}
           </SyntaxHighlighter>
         </div>
         <div>
           <h4>2. 引用组件</h4>
           <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
-import Notification from '@idp-studio/design/lib/Notification';
-import '@idp-studio/design/lib/Notification/Notification.css';
+import Notification from '@zjpcy/simple-design/lib/Notification';
+import '@zjpcy/simple-design/lib/Notification/Notification.css';
 
 // 方式二：批量引入（推荐）
-import { Notification } from '@idp-studio/design';
-import '@idp-studio/design/lib/index.css';
+import { Notification } from '@zjpcy/simple-design';
+import '@zjpcy/simple-design/lib/index.css';
 
 // 使用组件
 const App: React.FC = () => {

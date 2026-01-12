@@ -13,3 +13,4 @@ export { default as Notification } from './Notification/Notification';
 export { default as ColorPicker } from './ColorPicker';
 export { default as CopyToClipboard, useOnCopy as useCopy } from './CopyToClipboard';
 export { default as Message, MessageProvider, useMessage } from './Message';
+export { default as Select } from './Select';

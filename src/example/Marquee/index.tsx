@@ -124,7 +124,7 @@ const MarqueeExample: React.FC = () => {
             <div style={{ marginBottom: '40px' }}>
                 <h3>代码示例</h3>
                 <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-{`import { Marquee } from '@idp-studio/design';
+{`import { Marquee } from '@zjpcy/simple-design';
 
 // 基本用法
 <Marquee announcement="这是一条公告信息" />
@@ -197,19 +197,19 @@ const MarqueeExample: React.FC = () => {
                 <div style={{ margin: '15px 0' }}>
                     <h4>1. 安装</h4>
                     <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-                        {`npm install @idp-studio/design`}
+                        {`npm i @zjpcy/simple-design`}
                     </SyntaxHighlighter>
                 </div>
                 <div>
                     <h4>2. 引用组件</h4>
                     <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
-import Marquee from '@idp-studio/design/lib/Marquee';
-import '@idp-studio/design/lib/Marquee/index.css';
+import Marquee from '@zjpcy/simple-design/lib/Marquee';
+import '@zjpcy/simple-design/lib/Marquee/index.css';
 
 // 方式二：批量引入
-import { Marquee } from '@idp-studio/design';
-import '@idp-studio/design/lib/index.css';`}
+import { Marquee } from '@zjpcy/simple-design';
+import '@zjpcy/simple-design/lib/index.css';`}
                     </SyntaxHighlighter>
                 </div>
             </div>

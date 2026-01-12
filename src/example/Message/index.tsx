@@ -77,7 +77,7 @@ const MessageExample: React.FC = () => {
       <div style={{ marginBottom: '40px', display: 'block' }}>
         <h3>代码示例</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-          {`import { useMessage } from '@idp-studio/design';
+          {`import { useMessage } from '@zjpcy/simple-design';
 
 const Component = () => {
   const message = useMessage();
@@ -104,7 +104,7 @@ const Component = () => {
 };
 
 // 直接使用组件（不推荐，推荐使用 useMessage hook）
-import { Message } from '@idp-studio/design';
+import { Message } from '@zjpcy/simple-design';
 
 <Message type="success" content="操作成功！" duration={3000} />`}
         </SyntaxHighlighter>

@@ -1,0 +1,179 @@
+.idp-select {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+.idp-select__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.idp-select__trigger:hover {
+    border-color: #40a9ff;
+}
+
+.idp-select__value {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #000000d9;
+}
+
+.idp-select__value--placeholder {
+    color: #00000040;
+}
+
+.idp-select__arrow {
+    margin-left: 8px;
+    color: #8c8c8c;
+    transition: transform 0.3s;
+}
+
+.idp-select--open .idp-select__arrow {
+    transform: rotate(180deg);
+}
+
+.idp-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+    box-sizing: border-box;
+}
+
+.idp-select-dropdown__content {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.idp-select-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+.idp-select-option:hover {
+    background-color: #f5f5f5;
+}
+
+.idp-select-option--selected {
+    background-color: #e6f7ff;
+    color: #1890ff;
+}
+
+.idp-select-option--selected::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    width: 8px;
+    height: 4px;
+    border-left: 2px solid #1890ff;
+    border-bottom: 2px solid #1890ff;
+    transform: rotate(-45deg);
+}
+
+.idp-select-option--disabled {
+    color: #00000040;
+    cursor: not-allowed;
+}
+
+.idp-select-option--disabled:hover {
+    background-color: transparent;
+}
+
+.idp-select-optgroup {
+    padding: 0;
+}
+
+.idp-select-optgroup__label {
+    padding: 8px 12px;
+    font-weight: 500;
+    color: #00000073;
+    background-color: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.idp-select-optgroup__content {
+    padding: 4px 0;
+}
+
+.idp-select-optgroup .idp-select-option {
+    padding-left: 24px;
+}
+
+/* 尺寸样式 */
+.idp-select--large .idp-select__trigger {
+    height: 40px;
+    padding: 0 16px;
+    font-size: 16px;
+}
+
+.idp-select--middle .idp-select__trigger {
+    height: 32px;
+    font-size: 14px;
+}
+
+.idp-select--small .idp-select__trigger {
+    height: 24px;
+    padding: 0 8px;
+    font-size: 12px;
+}
+
+/* 禁用状态 */
+.idp-select--disabled .idp-select__trigger {
+    background-color: #f5f5f5;
+    border-color: #d9d9d9;
+    color: #00000040;
+    cursor: not-allowed;
+}
+
+.idp-select--disabled .idp-select__trigger:hover {
+    border-color: #d9d9d9;
+}
+
+.idp-select--disabled .idp-select__arrow {
+    color: #00000040;
+}
+
+/* 下拉菜单滚动条样式 */
+.idp-select-dropdown__content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.idp-select-dropdown__content::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+}
+
+.idp-select-dropdown__content::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+.idp-select-dropdown__content::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+}

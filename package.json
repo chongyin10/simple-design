@@ -1,6 +1,6 @@
 {
   "name": "@zjpcy/simple-design",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "IDP Studio Design System - React Component Library",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
@@ -75,6 +75,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/idp-studio/idp-design.git"
+    "url": "git@github.com:chongyin10/simple-design.git"
   }
 }

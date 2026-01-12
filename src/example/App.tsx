@@ -16,6 +16,7 @@ import MessageExample from './Message';
 import FlexExample from './Flex';
 import VariablesExample from './Variables';
 import RadioExample from './Radio';
+import SelectExample from './Select';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -36,6 +37,7 @@ const App: React.FC = () => {
         { id: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { id: 'input', name: 'Input', description: '输入框组件' },
         { id: 'radio', name: 'Radio', description: '单选框组件' },
+        { id: 'select', name: 'Select', description: '选择器组件' },
         { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
         { id: 'notice', name: 'Notice', description: '公告栏组件' },
         { id: 'marquee', name: 'Marquee', description: '跑马灯组件' },
@@ -228,6 +230,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <InputExample />;
             case 'radio':
                 return <RadioExample />;
+            case 'select':
+                return <SelectExample />;
             case 'modal':
                 return <ModalExample />;
             case 'notification':
@@ -290,6 +294,7 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                                     {item.id === 'notification' && '🔔'}
                                     {item.id === 'colorpicker' && '🎨'}
                                     {item.id === 'message' && '💬'}
+                                    {item.id === 'select' && '🔽'}
                                     {item.id === 'variables' && '🎨'}
                                     {item.id === 'api' && '📋'}
                                 </span>

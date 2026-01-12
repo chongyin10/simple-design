@@ -649,7 +649,7 @@ const IconExample: React.FC = () => {
       <div className="code-example-section">
         <h3 className="code-example-title">代码示例</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-          {`import { Icon } from '@idp-studio/design';
+          {`import { Icon } from '@zjpcy/simple-design';
 
 // 基本用法
 <Icon type="search" />
@@ -697,19 +697,19 @@ const IconExample: React.FC = () => {
         <div className="reference-subtitle">
           <h4>1. 安装</h4>
           <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-            {`npm install @idp-studio/design`}
+            {`npm i @zjpcy/simple-design`}
           </SyntaxHighlighter>
         </div>
         <div>
           <h4>2. 引用组件</h4>
           <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
             {`// 方式一：单独引入
-import Icon from '@idp-studio/design/lib/Icon';
-import '@idp-studio/design/lib/Icon/index.css';
+import Icon from '@zjpcy/simple-design/lib/Icon';
+import '@zjpcy/simple-design/lib/Icon/index.css';
 
 // 方式二：批量引入
-import { Icon } from '@idp-studio/design';
-import '@idp-studio/design/lib/index.css';`}
+import { Icon } from '@zjpcy/simple-design';
+import '@zjpcy/simple-design/lib/index.css';`}
           </SyntaxHighlighter>
         </div>
       </div>
