@@ -33,7 +33,6 @@
   "devDependencies": {
     "@ant-design/icons-svg": "^4.4.2",
     "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
@@ -70,10 +69,8 @@
   },
   "dependencies": {
     "classnames": "^2.3.0",
-    "i18next": "^25.7.4",
     "prismjs": "^1.30.0",
     "react-color": "^2.19.3",
-    "react-i18next": "^16.5.2",
     "react-syntax-highlighter": "^16.1.0"
   },
   "repository": {

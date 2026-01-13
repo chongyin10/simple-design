@@ -2,7 +2,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
-import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
@@ -43,9 +42,8 @@ export default {
     peerDepsExternal(),
     resolve({
       browser: true,
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
     }),
-    json(),
     commonjs(),
     typescript({
       tsconfig: './tsconfig.json', // 使用标准tsconfig，类型声明通过其他方式处理
@@ -56,7 +54,6 @@ export default {
         isolatedModules: true,
       },
     }),
-    
     postcss({
       plugins: [autoprefixer()],
       extract: true,

@@ -1,30 +1,29 @@
 import React, { useState } from 'react';
-import { Flex, Button, Input, Table, useI18n } from '../../components';
+import { Flex, Button, Input, Table } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const FlexExample: React.FC = () => {
-  const { t } = useI18n();
   // API参数列配置
   const apiColumns: Column[] = [
-    { dataIndex: 'param', title: t('PARAM_NAME'), width: '150px' },
-    { dataIndex: 'type', title: t('TYPE'), width: '300px' },
-    { dataIndex: 'default', title: t('DEFAULT_VALUE'), width: '150px' },
-    { dataIndex: 'description', title: t('DESCRIPTION'), width: '300px' }
+    { dataIndex: 'param', title: '参数名', width: '150px' },
+    { dataIndex: 'type', title: '类型', width: '300px' },
+    { dataIndex: 'default', title: '默认值', width: '150px' },
+    { dataIndex: 'description', title: '描述', width: '300px' }
   ];
 
   // API参数数据源
   const apiDataSource = [
-    { param: 'children', type: 'React.ReactNode', default: '-', description: t('FLEX_CHILDREN_DESC') },
-    { param: 'layout', type: "'horizontal' | 'column'", default: 'horizontal', description: t('FLEX_LAYOUT_DESC') },
-    { param: 'direction', type: "'row' | 'row-reverse' | 'column' | 'column-reverse'", default: 'row', description: t('FLEX_DIRECTION_DESC') },
-    { param: 'justify', type: "'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly'", default: 'flex-start', description: t('FLEX_JUSTIFY_DESC') },
-    { param: 'align', type: "'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch'", default: 'stretch', description: t('FLEX_ALIGN_DESC') },
-    { param: 'wrap', type: "'nowrap' | 'wrap' | 'wrap-reverse'", default: 'nowrap', description: t('FLEX_WRAP_DESC') },
-    { param: 'gap', type: 'string | number', default: '-', description: t('FLEX_GAP_DESC') },
-    { param: 'className', type: 'string', default: '-', description: t('CLASS_NAME_DESC') },
-    { param: 'style', type: 'React.CSSProperties', default: '-', description: t('STYLE_DESC') }
+    { param: 'children', type: 'React.ReactNode', default: '-', description: '子组件内容' },
+    { param: 'layout', type: "'horizontal' | 'column'", default: 'horizontal', description: '快速设置布局方向，horizontal 为水平布局，column 为列布局' },
+    { param: 'direction', type: "'row' | 'row-reverse' | 'column' | 'column-reverse'", default: 'row', description: 'flex-direction 属性，优先级高于 layout' },
+    { param: 'justify', type: "'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly'", default: 'flex-start', description: 'justify-content 属性' },
+    { param: 'align', type: "'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch'", default: 'stretch', description: 'align-items 属性' },
+    { param: 'wrap', type: "'nowrap' | 'wrap' | 'wrap-reverse'", default: 'nowrap', description: 'flex-wrap 属性' },
+    { param: 'gap', type: 'string | number', default: '-', description: 'gap 属性，支持数值(px)和字符串' },
+    { param: 'className', type: 'string', default: '-', description: '自定义 CSS 类名' },
+    { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' }
   ];
 
   // 交互式示例状态
@@ -58,19 +57,19 @@ const FlexExample: React.FC = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>{t('FLEX_COMPONENT')}</h2>
-      <p>{t('FLEX_DESCRIPTION')}</p>
+      <h2>Flex 组件</h2>
+      <p>通用的 flex 布局组件，提供灵活的布局方式。</p>
       
       {/* 交互式示例 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#f5f7fa', borderRadius: '8px' }}>
-        <h3>{t('INTERACTIVE_EXAMPLE')}</h3>
-        <p>{t('ADJUST_PROPERTIES')}</p>
+        <h3>交互式示例</h3>
+        <p>通过下方的按钮和输入框，实时调整 flex 布局的各项属性。</p>
         
         {/* 控制面板 */}
         <div style={{ marginBottom: '20px' }}>
           {/* 项目数量控制 */}
           <div style={{ marginBottom: '16px' }}>
-            <h4 style={{ margin: '0 0 8px 0' }}>{t('ITEM_COUNT')}</h4>
+            <h4 style={{ margin: '0 0 8px 0' }}>项目数量</h4>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <Input 
                 type="text" 
@@ -78,7 +77,7 @@ const FlexExample: React.FC = () => {
                 onChange={(e) => setItemCount(e.target.value)}
                 style={{ width: '120px' }}
               />
-              <span style={{ fontSize: '14px', color: '#606266' }}>{t('ITEMS')}</span>
+              <span style={{ fontSize: '14px', color: '#606266' }}>个项目</span>
             </div>
           </div>
 
@@ -111,7 +110,7 @@ const FlexExample: React.FC = () => {
           
           {/* Direction 控制 */}
           <div style={{ marginBottom: '16px' }}>
-            <h4 style={{ margin: '0 0 8px 0' }}>{t('DIRECTION')}</h4>
+            <h4 style={{ margin: '0 0 8px 0' }}>Direction (优先级高于Layout)</h4>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <Button 
                 variant={direction === 'row' ? 'primary' : 'secondary'} 
@@ -279,14 +278,14 @@ const FlexExample: React.FC = () => {
                 onChange={(e) => setGap(e.target.value)}
                 style={{ width: '100px' }}
               />
-              <span style={{ color: '#606266', fontSize: '14px' }}>{t('CURRENT_VALUE')}: {gap}px</span>
+              <span style={{ color: '#606266', fontSize: '14px' }}>当前值: {gap}px</span>
             </div>
           </div>
         </div>
         
         {/* 演示区域 */}
         <div style={{ background: '#ffffff', padding: '20px', borderRadius: '8px', border: '1px solid #e4e7ed' }}>
-          <h4 style={{ margin: '0 0 16px 0' }}>{t('DEMONSTRATION_EFFECT')}</h4>
+          <h4 style={{ margin: '0 0 16px 0' }}>演示效果</h4>
           <div style={{ background: '#fafafa', padding: '20px', borderRadius: '4px', minHeight: '120px' }}>
             <Flex 
               layout={layout}
@@ -303,7 +302,7 @@ const FlexExample: React.FC = () => {
         
         {/* 当前配置 */}
         <div style={{ marginTop: '20px', padding: '12px', background: '#ffffff', borderRadius: '6px', border: '1px solid #e4e7ed' }}>
-          <h4 style={{ margin: '0 0 8px 0', fontSize: '14px' }}>{t('CURRENT_CONFIGURATION')}</h4>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '14px' }}>当前配置</h4>
           <div style={{ fontSize: '14px', color: '#303133' }}>
             <code>layout: <span style={{ color: '#4096ff' }}>{layout}</span>, </code>
             {direction && <code>direction: <span style={{ color: '#4096ff' }}>{direction}</span>, </code>}
@@ -317,8 +316,8 @@ const FlexExample: React.FC = () => {
       
       {/* 多层次嵌套示例 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#f5f7fa', borderRadius: '8px' }}>
-        <h3>{t('MULTI_LEVEL_NESTING')}</h3>
-        <p>{t('NESTING_DESCRIPTION')}</p>
+        <h3>多层次嵌套示例</h3>
+        <p>展示 Flex 组件的多层次嵌套使用，实现复杂的布局结构。</p>
         
         {/* 嵌套布局演示 */}
         <div style={{ background: '#ffffff', padding: '20px', borderRadius: '8px', border: '1px solid #e4e7ed', marginBottom: '20px' }}>
@@ -334,7 +333,7 @@ const FlexExample: React.FC = () => {
               
               {/* 中间垂直布局，包含嵌套的水平布局 */}
               <Flex layout="column" justify="space-around" align="center" gap={10} style={{ background: '#f0f9eb', padding: '16px', borderRadius: '6px', flex: 1 }}>
-                <div style={{ width: '120px', height: '40px', background: '#e6a23c', borderRadius: '4px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontSize: '14px', fontWeight: 'bold' }}>{t('TITLE_AREA')}</div>
+                <div style={{ width: '120px', height: '40px', background: '#e6a23c', borderRadius: '4px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontSize: '14px', fontWeight: 'bold' }}>标题区域</div>
                 
                 {/* 嵌套的水平布局，换行 */}
                 <Flex layout="horizontal" wrap="wrap" justify="center" gap={8} style={{ width: '100%' }}>
@@ -389,13 +388,13 @@ const FlexExample: React.FC = () => {
       
       {/* API 文档 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>{t('API_PARAMETERS')}</h3>
+        <h3>API 参数</h3>
         <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
       </div>
       
       {/* 代码示例 */}
       <div style={{ marginBottom: '40px' }}>
-        <h3>{t('CODE_EXAMPLES')}</h3>
+        <h3>代码示例</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
 {`import { Flex } from '@zjpcy/simple-design';
 
@@ -415,7 +414,7 @@ const FlexExample: React.FC = () => {
 
 // 居中对齐
 <Flex justify="center" align="center">
-  <div>{t('CENTER_CONTENT')}</div>
+  <div>居中内容</div>
 </Flex>
 
 // 两端对齐
@@ -446,15 +445,15 @@ const FlexExample: React.FC = () => {
       
       {/* 在其他项目中引用示例 */}
       <div>
-        <h3>{t('USAGE_IN_OTHER_PROJECTS')}</h3>
+        <h3>在其他项目中引用</h3>
         <div style={{ margin: '15px 0' }}>
-          <h4>1. {t('INSTALLATION')}</h4>
+          <h4>1. 安装</h4>
           <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
             {`npm i @zjpcy/simple-design`}
           </SyntaxHighlighter>
         </div>
         <div>
-          <h4>2. {t('REFERENCE_COMPONENT')}</h4>
+          <h4>2. 引用组件</h4>
           <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
 import Flex from '@zjpcy/simple-design/lib/Flex';

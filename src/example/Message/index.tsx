@@ -1,34 +1,32 @@
 import React from 'react';
 import { useMessage } from '../../components/Message';
-import { useI18n } from '../../components';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const MessageExample: React.FC = () => {
   const message = useMessage();
-  const { t } = useI18n();
 
   const handleSuccessClick = () => {
-    message.success(t('OPERATION_SUCCESS'), 3000);
+    message.success('操作成功！', 3000);
   };
 
   const handleWarningClick = () => {
-    message.warning(t('WARNING_CHECK_INPUT'), 4000);
+    message.warning('警告：请检查输入！', 4000);
   };
 
   const handleErrorClick = () => {
-    message.error(t('OPERATION_FAILED_RETRY'), 5000);
+    message.error('操作失败，请重试！', 5000);
   };
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Message {t('COMPONENT')}</h2>
-      <p>{t('MESSAGE_COMPONENT_DESC')}</p>
+      <h2>Message 组件</h2>
+      <p>轻量级消息提示框，用于显示成功、警告和错误信息。</p>
 
       {/* 基本使用示例 */}
       <div style={{ marginBottom: '40px', display: 'block' }}>
-        <h3>{t('BASIC_USAGE')}</h3>
-        <p>{t('CLICK_BUTTONS_TO_SHOW_MESSAGES')}</p>
+        <h3>基本使用</h3>
+        <p>点击按钮显示不同类型的消息提示。</p>
 
         <div style={{ marginBottom: '20px', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
           <button 
@@ -42,7 +40,7 @@ const MessageExample: React.FC = () => {
               cursor: 'pointer' 
             }}
           >
-            {t('SHOW_SUCCESS_MESSAGE')}
+            显示成功消息
           </button>
           
           <button 
@@ -56,7 +54,7 @@ const MessageExample: React.FC = () => {
               cursor: 'pointer' 
             }}
           >
-            {t('SHOW_WARNING_MESSAGE')}
+            显示警告消息
           </button>
           
           <button 
@@ -70,14 +68,14 @@ const MessageExample: React.FC = () => {
               cursor: 'pointer' 
             }}
           >
-            {t('SHOW_ERROR_MESSAGE')}
+            显示错误消息
           </button>
         </div>
       </div>
 
       {/* 代码示例 */}
       <div style={{ marginBottom: '40px', display: 'block' }}>
-        <h3>{t('CODE_EXAMPLES')}</h3>
+        <h3>代码示例</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
           {`import { useMessage } from '@zjpcy/simple-design';
 
@@ -114,14 +112,14 @@ import { Message } from '@zjpcy/simple-design';
 
       {/* API 文档 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>{t('API_PARAMETERS')}</h3>
+        <h3>API 参数</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
           <thead>
             <tr style={{ backgroundColor: '#f0f0f0' }}>
-              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>{t('PARAM_NAME')}</th>
-              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>{t('TYPE')}</th>
-              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>{t('DEFAULT_VALUE')}</th>
-              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>{t('DESCRIPTION')}</th>
+              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>参数名</th>
+              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>类型</th>
+              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>默认值</th>
+              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>描述</th>
             </tr>
           </thead>
           <tbody>
@@ -129,37 +127,37 @@ import { Message } from '@zjpcy/simple-design';
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>type</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>'success' | 'warning' | 'error'</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>{t('MESSAGE_TYPE')}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>消息类型</td>
             </tr>
             <tr>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>content</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>ReactNode</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>{t('MESSAGE_CONTENT')}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>消息内容</td>
             </tr>
             <tr>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>duration</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>number</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>3000</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>{t('MESSAGE_DURATION')}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>消息自动关闭时长（毫秒）</td>
             </tr>
             <tr>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>className</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>string</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>{t('CLASS_NAME_DESC')}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>自定义类名</td>
             </tr>
             <tr>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>style</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>React.CSSProperties</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>{t('STYLE_DESC')}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>自定义样式</td>
             </tr>
             <tr>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>onClose</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>() `${"=>"}` void</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>\(() `${"=>"}` void\)</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>{t('MESSAGE_CLOSE_CALLBACK')}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>消息关闭回调</td>
             </tr>
           </tbody>
         </table>

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Notice, Button, Table, useI18n } from '../../components';
+import { Notice, Button, Table } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import './index.css';
 
 const NoticeExample: React.FC = () => {
-    const { t } = useI18n();
     const [showNotice, setShowNotice] = useState(true);
     const [noticeText, setNoticeText] = useState('I can be a React component, multiple React components, or just some text.');
     const [noticeSpeed, setNoticeSpeed] = useState(50);
@@ -40,56 +39,56 @@ const NoticeExample: React.FC = () => {
 
     // API参数列配置
     const apiColumns: Column[] = [
-        { dataIndex: 'param', title: t('PARAM_NAME'), width: '150px' },
-        { dataIndex: 'type', title: t('TYPE'), width: '400px' },
-        { dataIndex: 'default', title: t('DEFAULT_VALUE'), width: '150px' },
-        { dataIndex: 'description', title: t('DESCRIPTION'), width: '300px' }
+        { dataIndex: 'param', title: '属性名', width: '150px' },
+        { dataIndex: 'type', title: '类型', width: '400px' },
+        { dataIndex: 'default', title: '默认值', width: '150px' },
+        { dataIndex: 'description', title: '描述', width: '300px' }
     ];
 
     // API参数数据源
     const apiDataSource = [
-        { param: 'speed', type: 'number', default: '50', description: t('SPEED_DESC') },
-        { param: 'height', type: 'number', default: '60', description: t('HEIGHT_DESC') },
-        { param: 'styles', type: 'React.CSSProperties', default: '{}', description: t('STYLES_DESC') },
-        { param: 'icon', type: 'React.ReactNode | null', default: 'null', description: t('ICON_NOTICE_DESC') },
-        { param: 'showCloseButton', type: 'boolean', default: 'false', description: t('SHOW_CLOSE_BUTTON_DESC') },
-        { param: 'closeStyle', type: 'React.CSSProperties', default: '{}', description: t('CLOSE_STYLE_DESC') },
-        { param: 'floatingTop', type: 'boolean', default: 'false', description: t('FLOATING_TOP_DESC') },
-        { param: 'pauseOnHover', type: 'boolean', default: 'true', description: t('PAUSE_ON_HOVER_DESC') }
+        { param: 'speed', type: 'number', default: '50', description: '滚动速度，数值越大滚动越快' },
+        { param: 'height', type: 'number', default: '60', description: '公告栏高度，单位为像素' },
+        { param: 'styles', type: 'React.CSSProperties', default: '{}', description: '自定义通知栏样式' },
+        { param: 'icon', type: 'React.ReactNode | null', default: 'null', description: '通知文本前的图标' },
+        { param: 'showCloseButton', type: 'boolean', default: 'false', description: '是否显示关闭按钮' },
+        { param: 'closeStyle', type: 'React.CSSProperties', default: '{}', description: '自定义关闭按钮样式' },
+        { param: 'floatingTop', type: 'boolean', default: 'false', description: '是否固定悬浮在页面顶部' },
+        { param: 'pauseOnHover', type: 'boolean', default: 'true', description: '鼠标悬停时是否暂停滚动' }
     ];
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Notice {t('COMPONENT')}</h2>
-            <p>{t('NOTICE_COMPONENT_DESC')}</p>
+            <h2>Notice 组件</h2>
+            <p>这是一个滚动通知栏组件，使用 react-fast-marquee 实现无缝滚动效果。</p>
             
             <div style={{ marginBottom: '40px' }}>
-                <h3>{t('BASIC_USAGE')}</h3>
+                <h3>基本用法</h3>
                 <div className="notice-container">
-                    {showNotice ? <Notice text={noticeText} speed={noticeSpeed} height={noticeHeight} showCloseButton={showCloseButton} floatingTop={floatingTop} /> : <p>{t('NOTICE_HIDDEN')}</p>}
+                    {showNotice ? <Notice text={noticeText} speed={noticeSpeed} height={noticeHeight} showCloseButton={showCloseButton} floatingTop={floatingTop} /> : <p>通知已隐藏</p>}
                 </div>
                 <div className="controls">
                     <Button onClick={toggleNotice} className="control-btn" variant="primary">
-                        {showNotice ? t('HIDE_NOTICE') : t('SHOW_NOTICE')}
+                        {showNotice ? '隐藏通知' : '显示通知'}
                     </Button>
                 </div>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>{t('CUSTOM_CONFIGURATION')}</h3>
+                <h3>自定义配置</h3>
                 <div className="config-controls">
                     <div className="control-group">
-                        <label htmlFor="noticeText">{t('NOTICE_TEXT')}:</label>
+                        <label htmlFor="noticeText">通知文本:</label>
                         <input
                             id="noticeText"
                             type="text"
                             value={noticeText}
                             onChange={handleTextChange}
-                            placeholder={t('ENTER_NOTICE_TEXT')}
+                            placeholder="输入通知文本"
                         />
                     </div>
                     <div className="control-group">
-                        <label htmlFor="noticeSpeed">{t('SCROLL_SPEED')}:</label>
+                        <label htmlFor="noticeSpeed">滚动速度:</label>
                         <input
                             id="noticeSpeed"
                             type="range"
@@ -101,7 +100,7 @@ const NoticeExample: React.FC = () => {
                         <span className="speed-value">{noticeSpeed}</span>
                     </div>
                     <div className="control-group">
-                        <label htmlFor="noticeHeight">{t('NOTICE_BAR_HEIGHT')}:</label>
+                        <label htmlFor="noticeHeight">公告栏高度:</label>
                         <input
                             id="noticeHeight"
                             type="range"
@@ -119,7 +118,7 @@ const NoticeExample: React.FC = () => {
                                 checked={showCloseButton}
                                 onChange={handleShowCloseButtonChange}
                             />
-                            {t('SHOW_CLOSE_BUTTON')}
+                            显示关闭按钮
                         </label>
                     </div>
                     <div className="control-group">
@@ -129,44 +128,44 @@ const NoticeExample: React.FC = () => {
                                 checked={floatingTop}
                                 onChange={handleFloatingTopChange}
                             />
-                            {t('FLOAT_TO_TOP')}
+                            悬浮到顶部
                         </label>
                     </div>
                 </div>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>{t('FEATURES')}</h3>
+                <h3>功能说明</h3>
                 <ul>
-                    <li>{t('SEAMLESS_SCROLL')}</li>
-                    <li>{t('CONFIGURABLE_SPEED')}</li>
-                    <li>{t('CUSTOM_NOTICE_TEXT')}</li>
-                    <li>{t('CUSTOM_HEIGHT')}</li>
-                    <li>{t('OPTIONAL_CLOSE_BUTTON')}</li>
-                    <li>{t('FLOATING_TOP_FUNCTION')}</li>
-                    <li>{t('TYPESCRIPT_SUPPORT')}</li>
+                    <li>使用 Marquee 组件实现无缝滚动效果</li>
+                    <li>滚动速度可配置（默认为50，范围10-100）</li>
+                    <li>支持自定义通知文本内容</li>
+                    <li>支持自定义公告栏高度（默认为60px，范围30-100px）</li>
+                    <li>可选择显示关闭按钮，宽度30px，点击可隐藏公告栏</li>
+                    <li>支持悬浮到顶部功能，固定显示在页面顶部</li>
+                    <li>组件支持TypeScript类型定义</li>
                 </ul>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>{t('USAGE_SCENARIOS')}</h3>
+                <h3>使用场景</h3>
                 <ul>
-                    <li>{t('WEBSITE_ANNOUNCEMENT')}</li>
-                    <li>{t('SYSTEM_NOTIFICATION')}</li>
-                    <li>{t('PROMOTION_INFO')}</li>
-                    <li>{t('IMPORTANT_REMINDER')}</li>
+                    <li>网站公告</li>
+                    <li>系统通知</li>
+                    <li>促销活动信息</li>
+                    <li>重要消息提醒</li>
                 </ul>
             </div>
 
             {/* API 文档 */}
             <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-                <h3>{t('API_PARAMETERS')}</h3>
+                <h3>API 参数</h3>
                 <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
             </div>
 
             {/* 代码示例 */}
             <div style={{ marginBottom: '40px' }}>
-                <h3>{t('CODE_EXAMPLES')}</h3>
+                <h3>代码示例</h3>
                 <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`import { Notice } from '@zjpcy/simple-design';
 
@@ -226,15 +225,15 @@ const NoticeExample: React.FC = () => {
 
             {/* 在其他项目中引用示例 */}
             <div>
-                <h3>{t('USAGE_IN_OTHER_PROJECTS')}</h3>
+                <h3>在其他项目中引用</h3>
                 <div style={{ margin: '15px 0' }}>
-                    <h4>1. {t('INSTALLATION')}</h4>
+                    <h4>1. 安装</h4>
                     <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`npm i @zjpcy/simple-design`}
                     </SyntaxHighlighter>
                 </div>
                 <div>
-                    <h4>2. {t('REFERENCE_COMPONENT')}</h4>
+                    <h4>2. 引用组件</h4>
                     <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
 import Notice from '@zjpcy/simple-design/lib/Notice/Notice';

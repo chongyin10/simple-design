@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { SelectProps, SelectOptionProps, SelectOptGroupProps } from './types';
 import Icon from '../Icon';
 import Empty from '../Empty';
-import { useI18n } from '../../i18n/I18nProvider';
 import './Select.css';
 
 interface SelectContextType {
@@ -22,7 +21,7 @@ const Select: React.FC<SelectProps> & {
     value: externalValue,
     defaultValue,
     onChange,
-    placeholder,
+    placeholder = '请选择',
     disabled = false,
     size = 'middle',
     style,
@@ -35,11 +34,9 @@ const Select: React.FC<SelectProps> & {
     height,
     dropdownHeight
 }) => {
-    const { t } = useI18n();
-    const defaultPlaceholder = t('SELECT_PLACEHOLDER');
     const [value, setValue] = useState(defaultValue);
     const [internalOpen, setInternalOpen] = useState(false);
-    const [selectedLabel, setSelectedLabel] = useState<ReactNode>(placeholder || defaultPlaceholder);
+    const [selectedLabel, setSelectedLabel] = useState<ReactNode>(placeholder);
     const selectRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLDivElement>(null);
@@ -61,7 +58,7 @@ const Select: React.FC<SelectProps> & {
             if (selected) {
                 setSelectedLabel(selected.label);
             } else if (value === undefined || value === null) {
-                setSelectedLabel(placeholder || defaultPlaceholder);
+                setSelectedLabel(placeholder);
             }
         }
     }, [value, options, placeholder]);

@@ -4,13 +4,12 @@ import classNames from 'classnames';
 import Button from '../Button';
 import Icon from '../Icon';
 import Flex from '../Flex';
-import { useI18n } from '../../i18n/I18nProvider';
 import { ModalProps } from './types';
 import './Modal.css';
 
 const Modal: React.FC<ModalProps> = ({
     visible,
-    title,
+    title = '标题',
     width = 600,
     height = 300,
     headerHeight = 40,
@@ -24,14 +23,13 @@ const Modal: React.FC<ModalProps> = ({
     footer = null,
     className,
     style,
-    okText,
-    cancelText,
+    okText = '确认',
+    cancelText = '取消',
     getContainer = () => document.body,
     maskStyle,
     maskClassName,
     zIndex = 1000,
 }) => {
-    const { t } = useI18n();
     const [isVisible, setIsVisible] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
 
@@ -151,7 +149,7 @@ const Modal: React.FC<ModalProps> = ({
                         style={headerStyle}
                     >
                         <div className="idp-modal-header__left">
-                            <span className="idp-modal-header__title">{title || t('MODAL_TITLE')}</span>
+                            <span className="idp-modal-header__title">{title}</span>
                         </div>
                         <div className="idp-modal-header__right">
                             <Icon
@@ -185,11 +183,11 @@ const Modal: React.FC<ModalProps> = ({
                                 gap={12}
                             >
                                 <Button variant="secondary" onClick={handleCancel} disabled={confirmLoading}>
-                                {cancelText || t('MODAL_CANCELTEXT')}
-                            </Button>
-                            <Button variant="primary" onClick={handleOk} loading={confirmLoading}>
-                                {okText || t('MODAL_OKTEXT')}
-                            </Button>
+                                    {cancelText || '取消'}
+                                </Button>
+                                <Button variant="primary" onClick={handleOk} loading={confirmLoading}>
+                                    {okText || '确认'}
+                                </Button>
                             </Flex>
                         ) : (
                             footer
