@@ -1,81 +1,82 @@
 import React from 'react';
 import Marquee from '../../components/Marquee';
-import { Table } from '../../components';
+import { Table, useI18n } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const MarqueeExample: React.FC = () => {
+    const { t } = useI18n();
     // API参数列配置
     const apiColumns: Column[] = [
-        { dataIndex: 'param', title: '属性名', width: '150px' },
-        { dataIndex: 'type', title: '类型', width: '250px' },
-        { dataIndex: 'default', title: '默认值', width: '200px' },
-        { dataIndex: 'description', title: '描述', width: '300px' }
+        { dataIndex: 'param', title: t('PARAM_NAME'), width: '150px' },
+        { dataIndex: 'type', title: t('TYPE'), width: '250px' },
+        { dataIndex: 'default', title: t('DEFAULT_VALUE'), width: '200px' },
+        { dataIndex: 'description', title: t('DESCRIPTION'), width: '300px' }
     ];
 
     // API参数数据源
     const apiDataSource = [
-        { param: 'announcement', type: 'string | string[]', default: '-', description: '公告文本，可以是字符串或字符串数组' },
-        { param: 'height', type: 'number', default: '40', description: '公告栏高度，单位为像素' },
-        { param: 'speed', type: 'number', default: '50', description: '滚动速度，数值越大滚动越快' },
-        { param: 'backgroundColor', type: 'string', default: 'linear-gradient(to right, #e8eaf6 0%, #f5f5f5 50%, #e8eaf6 100%)', description: '公告栏背景色，可以是纯色或渐变' },
-        { param: 'visible', type: 'boolean', default: 'true', description: '是否显示公告栏' },
-        { param: 'fixed', type: 'boolean', default: 'false', description: '是否固定在页面顶部' },
-        { param: 'fixedTop', type: 'number', default: '0', description: '固定时距离顶部的距离，单位为像素' },
-        { param: 'isIcon', type: 'boolean', default: 'true', description: '是否显示公告图标' },
-        { param: 'onClose', type: '() => void', default: '-', description: '关闭按钮点击时的回调函数' }
+        { param: 'announcement', type: 'string | string[]', default: '-', description: t('ANNOUNCEMENT_TEXT') },
+        { param: 'height', type: 'number', default: '40', description: t('ANNOUNCEMENT_HEIGHT') },
+        { param: 'speed', type: 'number', default: '50', description: t('SCROLL_SPEED') },
+        { param: 'backgroundColor', type: 'string', default: 'linear-gradient(to right, #e8eaf6 0%, #f5f5f5 50%, #e8eaf6 100%)', description: t('ANNOUNCEMENT_BACKGROUND') },
+        { param: 'visible', type: 'boolean', default: 'true', description: t('DISPLAY_ANNOUNCEMENT') },
+        { param: 'fixed', type: 'boolean', default: 'false', description: t('FIXED_POSITION') },
+        { param: 'fixedTop', type: 'number', default: '0', description: t('FIXED_DISTANCE') },
+        { param: 'isIcon', type: 'boolean', default: 'true', description: t('DISPLAY_ICON') },
+        { param: 'onClose', type: '() => void', default: '-', description: t('CLOSE_BUTTON_CALLBACK') }
     ];
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Marquee 公告组件</h2>
-            <p>这是一个可定制的滚动公告栏组件，支持多种样式和配置选项。</p>
+            <h2>{t('MARQUEE_COMPONENT')}</h2>
+            <p>{t('MARQUEE_DESCRIPTION')}</p>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>1. 默认配置</h3>
-                <p>默认高度: 40px, 默认速度: 50, 默认渐变背景</p>
-                <Marquee announcement="这是一条默认配置的公告信息，从右向左滚动，播放完毕后会自动重复播放！" />
+                <h3>{t('DEFAULT_CONFIGURATION')}</h3>
+                <p>{t('DEFAULT_CONFIG_DESC')}</p>
+                <Marquee announcement={t('DEFAULT_ANNOUNCEMENT')} />
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>2. 自定义高度</h3>
-                <p>高度: 60px</p>
+                <h3>{t('CUSTOM_HEIGHT')}</h3>
+                <p>{t('HEIGHT_60PX')}</p>
                 <Marquee
-                    announcement="这是一条自定义高度为60px的公告信息！"
+                    announcement={t('CUSTOM_HEIGHT_ANNOUNCEMENT')}
                     height={60}
                 />
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>3. 自定义速度</h3>
-                <p>慢速: 20</p>
+                <h3>{t('CUSTOM_SPEED')}</h3>
+                <p>{t('SLOW_SPEED')}</p>
                 <Marquee
-                    announcement="这是一条慢速滚动的公告信息，速度为20！"
+                    announcement={t('SLOW_SPEED_ANNOUNCEMENT')}
                     speed={20}
                 />
 
-                <p style={{ marginTop: '20px' }}>快速: 100</p>
+                <p style={{ marginTop: '20px' }}>{t('FAST_SPEED')}</p>
                 <Marquee
-                    announcement="这是一条快速滚动的公告信息，速度为100！"
+                    announcement={t('FAST_SPEED_ANNOUNCEMENT')}
                     speed={100}
                 />
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>4. 自定义背景色</h3>
-                <p>自定义渐变背景</p>
+                <h3>{t('CUSTOM_BACKGROUND')}</h3>
+                <p>{t('CUSTOM_GRADIENT_BACKGROUND')}</p>
                 <Marquee
-                    announcement={['这是一条自定义渐变背景的公告信息', '这是第二条自定义渐变背景的公告信息']}
+                    announcement={[t('GRADIENT_BACKGROUND_ANNOUNCEMENT_1'), t('GRADIENT_BACKGROUND_ANNOUNCEMENT_2')]}
                     backgroundColor="linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
                 />
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>5. 综合自定义</h3>
-                <p>高度: 50px, 速度: 75, 自定义背景</p>
+                <h3>{t('COMPREHENSIVE_CUSTOM')}</h3>
+                <p>{t('COMPREHENSIVE_CUSTOM_DESC')}</p>
                 <Marquee
-                    announcement="这是一条综合自定义配置的公告信息，高度50px，速度75，自定义渐变背景！"
+                    announcement={t('COMPREHENSIVE_ANNOUNCEMENT')}
                     height={50}
                     speed={75}
                     backgroundColor="linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"
@@ -83,46 +84,46 @@ const MarqueeExample: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>6. 固定到顶部</h3>
-                <p>fixed=true，公告栏会浮动固定在页面顶部</p>
+                <h3>{t('FIXED_TOP')}</h3>
+                <p>{t('FIXED_TOP_DESC')}</p>
                 <Marquee
-                    announcement="这是一条固定顶部的公告信息，滚动页面时保持可见！"
+                    announcement={t('FIXED_TOP_ANNOUNCEMENT')}
                     fixed={true}
                 />
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>7. 关闭回调</h3>
-                <p>点击关闭按钮触发 onClose 回调</p>
+                <h3>{t('CLOSE_CALLBACK')}</h3>
+                <p>{t('CLOSE_CALLBACK_DESC')}</p>
                 <Marquee
-                    announcement="这是一条带关闭回调的公告信息，点击右侧X关闭！"
-                    onClose={() => alert('公告已关闭')}
+                    announcement={t('CLOSE_CALLBACK_ANNOUNCEMENT')}
+                    onClose={() => alert(t('ANNOUNCEMENT_CLOSED'))}
                 />
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>8. 完整功能示例</h3>
-                <p>固定顶部 + 自定义高度 + 自定义速度 + 关闭回调</p>
+                <h3>{t('FULL_FUNCTIONALITY')}</h3>
+                <p>{t('FULL_FUNCTIONALITY_DESC')}</p>
                 <Marquee
-                    announcement="这是一条功能完整的公告信息，固定顶部、自定义高度和速度、支持关闭！"
+                    announcement={t('FULL_FUNCTIONALITY_ANNOUNCEMENT')}
                     height={50}
                     speed={60}
                     fixed={true}
                     fixedTop={60}
                     backgroundColor="linear-gradient(to right, #e8eaf6 0%, #f5f5f5 50%, #e8eaf6 100%)"
-                    onClose={() => console.log('公告已关闭')}
+                    onClose={() => console.log(t('ANNOUNCEMENT_CLOSED'))}
                 />
             </div>
 
             {/* API 文档 */}
             <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-                <h3>API 参数</h3>
+                <h3>{t('API_PARAMETERS')}</h3>
                 <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
             </div>
 
             {/* 代码示例 */}
             <div style={{ marginBottom: '40px' }}>
-                <h3>代码示例</h3>
+                <h3>{t('CODE_EXAMPLES')}</h3>
                 <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`import { Marquee } from '@zjpcy/simple-design';
 
@@ -193,15 +194,15 @@ const MarqueeExample: React.FC = () => {
 
             {/* 在其他项目中引用示例 */}
             <div>
-                <h3>在其他项目中引用</h3>
+                <h3>{t('USAGE_IN_OTHER_PROJECTS')}</h3>
                 <div style={{ margin: '15px 0' }}>
-                    <h4>1. 安装</h4>
+                    <h4>1. {t('INSTALLATION')}</h4>
                     <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
                         {`npm i @zjpcy/simple-design`}
                     </SyntaxHighlighter>
                 </div>
                 <div>
-                    <h4>2. 引用组件</h4>
+                    <h4>2. {t('REFERENCE_COMPONENT')}</h4>
                     <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
 import Marquee from '@zjpcy/simple-design/lib/Marquee';

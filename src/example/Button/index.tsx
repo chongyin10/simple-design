@@ -1,41 +1,42 @@
 import React from 'react';
-import { Button, Table } from '../../components';
+import { Button, Table, useI18n } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const ButtonExample: React.FC = () => {
+  const { t } = useI18n();
   // API参数列配置
   const apiColumns: Column[] = [
-    { dataIndex: 'param', title: '参数名', width: '150px' },
-    { dataIndex: 'type', title: '类型', width: '300px' },
-    { dataIndex: 'default', title: '默认值', width: '150px' },
-    { dataIndex: 'description', title: '描述', width: '300px' }
+    { dataIndex: 'param', title: t('PARAM_NAME'), width: '150px' },
+    { dataIndex: 'type', title: t('TYPE'), width: '300px' },
+    { dataIndex: 'default', title: t('DEFAULT_VALUE'), width: '150px' },
+    { dataIndex: 'description', title: t('DESCRIPTION'), width: '300px' }
   ];
 
   // API参数数据源
   const apiDataSource = [
-    { param: 'children', type: 'React.ReactNode', default: '-', description: '按钮文本内容' },
-    { param: 'variant', type: "'primary' | 'secondary' | 'danger' | 'success' | 'warning'", default: 'primary', description: '按钮变体样式' },
-    { param: 'size', type: "'small' | 'medium' | 'large'", default: 'medium', description: '按钮尺寸' },
-    { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用按钮' },
-    { param: 'onClick', type: '() => void', default: '-', description: '点击事件回调' },
-    { param: 'className', type: 'string', default: '-', description: '自定义 CSS 类名' },
-    { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' },
-    { param: 'icon', type: 'string | React.ReactNode', default: '-', description: '按钮前缀图标，支持字符串（内置图标名）或自定义图标节点' }
+    { param: 'children', type: 'React.ReactNode', default: '-', description: t('CHILDREN_DESC') },
+    { param: 'variant', type: "'primary' | 'secondary' | 'danger' | 'success' | 'warning'", default: 'primary', description: t('VARIANT_DESC') },
+    { param: 'size', type: "'small' | 'medium' | 'large'", default: 'medium', description: t('SIZE_DESC') },
+    { param: 'disabled', type: 'boolean', default: 'false', description: t('DISABLED_DESC') },
+    { param: 'onClick', type: '() => void', default: '-', description: t('ON_CLICK_DESC') },
+    { param: 'className', type: 'string', default: '-', description: t('CLASS_NAME_DESC') },
+    { param: 'style', type: 'React.CSSProperties', default: '-', description: t('STYLE_DESC') },
+    { param: 'icon', type: 'string | React.ReactNode', default: '-', description: t('ICON_DESC') }
   ];
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Button 组件</h2>
-      <p>可定制的按钮组件，支持多种样式和尺寸。</p>
+      <h2>{t('BUTTON_COMPONENT')}</h2>
+      <p>{t('BUTTON_DESCRIPTION')}</p>
       
       {/* 基本使用示例 */}
       <div style={{ marginBottom: '40px' }}>
-        <h3>基本使用</h3>
-        <p>展示不同变体和尺寸的按钮。</p>
+        <h3>{t('BASIC_USAGE')}</h3>
+        <p>{t('SHOW_VARIANTS_SIZES')}</p>
         
-        <h4>变体按钮</h4>
+        <h4>{t('VARIANT_BUTTONS')}</h4>
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <Button variant="primary">Primary Button</Button>
           <Button variant="secondary">Secondary Button</Button>
@@ -44,29 +45,29 @@ const ButtonExample: React.FC = () => {
           <Button variant="warning">Warning Button</Button>
         </div>
         
-        <h4>尺寸按钮</h4>
+        <h4>{t('SIZE_BUTTONS')}</h4>
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
           <Button variant="primary" size="small">Small Button</Button>
           <Button variant="primary">Medium Button</Button>
           <Button variant="primary" size="large">Large Button</Button>
         </div>
         
-        <h4>禁用状态</h4>
+        <h4>{t('DISABLED_STATE')}</h4>
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
           <Button variant="primary" disabled>Disabled Primary</Button>
           <Button variant="secondary" disabled>Disabled Secondary</Button>
         </div>
         
-        <h4>带图标按钮</h4>
+        <h4>{t('ICON_BUTTONS')}</h4>
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <Button variant="primary" icon="search">搜索</Button>
-          <Button variant="secondary" icon="user">用户</Button>
-          <Button variant="danger" icon="delete">删除</Button>
-          <Button variant="success" icon="check">确认</Button>
-          <Button variant="warning" icon="exclamation">警告</Button>
+          <Button variant="primary" icon="search">{t('SEARCH')}</Button>
+          <Button variant="secondary" icon="user">{t('USER')}</Button>
+          <Button variant="danger" icon="delete">{t('DELETE')}</Button>
+          <Button variant="success" icon="check">{t('CONFIRM')}</Button>
+          <Button variant="warning" icon="exclamation">{t('WARNING')}</Button>
         </div>
         
-        <h4>自定义样式</h4>
+        <h4>{t('CUSTOM_STYLE')}</h4>
         <div style={{ marginBottom: '20px' }}>
           <Button 
             variant="primary" 
@@ -83,13 +84,13 @@ const ButtonExample: React.FC = () => {
       
       {/* API 文档 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>API 参数</h3>
+        <h3>{t('API_PARAMETERS')}</h3>
         <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
       </div>
       
       {/* 代码示例 */}
       <div style={{ marginBottom: '40px' }}>
-        <h3>代码示例</h3>
+        <h3>{t('CODE_EXAMPLES')}</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
 {`import { Button } from '@zjpcy/simple-design';
 
@@ -113,13 +114,13 @@ const ButtonExample: React.FC = () => {
 
 // 带图标按钮
 <Button variant="primary" icon="search">
-  搜索
+  {t('SEARCH')}
 </Button>
 <Button variant="success" icon="check">
-  确认
+  {t('CONFIRM')}
 </Button>
 <Button variant="danger" icon="delete">
-  删除
+  {t('DELETE')}
 </Button>
 
 // 自定义样式和点击事件
@@ -137,15 +138,15 @@ const ButtonExample: React.FC = () => {
       
       {/* 在其他项目中引用示例 */}
       <div>
-        <h3>在其他项目中引用</h3>
+        <h3>{t('USAGE_IN_OTHER_PROJECTS')}</h3>
         <div style={{ margin: '15px 0' }}>
-          <h4>1. 安装</h4>
+          <h4>1. {t('INSTALLATION')}</h4>
           <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
             {`npm i @zjpcy/simple-design`}
           </SyntaxHighlighter>
         </div>
         <div>
-          <h4>2. 引用组件</h4>
+          <h4>2. {t('REFERENCE_COMPONENT')}</h4>
           <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
 import Button from '@zjpcy/simple-design/lib/Button';

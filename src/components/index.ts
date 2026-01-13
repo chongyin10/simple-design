@@ -16,3 +16,8 @@ export { default as Select } from './Select';
 export { default as Table } from './Table';
 export { default as Top } from './Top';
 export { default as Typography } from './Typography';
+
+// 国际化功能
+export { default as I18nProvider, load18n, useI18n } from '../i18n/I18nProvider';
+export { default as i18n, initializeI18n } from '../i18n';
+

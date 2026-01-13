@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Modal, Table } from '../../components';
+import { Button, Modal, Table, useI18n } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const ModalExample: React.FC = () => {
+    const { t } = useI18n();
     const [visible, setVisible] = useState(false);
     const [visible2, setVisible2] = useState(false);
     const [visible3, setVisible3] = useState(false);
@@ -35,95 +36,95 @@ const ModalExample: React.FC = () => {
     };
 
     const apiColumns: Column[] = [
-        { dataIndex: 'param', title: '参数名', width: '150px' },
-        { dataIndex: 'type', title: '类型', width: '300px' },
-        { dataIndex: 'default', title: '默认值', width: '150px' },
-        { dataIndex: 'description', title: '描述', width: '300px' }
+        { dataIndex: 'param', title: t('PARAM_NAME'), width: '150px' },
+        { dataIndex: 'type', title: t('TYPE'), width: '300px' },
+        { dataIndex: 'default', title: t('DEFAULT_VALUE'), width: '150px' },
+        { dataIndex: 'description', title: t('DESCRIPTION'), width: '300px' }
     ];
 
     const apiDataSource = [
-        { param: 'visible', type: 'boolean', default: '-', description: '控制弹窗显示/隐藏（必填）' },
-        { param: 'title', type: 'string', default: "'标题'", description: '弹窗标题' },
-        { param: 'width', type: 'number | string', default: '600', description: '弹窗宽度' },
-        { param: 'height', type: 'number | string', default: '300', description: '弹窗高度（可选，不设置则自适应）' },
-        { param: 'headerHeight', type: 'number | string', default: '40', description: '顶部区域高度' },
-        { param: 'footerHeight', type: 'number | string', default: '60', description: '底部区域高度' },
-        { param: 'confirmLoading', type: 'boolean', default: 'false', description: '确认按钮是否显示加载状态' },
-        { param: 'direction', type: "'center' | 'top-right' | 'bottom-right' | 'normal'", default: "'normal'", description: '打开和关闭的动画方向' },
-        { param: 'top', type: 'number', default: '-', description: '弹窗距离顶部的距离，设置后direction会强制使用normal' },
-        { param: 'footer', type: 'null | React.ReactNode', default: 'null', description: '底部内容，为 null 时显示默认按钮，提供值时显示自定义内容' },
-        { param: 'onCancel', type: '() => void', default: '-', description: '取消按钮点击回调' },
-        { param: 'onOk', type: '() => void', default: '-', description: '确认按钮点击回调' },
-        { param: 'children', type: 'React.ReactNode', default: '-', description: '弹窗内容' },
-        { param: 'className', type: 'string', default: '-', description: '自定义 CSS 类名' },
-        { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' },
-        { param: 'getContainer', type: 'HTMLElement | (() => HTMLElement) | false', default: '() => document.body', description: '指定 Modal 挂载的 HTML 节点，false 为挂载在当前 DOM' },
-        { param: 'okText', type: 'string', default: "'确认'", description: '确认按钮文本' },
-        { param: 'cancelText', type: 'string', default: "'取消'", description: '取消按钮文本' },
-        { param: 'maskStyle', type: 'React.CSSProperties', default: '-', description: '自定义遮罩层样式' },
-        { param: 'maskClassName', type: 'string', default: '-', description: '自定义遮罩层类名' },
-        { param: 'zIndex', type: 'number', default: '1000', description: '遮罩层的z-index值' }
+        { param: 'visible', type: 'boolean', default: '-', description: t('MODAL_VISIBLE_DESC') },
+        { param: 'title', type: 'string', default: "'标题'", description: t('MODAL_TITLE_DESC') },
+        { param: 'width', type: 'number | string', default: '600', description: t('MODAL_WIDTH_DESC') },
+        { param: 'height', type: 'number | string', default: '300', description: t('MODAL_HEIGHT_DESC') },
+        { param: 'headerHeight', type: 'number | string', default: '40', description: t('MODAL_HEADER_HEIGHT_DESC') },
+        { param: 'footerHeight', type: 'number | string', default: '60', description: t('MODAL_FOOTER_HEIGHT_DESC') },
+        { param: 'confirmLoading', type: 'boolean', default: 'false', description: t('MODAL_CONFIRM_LOADING_DESC') },
+        { param: 'direction', type: "'center' | 'top-right' | 'bottom-right' | 'normal'", default: "'normal'", description: t('MODAL_DIRECTION_DESC') },
+        { param: 'top', type: 'number', default: '-', description: t('MODAL_TOP_DESC') },
+        { param: 'footer', type: 'null | React.ReactNode', default: 'null', description: t('MODAL_FOOTER_DESC') },
+        { param: 'onCancel', type: '() => void', default: '-', description: t('MODAL_ON_CANCEL_DESC') },
+        { param: 'onOk', type: '() => void', default: '-', description: t('MODAL_ON_OK_DESC') },
+        { param: 'children', type: 'React.ReactNode', default: '-', description: t('MODAL_CHILDREN_DESC') },
+        { param: 'className', type: 'string', default: '-', description: t('CLASS_NAME_DESC') },
+        { param: 'style', type: 'React.CSSProperties', default: '-', description: t('STYLE_DESC') },
+        { param: 'getContainer', type: 'HTMLElement | (() => HTMLElement) | false', default: '() => document.body', description: t('MODAL_GET_CONTAINER_DESC') },
+        { param: 'okText', type: 'string', default: "'确认'", description: t('MODAL_OK_TEXT_DESC') },
+        { param: 'cancelText', type: 'string', default: "'取消'", description: t('MODAL_CANCEL_TEXT_DESC') },
+        { param: 'maskStyle', type: 'React.CSSProperties', default: '-', description: t('MODAL_MASK_STYLE_DESC') },
+        { param: 'maskClassName', type: 'string', default: '-', description: t('MODAL_MASK_CLASS_NAME_DESC') },
+        { param: 'zIndex', type: 'number', default: '1000', description: t('MODAL_Z_INDEX_DESC') }
     ];
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Modal 组件</h2>
-            <p>模态对话框组件，用于显示重要信息或需要用户确认的操作。</p>
+            <h2>Modal {t('COMPONENT')}</h2>
+            <p>{t('MODAL_COMPONENT_DESC')}</p>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>基本使用</h3>
-                <p>点击按钮打开基本弹窗。</p>
+                <h3>{t('BASIC_USAGE')}</h3>
+                <p>{t('CLICK_BUTTON_OPEN_BASIC_MODAL')}</p>
 
                 <div style={{ marginBottom: '20px' }}>
                     <Button variant="primary" onClick={() => setVisible(true)}>
-                        打开基本弹窗
+                        {t('OPEN_BASIC_MODAL')}
                     </Button>
                 </div>
 
                 <Modal
                     visible={visible}
-                    title="基本弹窗"
+                    title={t('BASIC_MODAL')}
                     onCancel={() => setVisible(false)}
                     onOk={() => setVisible(false)}
                 >
-                    <p>这是弹窗的内容区域，可以放置任意内容。</p>
-                    <p>弹窗会上下左右居中显示。</p>
+                    <p>{t('MODAL_CONTENT_AREA')}</p>
+                    <p>{t('MODAL_CENTERED')}</p>
                 </Modal>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>自定义尺寸</h3>
-                <p>可以自定义弹窗的宽度和高度。</p>
+                <h3>{t('CUSTOM_SIZE')}</h3>
+                <p>{t('CAN_CUSTOMIZE_MODAL_WIDTH_HEIGHT')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
                     <Button variant="primary" onClick={() => setVisible2(true)}>
-                        小尺寸弹窗
+                        {t('SMALL_SIZE_MODAL')}
                     </Button>
                     <Button variant="primary" onClick={() => setVisible3(true)}>
-                        大尺寸弹窗
+                        {t('LARGE_SIZE_MODAL')}
                     </Button>
                 </div>
 
                 <Modal
                     visible={visible2}
-                    title="小尺寸弹窗"
+                    title={t('SMALL_SIZE_MODAL')}
                     width={400}
                     onCancel={() => setVisible2(false)}
                     onOk={() => setVisible2(false)}
                 >
-                    <p>这是小尺寸弹窗，宽度为 400px。</p>
+                    <p>{t('SMALL_SIZE_MODAL_CONTENT')}</p>
                 </Modal>
 
                 <Modal
                     visible={visible3}
-                    title="大尺寸弹窗"
+                    title={t('LARGE_SIZE_MODAL')}
                     width={800}
                     height={500}
                     onCancel={() => setVisible3(false)}
                     onOk={() => setVisible3(false)}
                 >
-                    <p>这是大尺寸弹窗，宽度为 800px，高度为 500px。</p>
-                    <p>可以放置更多内容。</p>
+                    <p>{t('LARGE_SIZE_MODAL_CONTENT')}</p>
+                    <p>{t('CAN_PLACE_MORE_CONTENT')}</p>
                     <div style={{ padding: '20px', background: '#f5f5f5', borderRadius: '4px', marginTop: '10px' }}>
                         <p>示例内容块...</p>
                         <p>示例内容块...</p>
@@ -133,49 +134,49 @@ const ModalExample: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>异步确认</h3>
-                <p>点击确认按钮后可以进行异步操作，完成后关闭弹窗。</p>
+                <h3>{t('ASYNC_CONFIRMATION')}</h3>
+                <p>{t('CLICK_CONFIRM_TO_PERFORM_ASYNC_OPERATION')}</p>
 
                 <div style={{ marginBottom: '20px' }}>
                     <Button variant="primary" onClick={() => setVisible4(true)}>
-                        异步确认弹窗
+                        {t('ASYNC_CONFIRMATION_MODAL')}
                     </Button>
                 </div>
 
                 <Modal
                     visible={visible4}
-                    title="异步确认"
+                    title={t('ASYNC_CONFIRMATION')}
                     confirmLoading={confirmLoading}
                     onCancel={() => !confirmLoading && setVisible4(false)}
                     onOk={handleOk}
                 >
-                    <p>点击确认按钮后，会模拟 1 秒的异步操作。</p>
-                    <p>操作完成后弹窗会自动关闭。</p>
+                    <p>{t('AFTER_CLICK_CONFIRM_BUTTON')}</p>
+                    <p>{t('MODAL_WILL_AUTOMATICALLY_CLOSE_AFTER_OPERATION_COMPLETE')}</p>
                 </Modal>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>内容高度自适应</h3>
-                <p>当未设置height时，内容区域高度自适应；当设置height时，内容区域高度自动计算。</p>
+                <h3>{t('CONTENT_HEIGHT_AUTO_ADJUSTMENT')}</h3>
+                <p>{t('WHEN_HEIGHT_NOT_SET_CONTENT_AREA_ADAPTS')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
                     <Button variant="primary" onClick={() => setVisible5(true)}>
-                        自适应高度
+                        {t('AUTO_ADJUST_HEIGHT')}
                     </Button>
                     <Button variant="primary" onClick={() => setVisible6(true)}>
-                        内容滚动示例
+                        {t('CONTENT_SCROLL_EXAMPLE')}
                     </Button>
                 </div>
 
                 <Modal
                     visible={visible5}
-                    title="自适应高度弹窗"
+                    title={t('AUTO_ADJUST_HEIGHT_MODAL')}
                     width={600}
                     onCancel={() => setVisible5(false)}
                     onOk={() => setVisible5(false)}
                 >
-                    <p>这是一个未设置height的弹窗，内容区域高度会根据内容自动调整。</p>
-                    <p>你可以添加更多内容来测试自适应效果。</p>
+                    <p>{t('THIS_IS_A_MODAL_WITHOUT_HEIGHT_SET')}</p>
+                    <p>{t('YOU_CAN_ADD_MORE_CONTENT_TO_TEST_ADAPTIVE_EFFECT')}</p>
                     <div style={{ padding: '20px', background: '#f5f5f5', borderRadius: '4px', marginTop: '10px' }}>
                         <h4>测试内容</h4>
                         <p>这是一段测试文本，用于演示内容自适应高度的效果。</p>
@@ -185,7 +186,7 @@ const ModalExample: React.FC = () => {
 
                 <Modal
                     visible={visible6}
-                    title="内容滚动弹窗"
+                    title={t('CONTENT_SCROLL_MODAL')}
                     width={600}
                     height={300}
                     headerHeight={50}
@@ -193,9 +194,9 @@ const ModalExample: React.FC = () => {
                     onCancel={() => setVisible6(false)}
                     onOk={() => setVisible6(false)}
                 >
-                    <h4>长内容测试</h4>
-                    <p>这是一个设置了固定高度的弹窗，内容区域高度会自动计算。</p>
-                    <p>当内容超过计算高度时，会自动显示滚动条。</p>
+                    <h4>{t('LONG_CONTENT_TEST')}</h4>
+                    <p>{t('THIS_IS_A_MODAL_WITH_FIXED_HEIGHT')}</p>
+                    <p>{t('WHEN_CONTENT_EXCEEDS_CALCULATED_HEIGHT')}</p>
                     <div style={{ padding: '15px', background: '#f5f5f5', borderRadius: '4px', marginTop: '10px' }}>
                         <p>测试行 1</p>
                         <p>测试行 2</p>
@@ -223,154 +224,154 @@ const ModalExample: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>动画方向演示</h3>
-                <p>支持四种动画方向，打开和关闭将使用相同的方向设置。</p>
+                <h3>{t('ANIMATION_DIRECTION_DEMONSTRATION')}</h3>
+                <p>{t('SUPPORT_FOUR_ANIMATION_DIRECTIONS')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button variant="primary" onClick={() => setVisible7(true)}>
-                        中心动画
+                        {t('CENTER_ANIMATION')}
                     </Button>
                     <Button variant="primary" onClick={() => setVisible8(true)}>
-                        右上角动画
+                        {t('TOP_RIGHT_ANIMATION')}
                     </Button>
                     <Button variant="primary" onClick={() => setVisible9(true)}>
-                        右下角动画
+                        {t('BOTTOM_RIGHT_ANIMATION')}
                     </Button>
                     <Button variant="primary" onClick={() => setVisible10(true)}>
-                        正常动画
+                        {t('NORMAL_ANIMATION')}
                     </Button>
                 </div>
 
                 <Modal
                     visible={visible7}
-                    title="中心动画"
+                    title={t('CENTER_ANIMATION')}
                     width={500}
                     direction="center"
                     onCancel={() => setVisible7(false)}
                     onOk={() => setVisible7(false)}
                 >
-                    <p>打开：从中心点放大</p>
-                    <p>关闭：从中心点缩小消失</p>
+                    <p>{t('OPEN_FROM_CENTER_POINT_ENLARGE')}</p>
+                    <p>{t('CLOSE_FROM_CENTER_POINT_SHRINK')}</p>
                 </Modal>
 
                 <Modal
                     visible={visible8}
-                    title="右上角动画"
+                    title={t('TOP_RIGHT_ANIMATION')}
                     width={500}
                     direction="top-right"
                     onCancel={() => setVisible8(false)}
                     onOk={() => setVisible8(false)}
                 >
-                    <p>打开：从右上角移动并放大</p>
-                    <p>关闭：向右上角移动并缩小消失</p>
+                    <p>{t('OPEN_FROM_TOP_RIGHT_MOVE_AND_ENLARGE')}</p>
+                    <p>{t('CLOSE_TO_TOP_RIGHT_MOVE_AND_SHRINK')}</p>
                 </Modal>
 
                 <Modal
                     visible={visible9}
-                    title="右下角动画"
+                    title={t('BOTTOM_RIGHT_ANIMATION')}
                     width={500}
                     direction="bottom-right"
                     onCancel={() => setVisible9(false)}
                     onOk={() => setVisible9(false)}
                 >
-                    <p>打开：从右下角移动并放大</p>
-                    <p>关闭：向右下角移动并缩小消失</p>
+                    <p>{t('OPEN_FROM_BOTTOM_RIGHT_MOVE_AND_ENLARGE')}</p>
+                    <p>{t('CLOSE_TO_BOTTOM_RIGHT_MOVE_AND_SHRINK')}</p>
                 </Modal>
 
                 <Modal
                     visible={visible10}
-                    title="正常动画"
+                    title={t('NORMAL_ANIMATION')}
                     width={500}
                     direction="normal"
                     onCancel={() => setVisible10(false)}
                     onOk={() => setVisible10(false)}
                 >
-                    <p>打开：轻微放大并淡入</p>
-                <p>关闭：轻微缩小并淡出</p>
+                    <p>{t('OPEN_SLIGHTLY_ENLARGE_AND_FADE_IN')}</p>
+                    <p>{t('CLOSE_SLIGHTLY_SHRINK_AND_FADE_OUT')}</p>
                 </Modal>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>自定义顶部位置</h3>
-                <p>通过 top 参数可以自定义弹窗距离顶部的位置，当同时设置 direction 时，direction 会强制使用默认值 normal。</p>
+                <h3>{t('CUSTOM_TOP_POSITION')}</h3>
+                <p>{t('THROUGH_TOP_PARAM_CUSTOMIZE_MODAL_DISTANCE_FROM_TOP')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button variant="primary" onClick={() => setVisible11(true)}>
-                        自定义顶部位置
+                        {t('CUSTOM_TOP_POSITION')}
                     </Button>
                     <Button variant="primary" onClick={() => setVisible12(true)}>
-                        top 与 direction 同时使用
+                        {t('USE_TOP_AND_DIRECTION_SIMULTANEOUSLY')}
                     </Button>
                 </div>
 
                 <Modal
                     visible={visible11}
-                    title="自定义顶部位置"
+                    title={t('CUSTOM_TOP_POSITION')}
                     width={500}
                     top={100}
                     onCancel={() => setVisible11(false)}
                     onOk={() => setVisible11(false)}
                 >
-                    <p>此弹窗距离顶部 100px</p>
-                    <p>使用 top 参数可以自定义弹窗的垂直位置</p>
+                    <p>{t('THIS_MODAL_IS_100PX_FROM_TOP')}</p>
+                    <p>{t('USE_TOP_PARAM_TO_CUSTOMIZE_MODAL_VERTICAL_POSITION')}</p>
                 </Modal>
 
                 <Modal
                     visible={visible12}
-                    title="top 与 direction 同时使用"
+                    title={t('USE_TOP_AND_DIRECTION_SIMULTANEOUSLY')}
                     width={500}
                     top={200}
                     direction="top-right"
                     onCancel={() => setVisible12(false)}
                     onOk={() => setVisible12(false)}
                 >
-                    <p>此弹窗距离顶部 200px</p>
-                    <p>虽然设置了 direction="top-right"，但由于同时设置了 top 参数，direction 被强制为 normal</p>
+                    <p>{t('THIS_MODAL_IS_200PX_FROM_TOP')}</p>
+                    <p>{t('ALTHOUGH_DIRECTION_TOP_RIGHT_SET_BUT_DUE_TO_TOP_PARAM')}</p>
                 </Modal>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>自定义 Footer</h3>
-                <p>可以通过 footer 参数自定义底部按钮，footer 为 null 时显示默认按钮，提供值时显示自定义按钮。</p>
+                <h3>{t('CUSTOM_FOOTER')}</h3>
+                <p>{t('CAN_CUSTOMIZE_BOTTOM_BUTTONS_THROUGH_FOOTER_PARAM')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button variant="primary" onClick={() => setVisible13(true)}>
-                        自定义 Footer
+                        {t('CUSTOM_FOOTER')}
                     </Button>
                 </div>
 
                 <Modal
                     visible={visible13}
-                    title="自定义 Footer 弹窗"
+                    title={t('CUSTOM_FOOTER_MODAL')}
                     width={500}
                     onCancel={() => setVisible13(false)}
                     footer={[
                         <Button key="cancel" variant="secondary" onClick={() => setVisible13(false)}>
-                            取消
+                            {t('CANCEL')}
                         </Button>,
                         <Button key="save" variant="primary" onClick={() => setVisible13(false)}>
-                            保存
+                            {t('SAVE')}
                         </Button>,
                         <Button key="delete" variant="danger" onClick={() => setVisible13(false)}>
-                            删除
+                            {t('DELETE')}
                         </Button>
                     ]}
                 >
-                    <p>这是一个自定义 Footer 的弹窗，底部显示了三个按钮：取消、保存和删除。</p>
-                    <p>您可以根据需要自定义 footer 的内容和样式。</p>
+                    <p>{t('THIS_IS_A_MODAL_WITH_CUSTOM_FOOTER')}</p>
+                    <p>{t('YOU_CAN_CUSTOMIZE_FOOTER_CONTENT_AND_STYLE')}</p>
                 </Modal>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>自定义挂载容器</h3>
-                <p>可以通过 getContainer 参数指定 Modal 挂载的 HTML 节点，false 为挂载在当前 DOM。</p>
+                <h3>{t('CUSTOM_MOUNT_CONTAINER')}</h3>
+                <p>{t('CAN_SPECIFY_MODAL_MOUNT_HTML_NODE_THROUGH_GET_CONTAINER_PARAM')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button variant="primary" onClick={() => setVisible14(true)}>
-                        挂载在当前 DOM
+                        {t('MOUNT_IN_CURRENT_DOM')}
                     </Button>
                     <Button variant="primary" onClick={() => setVisible15(true)}>
-                        挂载在自定义容器
+                        {t('MOUNT_IN_CUSTOM_CONTAINER')}
                     </Button>
                 </div>
 
@@ -388,58 +389,58 @@ const ModalExample: React.FC = () => {
                         overflow: 'hidden'
                     }}
                 >
-                    <p style={{ color: '#606266', fontSize: '14px' }}>这是一个自定义的挂载容器</p>
-                    <p style={{ color: '#606266', fontSize: '14px' }}>点击"挂载在自定义容器"按钮，Modal 将挂载在此处</p>
+                    <p style={{ color: '#606266', fontSize: '14px' }}>{t('THIS_IS_A_CUSTOM_MOUNT_CONTAINER')}</p>
+                    <p style={{ color: '#606266', fontSize: '14px' }}>{t('CLICK_MOUNT_IN_CUSTOM_CONTAINER_BUTTON')}</p>
                 </div>
 
                 {/* 挂载在当前 DOM */}
                 <Modal
                     visible={visible14}
-                    title="挂载在当前 DOM"
+                    title={t('MOUNT_IN_CURRENT_DOM')}
                     width={500}
                     getContainer={false}
                     onCancel={() => setVisible14(false)}
                     onOk={() => setVisible14(false)}
                 >
-                    <p>这个 Modal 被挂载在当前 DOM 中，而不是 document.body。</p>
-                    <p>可以通过 getContainer={false} 实现此效果。</p>
+                    <p>{t('THIS_MODAL_IS_MOUNTED_IN_CURRENT_DOM')}</p>
+                    <p>{t('CAN_ACHIEVE_THIS_EFFECT_THROUGH_GET_CONTAINER_FALSE')}</p>
                 </Modal>
 
                 {/* 挂载在自定义容器 */}
                 <Modal
                     visible={visible15}
-                    title="挂载在自定义容器"
+                    title={t('MOUNT_IN_CUSTOM_CONTAINER')}
                     width={400}
                     getContainer={() => customContainerRef.current || document.body}
                     onCancel={() => setVisible15(false)}
                     onOk={() => setVisible15(false)}
                 >
-                    <p>这个 Modal 被挂载在页面中的自定义容器里。</p>
-                    <p>可以通过 getContainer 属性指定挂载的 HTML 节点。</p>
+                    <p>{t('THIS_MODAL_IS_MOUNTED_IN_CUSTOM_CONTAINER')}</p>
+                    <p>{t('CAN_SPECIFY_MOUNTED_HTML_NODE_THROUGH_GET_CONTAINER_PROPERTY')}</p>
                 </Modal>
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>自定义遮罩背景色</h3>
-                <p>可以通过 maskStyle 属性自定义遮罩层的背景色和其他样式。</p>
+                <h3>{t('CUSTOM_MASK_BACKGROUND_COLOR')}</h3>
+                <p>{t('CAN_CUSTOMIZE_MASK_BACKGROUND_COLOR_AND_OTHER_STYLES')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button variant="primary" onClick={() => setVisible16(true)}>
-                        自定义遮罩背景色
+                        {t('CUSTOM_MASK_BACKGROUND_COLOR')}
                     </Button>
                 </div>
 
                 {/* 自定义遮罩背景色 */}
                 <Modal
                     visible={visible16}
-                    title="自定义遮罩背景色"
+                    title={t('CUSTOM_MASK_BACKGROUND_COLOR')}
                     width={500}
                     maskStyle={{ backgroundColor: 'rgba(255, 100, 100, 0.7)' }}
                     onCancel={() => setVisible16(false)}
                     onOk={() => setVisible16(false)}
                 >
-                    <p>这个 Modal 的遮罩层使用了自定义的背景色（半透明的红色）。</p>
-                    <p>可以通过 maskStyle 属性设置遮罩层的各种样式，如背景色、透明度等。</p>
+                    <p>{t('THIS_MODAL_MASK_USES_CUSTOM_BACKGROUND_COLOR')}</p>
+                    <p>{t('CAN_SET_VARIOUS_STYLES_OF_MASK_THROUGH_MASK_STYLE_PROPERTY')}</p>
                     <p>示例代码：</p>
                     <pre style={{ backgroundColor: '#f5f7fa', padding: '10px', borderRadius: '4px', overflow: 'auto' }}>
                         {`<Modal
@@ -456,45 +457,45 @@ const ModalExample: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>自定义zIndex</h3>
-                <p>可以通过zIndex属性设置遮罩层的层级，默认值为1000。在嵌套Modal的情况下，需要设置不同的zIndex值来确保正确的显示层级。</p>
+                <h3>{t('CUSTOM_ZINDEX')}</h3>
+                <p>{t('CAN_SET_MASK_LAYER_LEVEL_THROUGH_ZINDEX_PROPERTY')}</p>
 
                 <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button variant="primary" onClick={() => setVisible17(true)}>
-                        打开第一个Modal
+                        {t('OPEN_FIRST_MODAL')}
                     </Button>
                 </div>
 
                 {/* 第一个Modal，使用默认zIndex(1000) */}
                 <Modal
                     visible={visible17}
-                    title="第一个Modal (zIndex: 1000)"
+                    title={t('FIRST_MODAL_ZINDEX_1000')}
                     width={600}
                     onCancel={() => setVisible17(false)}
                     footer={[
                         <Button key="close" variant="secondary" onClick={() => setVisible17(false)}>
-                            关闭
+                            {t('CLOSE')}
                         </Button>,
                         <Button key="open" variant="primary" onClick={() => setVisible18(true)}>
-                            打开第二个Modal
+                            {t('OPEN_SECOND_MODAL')}
                         </Button>
                     ]}
                 >
-                    <p>这是第一个Modal，使用默认的zIndex值(1000)。</p>
-                    <p>点击"打开第二个Modal"按钮，会弹出第二个Modal。</p>
+                    <p>{t('THIS_IS_THE_FIRST_MODAL_USING_DEFAULT_ZINDEX_1000')}</p>
+                    <p>{t('CLICK_OPEN_SECOND_MODAL_BUTTON_TO_POP_UP_SECOND_MODAL')}</p>
                 </Modal>
 
                 {/* 第二个Modal，使用更高的zIndex(1010) */}
                 <Modal
                     visible={visible18}
-                    title="第二个Modal (zIndex: 1010)"
+                    title={t('SECOND_MODAL_ZINDEX_1010')}
                     width={500}
                     zIndex={1010}
                     onCancel={() => setVisible18(false)}
                     onOk={() => setVisible18(false)}
                 >
-                    <p>这是第二个Modal，使用了更高的zIndex值(1010)。</p>
-                    <p>由于设置了更高的zIndex，它会显示在第一个Modal的上方。</p>
+                    <p>{t('THIS_IS_THE_SECOND_MODAL_USING_HIGHER_ZINDEX_1010')}</p>
+                    <p>{t('DUE_TO_HIGHER_ZINDEX_IT_WILL_DISPLAY_ABOVE_FIRST_MODAL')}</p>
                     <p>示例代码：</p>
                     <pre style={{ backgroundColor: '#f5f7fa', padding: '10px', borderRadius: '4px', overflow: 'auto' }}>
                         {`<Modal
@@ -511,12 +512,12 @@ const ModalExample: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-                <h3>API 参数</h3>
+                <h3>{t('API_PARAMETERS')}</h3>
                 <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
             </div>
 
             <div style={{ marginBottom: '40px' }}>
-                <h3>代码示例</h3>
+                <h3>{t('CODE_EXAMPLES')}</h3>
                 <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
 {`import { Modal } from '@zjpcy/simple-design';
 import { useState } from 'react';

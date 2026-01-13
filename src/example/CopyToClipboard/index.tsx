@@ -1,32 +1,33 @@
 import React, { useState } from 'react';
-import { Table, Button } from '../../components';
+import { Table, Button, useI18n } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import CopyToClipboard, { useOnCopy as useCopy } from '../../components/CopyToClipboard';
 
 const CopyToClipboardExample: React.FC = () => {
+  const { t } = useI18n();
   const [copyStatus, setCopyStatus] = useState('');
 
   // API参数列配置
   const apiColumns: Column[] = [
-    { dataIndex: 'param', title: '参数名', width: '150px' },
-    { dataIndex: 'type', title: '类型', width: '300px' },
-    { dataIndex: 'default', title: '默认值', width: '150px' },
-    { dataIndex: 'description', title: '描述', width: '300px' }
+    { dataIndex: 'param', title: t('PARAM_NAME'), width: '150px' },
+    { dataIndex: 'type', title: t('TYPE'), width: '300px' },
+    { dataIndex: 'default', title: t('DEFAULT_VALUE'), width: '150px' },
+    { dataIndex: 'description', title: t('DESCRIPTION'), width: '300px' }
   ];
 
   // API参数数据源 - CopyToClipboard组件
   const apiDataSource = [
-    { param: 'url', type: 'string', default: '-', description: '需要复制的URL或文本内容' },
-    { param: 'onCopyStatusChange', type: '(status: "success" | "error") => void', default: '-', description: '复制状态变化回调' },
-    { param: 'children', type: 'React.ReactNode', default: '-', description: '自定义子元素' }
+    { param: 'url', type: 'string', default: '-', description: t('COPY_URL_OR_TEXT_CONTENT') },
+    { param: 'onCopyStatusChange', type: '(status: "success" | "error") => void', default: '-', description: t('COPY_STATUS_CHANGE_CALLBACK') },
+    { param: 'children', type: 'React.ReactNode', default: '-', description: t('CUSTOM_CHILD_ELEMENT') }
   ];
 
   // API参数数据源 - useCopy钩子
   const useCopyApiDataSource = [
-    { param: 'url', type: 'string', default: '-', description: '需要复制的URL或文本内容' },
-    { param: 'return', type: 'Promise<void>', default: '-', description: '复制操作的Promise' }
+    { param: 'url', type: 'string', default: '-', description: t('COPY_URL_OR_TEXT_CONTENT') },
+    { param: 'return', type: 'Promise<void>', default: '-', description: t('COPY_OPERATION_PROMISE') }
   ];
 
   // 使用useCopy钩子的状态
@@ -36,33 +37,33 @@ const CopyToClipboardExample: React.FC = () => {
   const handleHookCopy = async () => {
     try {
       await copyFn('https://example.com/use-copy');
-      setHookCopyStatus('复制成功！');
+      setHookCopyStatus(t('COPY_SUCCESS'));
     } catch (error) {
-      setHookCopyStatus('复制失败！');
+      setHookCopyStatus(t('COPY_FAILED'));
     }
     setTimeout(() => setHookCopyStatus(''), 2000);
   };
 
   const handleCopyStatusChange = (status: string) => {
     if (status === 'success') {
-      setCopyStatus('复制成功！');
+      setCopyStatus(t('COPY_SUCCESS'));
     } else {
-      setCopyStatus('复制失败！');
+      setCopyStatus(t('COPY_FAILED'));
     }
     setTimeout(() => setCopyStatus(''), 2000);
   };
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>CopyToClipboard 组件</h2>
-      <p>用于将文本复制到剪贴板的组件，支持自定义样式和状态回调。</p>
+      <h2>{t('COPYTOCLIPBOARD_COMPONENT')}</h2>
+      <p>{t('COPYTOCLIPBOARD_DESCRIPTION')}</p>
       
       {/* 基本使用示例 */}
       <div style={{ marginBottom: '40px' }}>
-        <h3>基本使用</h3>
-        <p>展示不同样式的复制按钮。</p>
+        <h3>{t('BASIC_USAGE')}</h3>
+        <p>{t('DISPLAY_DIFFERENT_STYLES_COPY_BUTTONS')}</p>
         
-        <h4>文本链接样式</h4>
+        <h4>{t('TEXT_LINK_STYLE')}</h4>
         <div style={{ marginBottom: '20px' }}>
           <CopyToClipboard 
             url="https://example.com" 
@@ -73,29 +74,29 @@ const CopyToClipboardExample: React.FC = () => {
               cursor: 'pointer',
               textDecoration: 'underline'
             }}>
-              复制链接
+              {t('COPY_LINK')}
             </span>
           </CopyToClipboard>
           {copyStatus && (
-            <span style={{ marginLeft: '10px', color: copyStatus.includes('成功') ? 'green' : 'red' }}>
+            <span style={{ marginLeft: '10px', color: copyStatus.includes(t('SUCCESS')) ? 'green' : 'red' }}>
               {copyStatus}
             </span>
           )}
         </div>
         
-        <h4>按钮样式</h4>
+        <h4>{t('BUTTON_STYLE')}</h4>
         <div style={{ marginBottom: '20px' }}>
           <CopyToClipboard 
             url="https://example.com/custom" 
             onCopyStatusChange={handleCopyStatusChange}
           >
             <Button variant="primary" size="medium">
-              点击复制自定义链接
+              {t('CLICK_TO_COPY_CUSTOM_LINK')}
             </Button>
           </CopyToClipboard>
         </div>
         
-        <h4>带样式的链接</h4>
+        <h4>{t('STYLED_LINK')}</h4>
         <div style={{ marginBottom: '20px' }}>
           <CopyToClipboard 
             url="https://example.com/styled" 
@@ -110,21 +111,21 @@ const CopyToClipboardExample: React.FC = () => {
               cursor: 'pointer',
               userSelect: 'none'
             }}>
-              复制带样式的链接
+              {t('COPY_STYLED_LINK')}
             </span>
           </CopyToClipboard>
         </div>
 
-        <h4>使用 useCopy 钩子</h4>
+        <h4>{t('USING_USECOPY_HOOK')}</h4>
         <div style={{ marginBottom: '20px' }}>
           <Button 
             variant="secondary" 
             onClick={handleHookCopy}
           >
-            使用 useCopy 复制链接
+            {t('USE_USECOPY_TO_COPY_LINK')}
           </Button>
           {hookCopyStatus && (
-            <span style={{ marginLeft: '10px', color: hookCopyStatus.includes('成功') ? 'green' : 'red' }}>
+            <span style={{ marginLeft: '10px', color: hookCopyStatus.includes(t('SUCCESS')) ? 'green' : 'red' }}>
               {hookCopyStatus}
             </span>
           )}
@@ -133,18 +134,18 @@ const CopyToClipboardExample: React.FC = () => {
       
       {/* API 文档 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>API 参数</h3>
+        <h3>{t('API_PARAMETERS')}</h3>
         
-        <h4>1. CopyToClipboard 组件</h4>
+        <h4>1. CopyToClipboard {t('COMPONENT')}</h4>
         <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
         
-        <h4 style={{ marginTop: '20px' }}>2. useCopy 钩子</h4>
+        <h4 style={{ marginTop: '20px' }}>2. useCopy {t('HOOK')}</h4>
         <Table pagination={false} columns={apiColumns} dataSource={useCopyApiDataSource} />
       </div>
       
       {/* 代码示例 */}
       <div style={{ marginBottom: '40px' }}>
-        <h3>代码示例</h3>
+        <h3>{t('CODE_EXAMPLES')}</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
 {`import { CopyToClipboard } from '@zjpcy/simple-design';
 
@@ -231,15 +232,15 @@ const MyComponent = () => {
       
       {/* 在其他项目中引用示例 */}
       <div>
-        <h3>在其他项目中引用</h3>
+        <h3>{t('USAGE_IN_OTHER_PROJECTS')}</h3>
         <div style={{ margin: '15px 0' }}>
-          <h4>1. 安装</h4>
+          <h4>1. {t('INSTALLATION')}</h4>
           <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
             {`npm i @zjpcy/simple-design`}
           </SyntaxHighlighter>
         </div>
         <div>
-          <h4>2. 引用组件</h4>
+          <h4>2. {t('REFERENCE_COMPONENT')}</h4>
           <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
 {`// 方式一：单独引入
 import CopyToClipboard from '@zjpcy/simple-design/lib/CopyToClipboard';
