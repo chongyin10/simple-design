@@ -1,10 +1,16 @@
 import React from 'react';
-import { Button, Table } from '../../components';
+import { Button, Table, useI18n } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const ButtonExample: React.FC = () => {
+  const { t } = useI18n();
+  const search = t('BUTTON_SEARCH');
+  const user = t('BUTTON_USER');
+  const deleteText = t('BUTTON_DELETE');
+  const confirm = t('BUTTON_CONFIRM');
+  const warning = t('BUTTON_WARNING');
   // API参数列配置
   const apiColumns: Column[] = [
     { dataIndex: 'param', title: '参数名', width: '150px' },
@@ -59,11 +65,11 @@ const ButtonExample: React.FC = () => {
         
         <h4>带图标按钮</h4>
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <Button variant="primary" icon="search">搜索</Button>
-          <Button variant="secondary" icon="user">用户</Button>
-          <Button variant="danger" icon="delete">删除</Button>
-          <Button variant="success" icon="check">确认</Button>
-          <Button variant="warning" icon="exclamation">警告</Button>
+          <Button variant="primary" icon="search">{search}</Button>
+          <Button variant="secondary" icon="user">{user}</Button>
+          <Button variant="danger" icon="delete">{deleteText}</Button>
+          <Button variant="success" icon="check">{confirm}</Button>
+          <Button variant="warning" icon="exclamation">{warning}</Button>
         </div>
         
         <h4>自定义样式</h4>

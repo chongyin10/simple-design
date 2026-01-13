@@ -19,6 +19,7 @@ import RadioExample from './Radio';
 import SelectExample from './Select';
 import EmptyExample from './Empty';
 import TypographyExample from './Typography';
+import I18nExample from './I18n';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -42,6 +43,7 @@ const App: React.FC = () => {
         { id: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { id: 'icon', name: 'Icon', description: '图标组件' },
         { id: 'input', name: 'Input', description: '输入框组件' },
+        { id: 'i18n', name: 'I18n', description: '国际化组件' },
         { id: 'marquee', name: 'Marquee', description: '跑马灯组件' },
         { id: 'message', name: 'Message', description: '消息提示组件' },
         { id: 'modal', name: 'Modal', description: '弹窗组件' },
@@ -235,6 +237,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <DividerExample />;
             case 'input':
                 return <InputExample />;
+            case 'i18n':
+                return <I18nExample />;
             case 'radio':
                 return <RadioExample />;
             case 'select':
@@ -310,6 +314,7 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                                     {item.id === 'typography' && '📝'}
                                     {item.id === 'variables' && '🎨'}
                                     {item.id === 'api' && '📋'}
+                                    {item.id === 'i18n' && '🌐'}
                                 </span>
                                 {!menuCollapsed && (
                                     <>

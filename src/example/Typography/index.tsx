@@ -1,67 +1,87 @@
 import React from 'react';
 import Typography from '../../components/Typography';
+import { useI18n } from '../../components';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const TypographyExample: React.FC = () => {
+  const { t } = useI18n();
   // 测试文本
-  const longText = '这是一段很长的测试文本，用于测试Typography组件的行数限制功能。当文本内容超过指定的行数限制时，应该在末尾显示省略号。这个组件支持自定义宽度和行数限制，可以满足不同的布局需求。';
+  const longText = t('TYPOGRAPHY_LONG_TEXT');
+  const mixedText = t('TYPOGRAPHY_MIXED_TEXT');
+  const mixedText2 = t('TYPOGRAPHY_MIXED_TEXT_2');
+  const defaultDisplay = t('TYPOGRAPHY_DEFAULT_DISPLAY');
+  const limit1Row = t('TYPOGRAPHY_LIMIT_1_ROW');
+  const limit2Rows = t('TYPOGRAPHY_LIMIT_2_ROWS');
+  const limit3Rows = t('TYPOGRAPHY_LIMIT_3_ROWS');
+  const differentWidths = t('TYPOGRAPHY_DIFFERENT_WIDTHS');
+  const mixedTextTest = t('TYPOGRAPHY_MIXED_TEXT_TEST');
+  const mixedTextTest2 = t('TYPOGRAPHY_MIXED_TEXT_TEST_2');
+  const basicUsage = t('TYPOGRAPHY_BASIC_USAGE');
+  const apiParameters = t('TYPOGRAPHY_API_PARAMETERS');
+  const codeExample = t('TYPOGRAPHY_CODE_EXAMPLE');
+  const componentTitle = t('TYPOGRAPHY_COMPONENT');
+  const componentDescription = t('TYPOGRAPHY_COMPONENT_DESCRIPTION');
+  const basicUsageDescription = t('TYPOGRAPHY_BASIC_USAGE_DESCRIPTION');
+  const width200px = t('TYPOGRAPHY_WIDTH_200PX');
+  const width300px = t('TYPOGRAPHY_WIDTH_300PX');
+  const width500px = t('TYPOGRAPHY_WIDTH_500PX');
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Typography 组件</h2>
-      <p>排版组件，支持自定义宽度和行数限制，超过行数限制时显示省略号。</p>
+      <h2>{componentTitle}</h2>
+      <p>{componentDescription}</p>
       
       {/* 基本使用示例 */}
       <div style={{ marginBottom: '40px' }}>
-        <h3>基本使用</h3>
-        <p>展示Typography组件的基本使用方式。</p>
+        <h3>{basicUsage}</h3>
+        <p>{basicUsageDescription}</p>
         
         <div style={{ marginBottom: '20px' }}>
-          <h4>默认显示（不限制行数）</h4>
+          <h4>{defaultDisplay}</h4>
           <Typography style={{ maxWidth: '400px' }}>
             {longText}
           </Typography>
         </div>
         
         <div style={{ marginBottom: '20px' }}>
-          <h4>限制1行</h4>
+          <h4>{limit1Row}</h4>
           <Typography width="400px" rows={1}>
             {longText}
           </Typography>
         </div>
         
         <div style={{ marginBottom: '20px' }}>
-          <h4>限制2行</h4>
+          <h4>{limit2Rows}</h4>
           <Typography width="400px" rows={2}>
             {longText}
           </Typography>
         </div>
         
         <div style={{ marginBottom: '20px' }}>
-          <h4>限制3行</h4>
+          <h4>{limit3Rows}</h4>
           <Typography width="400px" rows={3}>
             {longText}
           </Typography>
         </div>
         
         <div style={{ marginBottom: '20px' }}>
-          <h4>不同宽度</h4>
+          <h4>{differentWidths}</h4>
           <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
             <div>
-              <p>宽度200px，限制1行</p>
+              <p>{width200px}</p>
               <Typography width="200px" rows={1}>
                 {longText}
               </Typography>
             </div>
             <div>
-              <p>宽度300px，限制2行</p>
+              <p>{width300px}</p>
               <Typography width="300px" rows={2}>
                 {longText}
               </Typography>
             </div>
             <div>
-              <p>宽度500px，限制3行</p>
+              <p>{width500px}</p>
               <Typography width="500px" rows={3}>
                 {longText}
               </Typography>
@@ -70,23 +90,23 @@ const TypographyExample: React.FC = () => {
         </div>
         
         <div style={{ marginBottom: '20px' }}>
-          <h4>中英文混合文本（测试换行问题）</h4>
+          <h4>{mixedTextTest}</h4>
           <Typography width="350px">
-            这是一段包含English英文的测试文本，用于测试中英文混合时的换行问题。当文本内容超过容器宽度时，英文应该紧跟在中文后面，而不是单独换行显示。
+            {mixedText}
           </Typography>
         </div>
         
         <div style={{ marginBottom: '20px' }}>
-          <h4>中英文混合文本（限制2行）</h4>
+          <h4>{mixedTextTest2}</h4>
           <Typography width="350px" rows={2}>
-            这是一段包含English英文的测试文本，用于测试中英文混合时的换行问题。当文本内容超过容器宽度时，英文应该紧跟在中文后面，而不是单独换行显示。
+            {mixedText2}
           </Typography>
         </div>
       </div>
       
       {/* API 文档 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>API 参数</h3>
+        <h3>{apiParameters}</h3>
         
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
@@ -134,7 +154,7 @@ const TypographyExample: React.FC = () => {
       
       {/* 代码示例 */}
       <div style={{ marginBottom: '40px' }}>
-        <h3>代码示例</h3>
+        <h3>{codeExample}</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
 {`import Typography from '@zjpcy/simple-design';
 

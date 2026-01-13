@@ -16,3 +16,5 @@ export { default as Select } from './Select';
 export { default as Table } from './Table';
 export { default as Top } from './Top';
 export { default as Typography } from './Typography';
+export { default as I18nProvider, useI18n, load18n } from '../i18n/I18nProvider';
+export { default as i18n } from '../i18n/index';
