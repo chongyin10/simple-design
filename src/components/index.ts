@@ -19,5 +19,7 @@ export { default as Typography } from './Typography';
 export { default as Masonry } from './Masonry';
 export { default as Space } from './Space';
 export { default as Anchor } from './Anchor';
+export { default as Breadcrumb } from './Breadcrumb';
 export { default as I18nProvider, useI18n, load18n } from '../i18n/I18nProvider';
 export { default as i18n } from '../i18n/index';
+export { default as Dropdown } from './Dropdown';

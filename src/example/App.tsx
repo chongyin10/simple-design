@@ -23,6 +23,8 @@ import I18nExample from './I18n';
 import MasonryExample from './Masonry';
 import SpaceExample from './Space';
 import AnchorExample from './Anchor';
+import BreadcrumbExample from './Breadcrumb';
+import DropdownExample from './Dropdown';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -61,6 +63,8 @@ const App: React.FC = () => {
         { id: 'masonry', name: 'Masonry', description: '瀑布流布局组件' },
         { id: 'space', name: 'Space', description: '组件间距设置' },
         { id: 'anchor', name: 'Anchor', description: '锚点导航组件' },
+        { id: 'breadcrumb', name: 'Breadcrumb', description: '面包屑组件' },
+        { id: 'dropdown', name: 'Dropdown', description: '下拉菜单组件' },
         { id: 'api', name: 'API 参考', description: '所有组件的 API 文档' },
     ];
 
@@ -82,6 +86,7 @@ const App: React.FC = () => {
         { id: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
         { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
         { id: 'divider', name: 'Divider', description: '分割线组件' },
+        { id: 'dropdown', name: 'Dropdown', description: '下拉菜单组件' },
         { id: 'empty', name: 'Empty', description: '空状态组件' },
         { id: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { id: 'input', name: 'Input', description: '输入框组件' },
@@ -271,6 +276,10 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <SpaceExample />;
             case 'anchor':
                 return <AnchorExample />;
+            case 'breadcrumb':
+                return <BreadcrumbExample />;
+            case 'dropdown':
+                return <DropdownExample />;
             default:
                 return <ButtonExample />;
         }
@@ -330,6 +339,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                                     {item.id === 'anchor' && '🔗'}
                                     {item.id === 'api' && '📋'}
                                     {item.id === 'i18n' && '🌐'}
+                                    {item.id === 'breadcrumb' && '📁'}
+                                    {item.id === 'dropdown' && '🔽'}
                                 </span>
                                 {!menuCollapsed && (
                                     <>

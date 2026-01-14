@@ -11,28 +11,6 @@ import path from 'path';
 import { promises as fsPromises } from 'fs';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
-// 自定义插件：确保variables.css被包含在构建中
-const includeVariablesPlugin = () => {
-  return {
-    name: 'include-variables',
-    transform(code, id) {
-      // 如果是Modal.css文件，确保variables.css被正确包含
-      if (id.endsWith('Modal.css')) {
-        // 将@import语句替换为实际的CSS变量内容
-        const variablesPath = path.join(path.dirname(id), '../variables.css');
-        try {
-          const variablesContent = fs.readFileSync(variablesPath, 'utf8');
-          return variablesContent + '\n' + code.replace(/@import\s+['"]\.\.\/variables\.css['"];?\s*/g, '');
-        } catch (error) {
-          console.warn('Could not read variables.css:', error);
-          return code;
-        }
-      }
-      return code;
-    }
-  };
-};
-
 // 自定义插件：复制JSON文件和CSS变量文件到共享的dist目录（只执行一次）
 const copyAssetsPlugin = () => {
   let hasCopied = false;
