@@ -20,6 +20,9 @@ import SelectExample from './Select';
 import EmptyExample from './Empty';
 import TypographyExample from './Typography';
 import I18nExample from './I18n';
+import MasonryExample from './Masonry';
+import SpaceExample from './Space';
+import AnchorExample from './Anchor';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -55,6 +58,9 @@ const App: React.FC = () => {
         { id: 'top', name: 'Top', description: '回到顶部组件' },
         { id: 'typography', name: 'Typography', description: '排版组件' },
         { id: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
+        { id: 'masonry', name: 'Masonry', description: '瀑布流布局组件' },
+        { id: 'space', name: 'Space', description: '组件间距设置' },
+        { id: 'anchor', name: 'Anchor', description: '锚点导航组件' },
         { id: 'api', name: 'API 参考', description: '所有组件的 API 文档' },
     ];
 
@@ -259,6 +265,12 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <TypographyExample />;
             case 'variables':
                 return <VariablesExample />;
+            case 'masonry':
+                return <MasonryExample />;
+            case 'space':
+                return <SpaceExample />;
+            case 'anchor':
+                return <AnchorExample />;
             default:
                 return <ButtonExample />;
         }
@@ -313,6 +325,9 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                                     {item.id === 'top' && '⬆️'}
                                     {item.id === 'typography' && '📝'}
                                     {item.id === 'variables' && '🎨'}
+                                    {item.id === 'masonry' && '🗂️'}
+                                    {item.id === 'space' && '⚫'}
+                                    {item.id === 'anchor' && '🔗'}
                                     {item.id === 'api' && '📋'}
                                     {item.id === 'i18n' && '🌐'}
                                 </span>

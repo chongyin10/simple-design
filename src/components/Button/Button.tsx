@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import Icon from '../Icon';
-import './Button.less';
+import './Button.css';
 
 export interface ButtonProps {
     children?: React.ReactNode;

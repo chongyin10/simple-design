@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Table, useI18n } from '../../components';
+import { Button, Table } from '../../components';
+import { useI18n } from '../../components';
 import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';

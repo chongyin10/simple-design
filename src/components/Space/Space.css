@@ -1,0 +1,25 @@
+.space {
+  /* Space 容器基础样式 */
+  box-sizing: border-box;
+  /* 确保容器不会影响子元素的基础样式 */
+}
+
+.space-inline {
+  /* 内联Space容器样式 */
+  display: inline-flex;
+}
+
+.space-item {
+  /* 子元素包裹容器样式 */
+  display: inline-flex;
+  /* 确保包裹元素也是内联的，便于对齐 */
+  align-items: center;
+  /* 默认垂直居中对齐 */
+  box-sizing: border-box;
+}
+
+/* 确保子元素的样式不会被包裹容器影响 */
+.space-item > * {
+  display: inline-block;
+  box-sizing: border-box;
+}

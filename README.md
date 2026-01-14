@@ -17,7 +17,10 @@ yarn add @zjpcy/simple-design
 # 3. Import CSS
 
 ```tsx
-import '@zjpcy/simple-design/dist/index.css';
+// Reference CSS variables from component libraries
+import '@zjpcy/simple-design/dist/variables.css';
+// Reference the style of the component library
+import '@zjpcy/simple-design/dist/cjs/index.css';
 ```
 
 # 4. Import Components

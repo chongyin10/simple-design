@@ -1,0 +1,63 @@
+.idp-anchor {
+  position: relative;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.idp-anchor-affix {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
+}
+
+.idp-anchor-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.idp-anchor-link {
+  margin: 8px 0;
+  padding: 4px 0;
+}
+
+.idp-anchor-link-a {
+  display: block;
+  padding: 6px 12px;
+  color: #666;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.idp-anchor-link-a:hover {
+  color: #1890ff;
+  background-color: #e6f7ff;
+}
+
+.idp-anchor-link-active .idp-anchor-link-a {
+  color: #1890ff;
+  background-color: #e6f7ff;
+  font-weight: 500;
+  border-left: 3px solid #1890ff;
+}
+
+@media (max-width: 768px) {
+  .idp-anchor-affix {
+    position: static;
+    margin-bottom: 24px;
+  }
+  
+  .idp-anchor {
+    padding: 12px;
+  }
+  
+  .idp-anchor-link-a {
+    padding: 8px 12px;
+  }
+}

@@ -1,0 +1,37 @@
+.idp-masonry {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.idp-masonry-column {
+  box-sizing: border-box;
+}
+
+.idp-masonry-item {
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .idp-masonry {
+    flex-direction: column;
+  }
+  
+  .idp-masonry-column {
+    margin-bottom: 20px;
+  }
+}
+
+/* Default item styling */
+.idp-masonry-item {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Add some hover effects */
+.idp-masonry-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
