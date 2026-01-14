@@ -22,6 +22,7 @@ export interface DropdownProps {
   className?: string;
   style?: React.CSSProperties;
   contentStyles?: React.CSSProperties;
+  getContainer?: () => HTMLElement;
   onVisibleChange?: (visible: boolean) => void;
   onChange?: (item: DropdownItem) => void;
 }

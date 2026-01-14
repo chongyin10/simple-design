@@ -30,7 +30,7 @@ const DropdownExample: React.FC = () => {
   // API参数数据源
   const apiDataSource = [
     { param: 'items', type: 'DropdownItem[]', default: '-', description: '下拉菜单项数组' },
-    { param: 'type', type: '\'text\' | \'button\'', default: '\'text\'', description: '触发器的类型，text为文本，button为按钮' },
+    { param: 'type', type: '\'text\' | \'button\'', default: '\'text\'', description: '触发器的类型，text为纯文本样式（无边框透明背景），button为按钮样式' },
     { param: 'children', type: 'React.ReactNode', default: '-', description: '触发器显示的内容' },
     { param: 'trigger', type: '\'click\' | \'hover\'', default: '\'click\'', description: '触发方式，click为点击触发，hover为悬停触发' },
     { param: 'placement', type: '\'top\' | \'bottom\' | \'left\' | \'right\'', default: '\'bottom\'', description: '下拉菜单的位置' },
@@ -40,6 +40,7 @@ const DropdownExample: React.FC = () => {
     { param: 'className', type: 'string', default: '-', description: '自定义 CSS 类名' },
     { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义样式' },
     { param: 'contentStyles', type: 'React.CSSProperties', default: '-', description: '下拉菜单内容区域的自定义样式，可修改高度、宽度、背景色等' },
+    { param: 'getContainer', type: '() => HTMLElement', default: '-', description: '挂载DOM节点，下拉菜单渲染父节点，默认渲染到body上' },
     { param: 'onVisibleChange', type: '(visible: boolean) => void', default: '-', description: '下拉菜单显示/隐藏的回调函数' },
     { param: 'onChange', type: '(item: DropdownItem) => void', default: '-', description: '选中菜单项的回调函数，返回选中的菜单项' }
   ];
@@ -88,11 +89,11 @@ const DropdownExample: React.FC = () => {
       <p>向下弹出的组件列表功能，支持文本和按钮两种触发器类型。</p>
 
       <h2>基础用法</h2>
-      <p>基本的下拉菜单，点击触发器显示下拉菜单。</p>
+      <p>基本的下拉菜单，默认使用文本类型触发器，点击显示下拉菜单。</p>
       
       <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #f0f0f0', borderRadius: '6px' }}>
         <Dropdown open={true} items={basicItems}>
-          基础下拉菜单
+          文本类型下拉菜单（默认）
         </Dropdown>
       </div>
 
@@ -102,8 +103,31 @@ const DropdownExample: React.FC = () => {
   { key: '2', label: '菜单项2', onClick: () => console.log('点击了菜单项2') },
   { key: '3', label: '菜单项3', onClick: () => console.log('点击了菜单项3') }
 ]}>
-  基础下拉菜单
+  文本类型下拉菜单（默认）
 </Dropdown>`}
+      </SyntaxHighlighter>
+
+      <h2>文本类型</h2>
+      <p>使用纯文本作为触发器，无边框透明背景，适合在文本内容中使用。</p>
+      
+      <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #f0f0f0', borderRadius: '6px' }}>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <span>这是一个段落，包含</span>
+          <Dropdown items={basicItems} type="text">
+            文本下拉菜单
+          </Dropdown>
+          <span>和其他文本内容。</span>
+        </div>
+      </div>
+
+      <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
+        {`<div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+  <span>这是一个段落，包含</span>
+  <Dropdown items={basicItems} type="text">
+    文本下拉菜单
+  </Dropdown>
+  <span>和其他文本内容。</span>
+</div>`}
       </SyntaxHighlighter>
 
       <h2>按钮类型</h2>
@@ -493,6 +517,45 @@ const Example = () => {
 
 <Dropdown items={basicItems} placement="right">
   右侧
+</Dropdown>`}
+      </SyntaxHighlighter>
+
+      <h2>自定义挂载容器</h2>
+      <p>使用 getContainer 参数可以将下拉菜单渲染到指定的 DOM 节点中。</p>
+      
+      <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #f0f0f0', borderRadius: '6px' }}>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div id="custom-container" style={{ border: '2px dashed #d9d9d9', padding: '20px', borderRadius: '6px', minHeight: '100px' }}>
+            <p>自定义容器区域</p>
+            <Dropdown 
+              items={basicItems} 
+              getContainer={() => document.getElementById('custom-container')!}
+            >
+              渲染到自定义容器
+            </Dropdown>
+          </div>
+          
+          <Dropdown items={basicItems}>
+            默认渲染到body
+          </Dropdown>
+        </div>
+      </div>
+
+      <SyntaxHighlighter language="jsx" style={vscDarkPlus}>
+        {`// 渲染到自定义容器
+<div id="custom-container" style={{ border: '2px dashed #d9d9d9', padding: '20px' }}>
+  <p>自定义容器区域</p>
+  <Dropdown 
+    items={basicItems} 
+    getContainer={() => document.getElementById('custom-container')}
+  >
+    渲染到自定义容器
+  </Dropdown>
+</div>
+
+// 默认渲染到body
+<Dropdown items={basicItems}>
+  默认渲染到body
 </Dropdown>`}
       </SyntaxHighlighter>
 

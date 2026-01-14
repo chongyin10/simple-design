@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import Button from '../Button';
 import Icon from '../Icon';
@@ -17,6 +18,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   className,
   style,
   contentStyles,
+  getContainer,
   onVisibleChange,
   onChange
 }) => {
@@ -106,6 +108,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       <div
         ref={triggerRef}
         className={classNames('dropdown-trigger', {
+          'dropdown-trigger--text': type === 'text',
           'dropdown-trigger--disabled': disabled
         })}
         onClick={handleTriggerClick}
@@ -119,12 +122,14 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const renderDropdownMenu = () => {
-    if (!visible || !items || items.length === 0) {
+    if (!items || items.length === 0) {
       return null;
     }
 
-    return (
-      <div className={`dropdown-menu dropdown-menu--${placement}`}>
+    const dropdownMenu = (
+      <div className={classNames(`dropdown-menu dropdown-menu--${placement}`, {
+        'dropdown-menu--visible': visible
+      })}>
         <ul className="dropdown-list" style={contentStyles}>
           {items.map((item) => (
             <li
@@ -152,6 +157,17 @@ export const Dropdown: React.FC<DropdownProps> = ({
         </ul>
       </div>
     );
+
+    // 如果提供了 getContainer，使用 Portal 渲染到指定容器
+    if (getContainer) {
+      const container = getContainer();
+      if (container) {
+        return ReactDOM.createPortal(dropdownMenu, container);
+      }
+    }
+
+    // 默认渲染到当前组件位置
+    return dropdownMenu;
   };
 
   return (
@@ -163,7 +179,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
       style={style}
     >
       {renderTrigger()}
-      {renderDropdownMenu()}
+      <div className="dropdown-content-wrapper">
+        {renderDropdownMenu()}
+      </div>
     </div>
   );
 };
