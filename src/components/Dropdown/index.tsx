@@ -122,12 +122,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const renderDropdownMenu = () => {
-    if (!items || items.length === 0) {
+    if (!items || items.length === 0 || !visible) {
       return null;
     }
 
     const dropdownMenu = (
-      <div className={classNames(`dropdown-menu dropdown-menu--${placement}`, {
+      <div className={classNames(`dropdown-menu dropdown-menu--${placement} dropdown-menu--p-${placement}`, {
         'dropdown-menu--visible': visible
       })}>
         <ul className="dropdown-list" style={contentStyles}>
