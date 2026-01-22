@@ -106,6 +106,15 @@ const Table = ({
         }
     };
 
+    const handleHeaderScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        if (headerInnerRef.current && bodyRef.current) {
+            const target = e.target as HTMLDivElement;
+            if (target === headerInnerRef.current && bodyRef.current.scrollLeft !== target.scrollLeft) {
+                bodyRef.current.scrollLeft = target.scrollLeft;
+            }
+        }
+    };
+
     // 分页处理
     const handlePageChange = (page: number, newPageSize?: number) => {
         const newSize = newPageSize || pageSize;
@@ -268,7 +277,7 @@ const Table = ({
         >
             {/* 表头 */}
             <div className="custom-table-header">
-                <div className="custom-table-header-inner" ref={headerInnerRef}>
+                <div className="custom-table-header-inner" ref={headerInnerRef} onScroll={handleHeaderScroll}>
                     <table className={`custom-table ${bordered ? 'bordered' : ''}`}>
                         <colgroup>
                             {allColumns.map((col, index) => (

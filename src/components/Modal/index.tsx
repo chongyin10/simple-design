@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import classNames from 'classnames';
 import Button from '../Button';
@@ -32,12 +32,52 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    const [originOffset, setOriginOffset] = useState({ x: 0, y: 0 });
+    const lastClickPointRef = useRef<{ x: number; y: number } | null>(null);
+    const animationDuration = 550;
 
     // 当同时设置了top和direction时，direction强制使用normal
     const effectiveDirection = top !== undefined ? 'normal' : direction;
 
+    // 计算内容区域高度
+    const getHeightValue = (heightValue: number | string): number => {
+        if (typeof heightValue === 'number') {
+            return heightValue;
+        }
+        const match = heightValue.match(/^(\d+)px$/);
+        return match ? parseInt(match[1], 10) : 0;
+    };
+
+    const getClickOriginOffset = () => {
+        const point = lastClickPointRef.current;
+        if (!point || typeof window === 'undefined') {
+            return { x: 0, y: 0 };
+        }
+        const resolvedHeight = height ? getHeightValue(height) : 0;
+        const centerX = window.innerWidth / 2;
+        const centerY = top !== undefined && resolvedHeight > 0
+            ? top + resolvedHeight / 2
+            : window.innerHeight / 2;
+        return {
+            x: point.x - centerX,
+            y: point.y - centerY
+        };
+    };
+
+    useEffect(() => {
+        const handleMouseDown = (event: MouseEvent) => {
+            lastClickPointRef.current = { x: event.clientX, y: event.clientY };
+        };
+        document.addEventListener('mousedown', handleMouseDown, true);
+        return () => {
+            document.removeEventListener('mousedown', handleMouseDown, true);
+        };
+    }, []);
+
     useEffect(() => {
         if (visible) {
+            const nextOffset = getClickOriginOffset();
+            setOriginOffset(nextOffset);
             setIsClosing(false);
             setIsVisible(true);
         } else {
@@ -45,10 +85,10 @@ const Modal: React.FC<ModalProps> = ({
             const timer = setTimeout(() => {
                 setIsVisible(false);
                 setIsClosing(false);
-            }, 400);
+            }, animationDuration);
             return () => clearTimeout(timer);
         }
-    }, [visible]);
+    }, [visible, animationDuration, height, top]);
 
     const handleCancel = () => {
         setIsClosing(true);
@@ -56,7 +96,7 @@ const Modal: React.FC<ModalProps> = ({
             setIsVisible(false);
             setIsClosing(false);
             onCancel?.();
-        }, 400);
+        }, animationDuration);
         return () => clearTimeout(timer);
     };
 
@@ -68,20 +108,13 @@ const Modal: React.FC<ModalProps> = ({
         width: typeof width === 'number' ? `${width}px` : width,
         height: height ? (typeof height === 'number' ? `${height}px` : height) : undefined,
         top: top !== undefined ? `${top}px` : undefined,
+        ['--idp-modal-origin-x' as any]: `${originOffset.x}px`,
+        ['--idp-modal-origin-y' as any]: `${originOffset.y}px`,
         ...style
     };
 
     const headerStyle: React.CSSProperties = {
         height: typeof headerHeight === 'number' ? `${headerHeight}px` : headerHeight
-    };
-
-    // 计算内容区域高度
-    const getHeightValue = (height: number | string): number => {
-        if (typeof height === 'number') {
-            return height;
-        }
-        const match = height.match(/^(\d+)px$/);
-        return match ? parseInt(match[1], 10) : 0;
     };
 
     const containerHeight = height ? getHeightValue(height) : 0;

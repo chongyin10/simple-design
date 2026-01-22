@@ -59,10 +59,3 @@ To enable local development, follow these steps:
 2. Navigate to the project directory: `cd idp-design`
 3. Install dependencies: `npm install` or `yarn install`
 4. Start the development server: `npm dev` or `yarn dev`
-
-# 7 The following is the Ai code assistant tool that helps generate most of the code
-
-- Trea SOLO `https://www.trae.cn/`
-- Qwen `https://www.qianwen.com/`
-- Deepseek `https://www.deepseek.com/`
-- Qoder CLI `https://www.qoder.com/`

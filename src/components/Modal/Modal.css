@@ -60,18 +60,18 @@
     }
 }
 
-/* 正常动画 */
+/* 正常动画（从点击位置缓慢过渡） */
 .idp-modal-container--normal {
-    animation: normalAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: normalAnimateIn 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes normalAnimateIn {
     from {
-        transform: scale(0.9);
+        transform: translate(var(--idp-modal-origin-x, 0), var(--idp-modal-origin-y, 0)) scale(0.85);
         opacity: 0;
     }
     to {
-        transform: scale(1);
+        transform: translate(0, 0) scale(1);
         opacity: 1;
     }
 }
@@ -124,18 +124,18 @@
     }
 }
 
-/* 正常消失 */
+/* 正常消失（回到点击位置缓慢消失） */
 .idp-modal-container--closing-normal {
-    animation: normalAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: normalAnimateOut 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes normalAnimateOut {
     from {
-        transform: scale(1);
+        transform: translate(0, 0) scale(1);
         opacity: 1;
     }
     to {
-        transform: scale(0.9);
+        transform: translate(var(--idp-modal-origin-x, 0), var(--idp-modal-origin-y, 0)) scale(0.85);
         opacity: 0;
     }
 }

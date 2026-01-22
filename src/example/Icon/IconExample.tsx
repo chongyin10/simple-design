@@ -51,6 +51,14 @@ const IconExample: React.FC = () => {
     'zoomIn', 'zoomOut', 'share', 'external-link', 'secure', 'open', 'view', 'off',
     'reload', 'volume-high', 'volume-off', 'schedule', 'grid', 'list',
 
+    // 新增图标
+    'shield-check', 'shield-off', 'key', 'key-outline', 'logout', 'login',
+    'settings-2', 'sliders', 'chart-bar', 'chart-line', 'chart-pie',
+    'clipboard', 'clipboard-check', 'clipboard-text', 'database', 'server',
+    'terminal', 'code', 'bug', 'gift', 'cart', 'shopping-bag',
+    'credit-card', 'wallet', 'tag-outline', 'bookmark-outline',
+    'pin', 'pin-outline', 'bell-outline', 'bell-off',
+
     // 状态图标
     'infoCircle', 'warningCircle', 'errorCircle', 'checkCircle', 'questionCircle',
     'checkCircleFill', 'exclamationCircleFill', 'infoCircleFill',

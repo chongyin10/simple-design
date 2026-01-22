@@ -67,23 +67,21 @@ const Anchor: React.FC<AnchorProps> & { Link: React.FC<AnchorLinkProps> } = ({
 
   const updateLinkPositions = () => {
     const container = getContainer();
+    const isWindowContainer = container === window.document.documentElement || container === document.body;
     let hasChanged = false;
     const newLinks = links.map((link) => {
-      const targetElement = document.querySelector(link.href);
+      const targetElement = document.querySelector(link.href) as HTMLElement | null;
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
-        let scrollPosition = 0;
-        
-        // 安全获取滚动位置
-        if (container === window.document.documentElement || container === document.body) {
-          scrollPosition = window.scrollY;
-        } else if (container && 'scrollTop' in container) {
-          scrollPosition = container.scrollTop;
+        let newTop = 0;
+
+        if (isWindowContainer) {
+          newTop = rect.top + window.scrollY - offsetTop;
         } else {
-          scrollPosition = window.scrollY;
+          const containerRect = container.getBoundingClientRect();
+          newTop = rect.top - containerRect.top + container.scrollTop - offsetTop;
         }
-        
-        const newTop = rect.top + scrollPosition - offsetTop;
+
         if (Math.abs(newTop - link.top) > 1) {
           hasChanged = true;
           return {
@@ -100,64 +98,28 @@ const Anchor: React.FC<AnchorProps> & { Link: React.FC<AnchorLinkProps> } = ({
   };
 
   const handleScroll = () => {
-    // 如果用户正在点击锚点，暂时禁用滚动检测
-    if (isUserClickingRef.current) {
-      console.log('用户正在点击锚点，跳过滚动检测');
+    if (isUserClickingRef.current || links.length === 0) {
       return;
     }
-    
-    console.log('当前滚动位置:', activeLinkRef.current);
-    // 只有当有选中锚点时，检查其是否在可视区域内
-    const currentActiveLink = activeLinkRef.current;
-    if (!currentActiveLink) {
-      return;
-    }
-    
+
     const container = getContainer();
-    let containerHeight = 0;
-    
-    // 安全获取容器高度
-    if (container === window.document.documentElement || container === document.body) {
-      containerHeight = window.innerHeight;
-    } else if (container && 'clientHeight' in container) {
-      containerHeight = (container as HTMLElement).clientHeight;
-    } else {
-      containerHeight = window.innerHeight;
+    const isWindowContainer = container === window.document.documentElement || container === document.body;
+    const scrollTop = isWindowContainer ? window.scrollY : container.scrollTop;
+    const currentScroll = scrollTop + offsetTop + bounds;
+
+    let nextActive = '';
+    const sortedLinks = [...links].sort((a, b) => a.top - b.top);
+    for (let i = 0; i < sortedLinks.length; i += 1) {
+      if (currentScroll >= sortedLinks[i].top) {
+        nextActive = sortedLinks[i].href;
+      } else {
+        break;
+      }
     }
 
-    // 找到当前选中的锚点对应的目标元素
-    const targetElement = document.querySelector(currentActiveLink) as HTMLElement;
-    if (!targetElement) {
-      return;
-    }
-
-    // 检查目标元素是否在可视区域内
-    // 使用更宽松的检测条件：只要元素的一部分在可视区域内就认为是可见的
-    const targetRect = targetElement.getBoundingClientRect();
-    console.log('目标元素位置:', targetRect);
-    const isInViewport = (
-      targetRect.top < containerHeight &&  // 元素顶部在容器底部之上
-      targetRect.bottom > 0 &&             // 元素底部在容器顶部之下
-      targetRect.left < (container === window.document.documentElement || container === document.body ? window.innerWidth : (container as HTMLElement).clientWidth) &&
-      targetRect.right > 0
-    );
-
-    // 调试信息：输出检测结果
-    console.log('当前选中锚点:', currentActiveLink);
-    console.log('目标元素位置:', {
-      top: targetRect.top,
-      bottom: targetRect.bottom,
-      containerHeight: containerHeight,
-      isInViewport: isInViewport
-    });
-
-    // 如果选中锚点不在可视区域内，取消选中状态
-    if (!isInViewport) {
-      console.log('取消选中状态:', currentActiveLink);
-      setActiveLink('');
-      onChange?.('');
-    } else {
-      console.log('保持选中状态:', currentActiveLink);
+    if (nextActive !== activeLinkRef.current) {
+      setActiveLink(nextActive);
+      onChange?.(nextActive);
     }
   };
 
