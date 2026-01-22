@@ -38,6 +38,11 @@
     position: relative;
 }
 
+.idp-modal-container--bordered {
+    border: 1px solid var(--idp-border-color);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
 /* 当设置了top属性时，移除flex居中，使用绝对定位 */
 .idp-modal-overlay--custom-top {
     align-items: flex-start;

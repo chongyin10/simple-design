@@ -6,8 +6,10 @@
 }
 
 .custom-table-container.bordered {
-  border: 1px solid #d9d9d9;
-  border-radius: 6px;
+  /* border: 1px solid #e8e8e8; */
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 
 .custom-table-header {
@@ -48,7 +50,7 @@
 
 .custom-table.bordered th,
 .custom-table.bordered td {
-  border: 1px solid #d9d9d9;
+  border: 1px solid #e8e8e8;
 }
 
 .custom-table thead {
@@ -61,6 +63,36 @@
   text-align: left;
   border-bottom: 1px solid #f0f0f0;
   overflow-wrap: break-word;
+}
+
+.custom-table:not(.bordered) thead th {
+  position: relative;
+}
+
+.custom-table:not(.bordered) thead th:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 1px;
+  height: 60%;
+  background-color: rgba(0, 0, 0, 0.08);
+  transform: translateY(-50%);
+}
+
+.custom-table:not(.bordered) thead th[style*="position: sticky"][style*="right"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1px;
+  height: 60%;
+  background-color: rgba(0, 0, 0, 0.08);
+  transform: translateY(-50%);
+}
+
+.custom-table:not(.bordered) thead th:not(:last-child):has(+ th[style*="position: sticky"][style*="right"])::after {
+  display: none;
 }
 
 .custom-table td {

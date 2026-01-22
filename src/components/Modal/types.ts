@@ -9,6 +9,7 @@ export interface ModalProps {
     direction?: 'center' | 'top-right' | 'bottom-right' | 'normal';
     top?: number;
     footer?: null | React.ReactNode;
+    bordered?: boolean;
     onCancel?: () => void;
     onOk?: () => void;
     children?: React.ReactNode;

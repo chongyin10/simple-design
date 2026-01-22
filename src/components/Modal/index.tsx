@@ -21,6 +21,7 @@ const Modal: React.FC<ModalProps> = ({
     onOk,
     children,
     footer = null,
+    bordered = false,
     className,
     style,
     okText = '确认',
@@ -171,7 +172,8 @@ const Modal: React.FC<ModalProps> = ({
                                 'idp-modal-container--closing-center': isClosing && effectiveDirection === 'center',
                                 'idp-modal-container--closing-top-right': isClosing && effectiveDirection === 'top-right',
                                 'idp-modal-container--closing-bottom-right': isClosing && effectiveDirection === 'bottom-right',
-                                'idp-modal-container--closing-normal': isClosing && effectiveDirection === 'normal'
+                                'idp-modal-container--closing-normal': isClosing && effectiveDirection === 'normal',
+                                'idp-modal-container--bordered': bordered
                             }
                         )}
                         style={containerStyle}
