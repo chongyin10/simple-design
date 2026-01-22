@@ -20,11 +20,11 @@
 }
 
 .breadcrumb-link {
+  display: inline-flex;
   color: #666;
   text-decoration: none;
   transition: color 0.2s ease;
   position: relative;
-  display: inline-block;
 }
 
 .breadcrumb-link:hover {

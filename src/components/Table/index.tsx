@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, ReactNode } from 'react';
 import Empty from '../Empty';
+import Pagination from '../Pagination';
 import './Table.css';
 
 export interface Column {
@@ -17,7 +18,7 @@ export interface PaginationProps {
     pageSize?: number;
     total?: number;
     current?: number;
-    onChange?: (page: number, pageSize: number) => void;
+    onChange?: (page: number, pageSize?: number) => void;
     [key: string]: any;
 }
 
@@ -110,8 +111,9 @@ const Table = ({
         const newSize = newPageSize || pageSize;
         setCurrentPage(page);
         setPageSize(newSize);
-        if (pagination && pagination.onChange) {
-            pagination.onChange(page, newSize);
+        if (pagination && typeof pagination.onChange === 'function') {
+            // 确保调用与Pagination组件的onChange签名兼容
+            (pagination.onChange as (current: number, pageSize?: number) => void)(page, newPageSize);
         }
     };
 
@@ -239,86 +241,22 @@ const Table = ({
             return null;
         }
 
-        const { total, current, totalPages, pageSize } = paginationData;
+        const { total, current, pageSize } = paginationData;
 
-        const renderPageNumbers = () => {
-            const pages: (number | string)[] = [];
-            const showPages = 5;
-            let startPage = Math.max(1, current - Math.floor(showPages / 2));
-            let endPage = Math.min(totalPages, startPage + showPages - 1);
 
-            if (endPage - startPage < showPages - 1) {
-                startPage = Math.max(1, endPage - showPages + 1);
-            }
-
-            if (startPage > 1) {
-                pages.push(1);
-                if (startPage > 2) pages.push('...');
-            }
-
-            for (let i = startPage; i <= endPage; i++) {
-                pages.push(i);
-            }
-
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) pages.push('...');
-                pages.push(totalPages);
-            }
-
-            return pages;
-        };
 
         return (
-            <div className="custom-table-pagination">
-                <span className="custom-table-pagination-total">共 {total} 条</span>
-                <button
-                    className="custom-table-pagination-btn"
-                    onClick={() => handlePageChange(1)}
-                    disabled={current === 1}
-                >
-                    首页
-                </button>
-                <button
-                    className="custom-table-pagination-btn"
-                    onClick={() => handlePageChange(current - 1)}
-                    disabled={current === 1}
-                >
-                    上一页
-                </button>
-                {renderPageNumbers().map((page, index) => (
-                    <span
-                        key={index}
-                        className={`custom-table-pagination-page ${page === current ? 'active' : ''} ${page === '...' ? 'ellipsis' : ''}`}
-                        onClick={() => typeof page === 'number' && handlePageChange(page)}
-                    >
-                        {page}
-                    </span>
-                ))}
-                <button
-                    className="custom-table-pagination-btn"
-                    onClick={() => handlePageChange(current + 1)}
-                    disabled={current === totalPages}
-                >
-                    下一页
-                </button>
-                <button
-                    className="custom-table-pagination-btn"
-                    onClick={() => handlePageChange(totalPages)}
-                    disabled={current === totalPages}
-                >
-                    末页
-                </button>
-                <select
-                    className="custom-table-pagination-select"
-                    value={pageSize}
-                    onChange={(e) => handlePageChange(1, Number(e.target.value))}
-                >
-                    <option value={10}>10条/页</option>
-                    <option value={20}>20条/页</option>
-                    <option value={50}>50条/页</option>
-                    <option value={100}>100条/页</option>
-                </select>
-            </div>
+            <Pagination
+                total={total}
+                current={current}
+                pageSize={pageSize}
+                onChange={handlePageChange}
+                showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
+                showSizeChanger={true}
+                showQuickJumper={true}
+                align="flex-end"
+                {...pagination}
+            />
         );
     };
 

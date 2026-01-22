@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button } from '../components';
+import { Navigation } from '../components';
 import ButtonExample from './Button';
 import NoticeExample from './Notice';
 import MarqueeExample from './Marquee';
@@ -25,47 +25,55 @@ import SpaceExample from './Space';
 import AnchorExample from './Anchor';
 import BreadcrumbExample from './Breadcrumb';
 import DropdownExample from './Dropdown';
+import MenuExample from './Menu';
+import PaginationExample from './Pagination';
+import NavigationExample from './Navigation';
+import StepsExample from './Steps';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
 
 interface ComponentItem {
-    id: string;
+    key: string;
     name: string;
     description?: string;
 }
 
 const App: React.FC = () => {
-    // 菜单列表定义，移到前面以便getInitialComponentId使用
-    const menuItems = [
-        { id: 'intro', name: '简介', description: 'IDP Design 组件库介绍' },
-        { id: 'install', name: '安装', description: '如何安装和引用' },
-        { id: 'button', name: 'Button', description: '按钮组件' },
-        { id: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
-        { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
-        { id: 'divider', name: 'Divider', description: '分割线组件' },
-        { id: 'empty', name: 'Empty', description: '空状态组件' },
-        { id: 'flex', name: 'Flex', description: 'Flex布局组件' },
-        { id: 'icon', name: 'Icon', description: '图标组件' },
-        { id: 'input', name: 'Input', description: '输入框组件' },
-        { id: 'i18n', name: 'I18n', description: '国际化组件' },
-        { id: 'marquee', name: 'Marquee', description: '跑马灯组件' },
-        { id: 'message', name: 'Message', description: '消息提示组件' },
-        { id: 'modal', name: 'Modal', description: '弹窗组件' },
-        { id: 'notice', name: 'Notice', description: '公告栏组件' },
-        { id: 'notification', name: 'Notification', description: '通知组件' },
-        { id: 'radio', name: 'Radio', description: '单选框组件' },
-        { id: 'select', name: 'Select', description: '选择器组件' },
-        { id: 'table', name: 'Table', description: '表格组件' },
-        { id: 'top', name: 'Top', description: '回到顶部组件' },
-        { id: 'typography', name: 'Typography', description: '排版组件' },
-        { id: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
-        { id: 'masonry', name: 'Masonry', description: '瀑布流布局组件' },
-        { id: 'space', name: 'Space', description: '组件间距设置' },
-        { id: 'anchor', name: 'Anchor', description: '锚点导航组件' },
-        { id: 'breadcrumb', name: 'Breadcrumb', description: '面包屑组件' },
-        { id: 'dropdown', name: 'Dropdown', description: '下拉菜单组件' },
-        { id: 'api', name: 'API 参考', description: '所有组件的 API 文档' },
+    // 导航菜单项定义
+    const navigationItems = [
+        { key: 'intro', name: '简介', description: 'IDP Design 组件库介绍', icon: '📖' },
+        { key: 'install', name: '安装', description: '如何安装和引用', icon: '📦' },
+        { key: 'button', name: 'Button', description: '按钮组件', icon: '🔘' },
+        { key: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件', icon: '🎨' },
+        { key: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件', icon: '📋' },
+        { key: 'divider', name: 'Divider', description: '分割线组件', icon: '➖' },
+        { key: 'empty', name: 'Empty', description: '空状态组件', icon: '📭' },
+        { key: 'flex', name: 'Flex', description: 'Flex布局组件', icon: '🧱' },
+        { key: 'icon', name: 'Icon', description: '图标组件', icon: '🖼️' },
+        { key: 'input', name: 'Input', description: '输入框组件', icon: '🔤' },
+        { key: 'i18n', name: 'I18n', description: '国际化组件', icon: '🌐' },
+        { key: 'marquee', name: 'Marquee', description: '跑马灯组件', icon: '📜' },
+        { key: 'message', name: 'Message', description: '消息提示组件', icon: '💬' },
+        { key: 'modal', name: 'Modal', description: '弹窗组件', icon: '🪟' },
+        { key: 'notice', name: 'Notice', description: '公告栏组件', icon: '📢' },
+        { key: 'notification', name: 'Notification', description: '通知组件', icon: '🔔' },
+        { key: 'radio', name: 'Radio', description: '单选框组件', icon: '🔘' },
+        { key: 'select', name: 'Select', description: '选择器组件', icon: '🔽' },
+        { key: 'table', name: 'Table', description: '表格组件', icon: '📊' },
+        { key: 'top', name: 'Top', description: '回到顶部组件', icon: '⬆️' },
+        { key: 'typography', name: 'Typography', description: '排版组件', icon: '📝' },
+        { key: 'variables', name: 'Variables', description: '自定义组件库主题颜色', icon: '🎨' },
+        { key: 'masonry', name: 'Masonry', description: '瀑布流布局组件', icon: '🗂️' },
+        { key: 'space', name: 'Space', description: '组件间距设置', icon: '⚫' },
+        { key: 'anchor', name: 'Anchor', description: '锚点导航组件', icon: '🔗' },
+        { key: 'breadcrumb', name: 'Breadcrumb', description: '面包屑组件', icon: '📁' },
+        { key: 'dropdown', name: 'Dropdown', description: '下拉菜单组件', icon: '🔽' },
+        { key: 'menu', name: 'Menu', description: '菜单组件', icon: '🍽️' },
+        { key: 'pagination', name: 'Pagination', description: '分页器组件', icon: '📄' },
+        { key: 'navigation', name: 'Navigation', description: '导航组件', icon: '🧭' },
+        { key: 'steps', name: 'Steps', description: '步骤条组件', icon: '📋' },
+        { key: 'api', name: 'API 参考', description: '所有组件的 API 文档', icon: '📋' },
     ];
 
     // 从URL中获取初始选中的组件ID
@@ -73,34 +81,38 @@ const App: React.FC = () => {
         const hash = window.location.hash;
         if (hash.startsWith('#/')) {
             const id = hash.slice(2);
-            return menuItems.some(item => item.id === id) ? id : 'button';
+            return navigationItems.some(item => item.key === id) ? id : 'button';
         }
         return 'button';
     };
 
     const [selectedComponent, setSelectedComponent] = useState<string>(getInitialComponentId());
-    const [menuCollapsed, setMenuCollapsed] = useState(false);
+    const [navigationCollapsed, setNavigationCollapsed] = useState(false);
 
     const components: ComponentItem[] = [
-        { id: 'button', name: 'Button', description: '按钮组件' },
-        { id: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
-        { id: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
-        { id: 'divider', name: 'Divider', description: '分割线组件' },
-        { id: 'dropdown', name: 'Dropdown', description: '下拉菜单组件' },
-        { id: 'empty', name: 'Empty', description: '空状态组件' },
-        { id: 'flex', name: 'Flex', description: 'Flex布局组件' },
-        { id: 'input', name: 'Input', description: '输入框组件' },
-        { id: 'marquee', name: 'Marquee', description: '跑马灯组件' },
-        { id: 'message', name: 'Message', description: '消息提示组件' },
-        { id: 'modal', name: 'Modal', description: '弹窗组件' },
-        { id: 'notice', name: 'Notice', description: '公告栏组件' },
-        { id: 'notification', name: 'Notification', description: '通知组件' },
-        { id: 'radio', name: 'Radio', description: '单选框组件' },
-        { id: 'select', name: 'Select', description: '选择器组件' },
-        { id: 'table', name: 'Table', description: '表格组件' },
-        { id: 'top', name: 'Top', description: '回到顶部组件' },
-        { id: 'typography', name: 'Typography', description: '排版组件' },
-        { id: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
+        { key: 'button', name: 'Button', description: '按钮组件' },
+        { key: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
+        { key: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
+        { key: 'divider', name: 'Divider', description: '分割线组件' },
+        { key: 'dropdown', name: 'Dropdown', description: '下拉菜单组件' },
+        { key: 'menu', name: 'Menu', description: '菜单组件' },
+        { key: 'pagination', name: 'Pagination', description: '分页器组件' },
+        { key: 'navigation', name: 'Navigation', description: '导航组件' },
+        { key: 'steps', name: 'Steps', description: '步骤条组件' },
+        { key: 'empty', name: 'Empty', description: '空状态组件' },
+        { key: 'flex', name: 'Flex', description: 'Flex布局组件' },
+        { key: 'input', name: 'Input', description: '输入框组件' },
+        { key: 'marquee', name: 'Marquee', description: '跑马灯组件' },
+        { key: 'message', name: 'Message', description: '消息提示组件' },
+        { key: 'modal', name: 'Modal', description: '弹窗组件' },
+        { key: 'notice', name: 'Notice', description: '公告栏组件' },
+        { key: 'notification', name: 'Notification', description: '通知组件' },
+        { key: 'radio', name: 'Radio', description: '单选框组件' },
+        { key: 'select', name: 'Select', description: '选择器组件' },
+        { key: 'table', name: 'Table', description: '表格组件' },
+        { key: 'top', name: 'Top', description: '回到顶部组件' },
+        { key: 'typography', name: 'Typography', description: '排版组件' },
+        { key: 'variables', name: 'Variables', description: '自定义组件库主题颜色' },
     ];
 
     // 监听URL变化，更新选中的组件
@@ -109,7 +121,7 @@ const App: React.FC = () => {
             const hash = window.location.hash;
             if (hash.startsWith('#/')) {
                 const id = hash.slice(2);
-                if (menuItems.some(item => item.id === id)) {
+                if (navigationItems.some(item => item.key === id)) {
                     setSelectedComponent(id);
                 }
             }
@@ -124,10 +136,15 @@ const App: React.FC = () => {
         };
     }, []);
 
-    // 更新URL并设置选中的组件
-    const handleMenuClick = useCallback((id: string) => {
-        setSelectedComponent(id);
-        window.location.hash = `#/${id}`;
+    // 处理导航项点击
+    const handleNavigationItemClick = useCallback((_: any, key: string) => {
+        setSelectedComponent(key);
+        window.location.hash = `#/${key}`;
+    }, []);
+
+    // 处理导航收缩状态变化
+    const handleNavigationCollapseChange = useCallback((collapsed: boolean) => {
+        setNavigationCollapsed(collapsed);
     }, []);
 
     const renderContent = () => {
@@ -280,6 +297,14 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <BreadcrumbExample />;
             case 'dropdown':
                 return <DropdownExample />;
+            case 'menu':
+                return <MenuExample />;
+            case 'pagination':
+                return <PaginationExample />;
+            case 'navigation':
+                return <NavigationExample />;
+            case 'steps':
+                return <StepsExample />;
             default:
                 return <ButtonExample />;
         }
@@ -288,88 +313,27 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
     return (
         <MessageProvider>
             <div className="app-container">
-                {/* 左侧目录区域 */}
-                <div className={`sidebar ${menuCollapsed ? 'collapsed' : ''}`}>
-                    {/* Logo 区域 */}
-                    <div className="logo-area">
-                        {!menuCollapsed && (
-                            <h2 className="logo-text">IDP Design</h2>
-                        )}
-                        <Button
-                            onClick={() => setMenuCollapsed(!menuCollapsed)}
-                            className="collapse-button"
-                            variant="secondary"
-                        >
-                            {menuCollapsed ? '→' : '←'}
-                        </Button>
-                    </div>
-
-                    {/* 菜单列表 */}
-                    <div className="menu-list">
-                        {menuItems.map(item => (
-                            <div
-                                key={item.id}
-                                onClick={() => handleMenuClick(item.id)}
-                                className={`menu-item ${selectedComponent === item.id ? 'active' : ''}`}
-                            >
-                                <span className="menu-icon">
-                                    {item.id === 'intro' && '📖'}
-                                    {item.id === 'install' && '📦'}
-                                    {item.id === 'button' && '🔘'}
-                                    {item.id === 'colorpicker' && '🎨'}
-                                    {item.id === 'copytoclipboard' && '📋'}
-                                    {item.id === 'divider' && '➖'}
-                                    {item.id === 'empty' && '📭'}
-                                    {item.id === 'flex' && '🧱'}
-                                    {item.id === 'icon' && '🖼️'}
-                                    {item.id === 'input' && '🔤'}
-                                    {item.id === 'marquee' && '📜'}
-                                    {item.id === 'message' && '💬'}
-                                    {item.id === 'modal' && '🪟'}
-                                    {item.id === 'notice' && '📢'}
-                                    {item.id === 'notification' && '🔔'}
-                                    {item.id === 'radio' && '🔘'}
-                                    {item.id === 'select' && '🔽'}
-                                    {item.id === 'table' && '📊'}
-                                    {item.id === 'top' && '⬆️'}
-                                    {item.id === 'typography' && '📝'}
-                                    {item.id === 'variables' && '🎨'}
-                                    {item.id === 'masonry' && '🗂️'}
-                                    {item.id === 'space' && '⚫'}
-                                    {item.id === 'anchor' && '🔗'}
-                                    {item.id === 'api' && '📋'}
-                                    {item.id === 'i18n' && '🌐'}
-                                    {item.id === 'breadcrumb' && '📁'}
-                                    {item.id === 'dropdown' && '🔽'}
-                                </span>
-                                {!menuCollapsed && (
-                                    <>
-                                        <span className="menu-name">{item.name}</span>
-                                        <span className="menu-description">{item.description}</span>
-                                    </>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* 底部信息 */}
-                    {!menuCollapsed && (
-                        <div className="footer-info">
-                            <p>IDP Design v1.0.0</p>
-                            <p>IDP Studio</p>
-                        </div>
-                    )}
-                </div>
+                {/* 使用新的Navigation组件 */}
+                <Navigation
+                    items={navigationItems}
+                    selectedKey={selectedComponent}
+                    collapsed={navigationCollapsed}
+                    onChange={handleNavigationItemClick}
+                    onCollapseChange={handleNavigationCollapseChange}
+                    width={360}
+                    collapsedWidth={48}
+                    animationDuration={300}
+                />
 
                 {/* 右侧内容区域 */}
                 <div className="content-area">
                     {/* 内容头部 */}
                     <div className="content-header">
                         <h1 className="content-title">
-                            {components.find(c => c.id === selectedComponent)?.name || 'API 参考'}
+                            {components.find(c => c.key === selectedComponent)?.name || 'API 参考'}
                         </h1>
                         <p className="content-subtitle">
-                            {components.find(c => c.id === selectedComponent)?.description || '查看组件 API 文档'}
+                            {components.find(c => c.key === selectedComponent)?.description || '查看组件 API 文档'}
                         </p>
                     </div>
 

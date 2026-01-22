@@ -23,3 +23,7 @@ export { default as Breadcrumb } from './Breadcrumb';
 export { default as I18nProvider, useI18n, load18n } from '../i18n/I18nProvider';
 export { default as i18n } from '../i18n/index';
 export { default as Dropdown } from './Dropdown';
+export { default as Menu } from './Menu';
+export { default as Pagination } from './Pagination';
+export { default as Navigation } from './Navigation';
+export { default as Steps } from './Steps';

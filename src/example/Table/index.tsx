@@ -416,7 +416,75 @@ const TableExample: React.FC = () => {
             </section>
 
             <section style={{ marginBottom: '40px' }}>
-                <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>11. 不显示分页</h2>
+                <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>11. 分页功能增强</h2>
+                <p>展示分页的高级功能，包括每页条数选择、快速跳转和总数显示</p>
+                <div style={{ 
+                    backgroundColor: '#fff', 
+                    padding: '20px', 
+                    borderRadius: '8px', 
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    marginTop: '16px'
+                }}>
+                    <Table
+                        columns={basicColumns}
+                        dataSource={Array.from({ length: 200 }, (_, i) => ({
+                            id: i + 1,
+                            name: `用户${i + 1}`,
+                            age: 20 + Math.floor(Math.random() * 20),
+                            gender: Math.random() > 0.5 ? '男' : '女',
+                            email: `user${i + 1}@example.com`
+                        }))}
+                        pagination={{
+                            total: 200,
+                            pageSize: 15,
+                            current: 1,
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            showTotal: (total: number, range: [number, number]) => `显示 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+                            onChange: (page, pageSize) => {
+                                console.log('当前页码:', page, '每页条数:', pageSize);
+                            }
+                        }}
+                    />
+                </div>
+            </section>
+
+            <section style={{ marginBottom: '40px' }}>
+                <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>12. 小尺寸分页</h2>
+                <p>通过 size 属性设置分页组件的尺寸为 small</p>
+                <div style={{ 
+                    backgroundColor: '#fff', 
+                    padding: '20px', 
+                    borderRadius: '8px', 
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    marginTop: '16px'
+                }}>
+                    <Table
+                        columns={basicColumns}
+                        dataSource={Array.from({ length: 50 }, (_, i) => ({
+                            id: i + 1,
+                            name: `用户${i + 1}`,
+                            age: 20 + Math.floor(Math.random() * 20),
+                            gender: Math.random() > 0.5 ? '男' : '女',
+                            email: `user${i + 1}@example.com`
+                        }))}
+                        pagination={{
+                            total: 50,
+                            pageSize: 10,
+                            current: 1,
+                            size: 'small',
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            onChange: (page, pageSize) => {
+                                console.log('当前页码:', page, '每页条数:', pageSize);
+                            }
+                        }}
+                    />
+                </div>
+            </section>
+
+            <section style={{ marginBottom: '40px' }}>
+                <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>13. 不显示分页</h2>
                 <p>通过 pagination={false} 不显示分页功能，不显示分页区域，显示所有数据</p>
                 <div style={{ 
                     backgroundColor: '#fff', 
