@@ -9,11 +9,17 @@ export interface NavigationItem {
     disabled?: boolean;
 }
 
+export type NavigationMode = 'vertical' | 'horizontal';
+
 export interface NavigationProps {
     items: NavigationItem[];
     selectedKey?: string;
     collapsed?: boolean;
     defaultOpenKeys?: string[];
+    mode?: NavigationMode;
+    closeOnOutsideClick?: boolean;
+    header?: React.ReactNode;
+    footer?: React.ReactNode;
     onChange?: (item: NavigationItem, key: string) => void;
     onCollapseChange?: (collapsed: boolean) => void;
     className?: string;

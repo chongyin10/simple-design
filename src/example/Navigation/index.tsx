@@ -27,7 +27,13 @@ const NavigationExample: React.FC = () => {
             childrens: [
                 { key: 'button', name: 'Button', description: '按钮组件', icon: '🔘' },
                 { key: 'input', name: 'Input', description: '输入框组件', icon: '🔤' },
-                { key: 'icon', name: 'Icon', description: '图标组件', icon: '🖼️' },
+                { 
+                    key: 'icon', name: 'Icon', description: '图标组件', icon: '🖼️', childrens: [
+                        {
+                            key: 'icon-1', name: 'Icon-1', description: '图标组件-1', icon: '🏠' 
+                        }
+                    ] 
+                },
             ]
         },
         {
@@ -68,12 +74,14 @@ const NavigationExample: React.FC = () => {
     const apiDataSource = [
         { param: 'items', type: 'NavigationItem[]', default: '-', description: '导航项数组，支持多级嵌套结构' },
         { param: 'selectedKey', type: 'string', default: '-', description: '当前选中的导航项key' },
-        { param: 'collapsed', type: 'boolean', default: 'false', description: '导航栏是否处于收缩状态' },
+        { param: 'collapsed', type: 'boolean', default: 'false', description: '导航栏是否处于收缩状态（仅垂直模式生效）' },
         { param: 'defaultOpenKeys', type: 'string[]', default: '[]', description: '默认展开的子菜单key数组' },
+        { param: 'mode', type: 'NavigationMode', default: 'vertical', description: '导航模式：vertical | horizontal' },
+        { param: 'closeOnOutsideClick', type: 'boolean', default: 'true', description: '点击外部区域时是否自动收起（仅水平模式生效）' },
         { param: 'onChange', type: '(item: NavigationItem, key: string) => void', default: '-', description: '导航项点击回调函数' },
         { param: 'onCollapseChange', type: '(collapsed: boolean) => void', default: '-', description: '收缩状态变化回调函数' },
-        { param: 'width', type: 'number', default: '280', description: '导航栏展开时的宽度' },
-        { param: 'collapsedWidth', type: 'number', default: '48', description: '导航栏收缩时的宽度' },
+        { param: 'width', type: 'number', default: '280', description: '导航栏展开时的宽度（仅垂直模式生效）' },
+        { param: 'collapsedWidth', type: 'number', default: '48', description: '导航栏收缩时的宽度（仅垂直模式生效）' },
         { param: 'animationDuration', type: 'number', default: '300', description: '收缩动画持续时间（毫秒）' },
     ];
 
@@ -165,6 +173,35 @@ const NavigationExample: React.FC = () => {
   defaultOpenKeys={['basic']}
   onChange={handleItemClick}
   onCollapseChange={handleCollapseChange}
+/>`}
+                        </SyntaxHighlighter>
+                    </div>
+                </Flex>
+            </div>
+
+            {/* 水平导航示例 */}
+            <div style={{ marginBottom: '40px' }}>
+                <h2>水平导航</h2>
+                <p>顶部水平布局，点击一级菜单在下方弹出二级菜单。</p>
+                
+                <Flex direction="row" gap={40}>
+                    <div style={{ border: '1px solid #e1e1e1', borderRadius: '8px', padding: '16px', width: '100%' }}>
+                        <Navigation
+                            items={multiLevelNavigationItems}
+                            selectedKey={selectedKey}
+                            onChange={handleItemClick}
+                            mode="horizontal"
+                            closeOnOutsideClick={true}
+                        />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+{`<Navigation
+  items={multiLevelNavigationItems}
+  selectedKey={selectedKey}
+  onChange={handleItemClick}
+  mode="horizontal"
+  closeOnOutsideClick={true}
 />`}
                         </SyntaxHighlighter>
                     </div>

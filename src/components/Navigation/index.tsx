@@ -8,16 +8,18 @@ interface NavigationItemComponentProps {
     item: NavigationItem;
     level: number;
     collapsed: boolean;
+    mode: 'vertical' | 'horizontal';
     openKeySet: Set<string>;
     selectedKey: string;
     onItemClick: (item: NavigationItem, key: string) => void;
-    onToggleOpen: (key: string) => void;
+    onToggleOpen: (key: string, isRoot?: boolean) => void;
 }
 
 const NavigationItemComponent: React.FC<NavigationItemComponentProps> = React.memo(({
     item,
     level,
     collapsed,
+    mode,
     openKeySet,
     selectedKey,
     onItemClick,
@@ -27,19 +29,22 @@ const NavigationItemComponent: React.FC<NavigationItemComponentProps> = React.me
     const isOpen = openKeySet.has(item.key);
     const isSelected = selectedKey === item.key;
 
+    const isHorizontal = mode === 'horizontal';
+    const isRoot = level === 0;
+
     const handleClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
         // 总是触发onItemClick来选中菜单项
         onItemClick(item, item.key);
         // 如果有子菜单且不在折叠状态，则切换展开状态
-        if (hasChildren && !collapsed) {
-            onToggleOpen(item.key);
+        if (hasChildren && (!collapsed || isHorizontal)) {
+            onToggleOpen(item.key, isRoot);
         }
-    }, [item, onItemClick, onToggleOpen, hasChildren, collapsed]);
+    }, [item, onItemClick, onToggleOpen, hasChildren, collapsed, isHorizontal, isRoot]);
 
-    const paddingLeft = collapsed ? 12 : 12 + level * 16;
+    const paddingLeft = isHorizontal && isRoot ? 12 : (collapsed ? 12 : 12 + level * 16);
 
-    const shouldOpen = isOpen && !collapsed;
+    const shouldOpen = isOpen && (!collapsed || isHorizontal);
 
     return (
         <div className="navigation-item-wrapper">
@@ -63,8 +68,13 @@ const NavigationItemComponent: React.FC<NavigationItemComponentProps> = React.me
                             )}
                         </>
                     )}
-                    {hasChildren && !collapsed && (
+                    {hasChildren && !collapsed && (!isHorizontal || !isRoot) && (
                         <span className={`navigation-item-arrow ${shouldOpen ? 'open' : ''}`}>
+                            ▼
+                        </span>
+                    )}
+                    {hasChildren && isHorizontal && isRoot && (
+                        <span className={`navigation-item-arrow horizontal ${shouldOpen ? 'open' : ''}`}>
                             ▼
                         </span>
                     )}
@@ -73,18 +83,20 @@ const NavigationItemComponent: React.FC<NavigationItemComponentProps> = React.me
 
             {/* 子菜单 */}
             {hasChildren && !collapsed && shouldOpen && (
-                <div className="navigation-children open">
+                <div className={`navigation-children open${isHorizontal && isRoot ? ' horizontal' : ''}`}>
                     {item.childrens?.map(child => (
-                        <NavigationItemComponent
-                            key={child.key}
-                            item={child}
-                            level={level + 1}
-                            collapsed={collapsed}
-                            openKeySet={openKeySet}
-                            selectedKey={selectedKey}
-                            onItemClick={onItemClick}
-                            onToggleOpen={onToggleOpen}
-                        />
+                            <NavigationItemComponent
+                                key={child.key}
+                                item={child}
+                                level={level + 1}
+                                collapsed={collapsed}
+                                mode={mode}
+                                openKeySet={openKeySet}
+                                selectedKey={selectedKey}
+                                onItemClick={onItemClick}
+                                onToggleOpen={onToggleOpen}
+                            />
+
                     ))}
                 </div>
             )}
@@ -98,6 +110,10 @@ const Navigation: React.FC<NavigationProps> = ({
     selectedKey: externalSelectedKey,
     collapsed: externalCollapsed,
     defaultOpenKeys = [],
+    mode = 'vertical',
+    closeOnOutsideClick = true,
+    header,
+    footer,
     onChange,
     onCollapseChange,
     className = '',
@@ -111,6 +127,8 @@ const Navigation: React.FC<NavigationProps> = ({
     const [internalSelectedKey, setInternalSelectedKey] = useState<string>('');
     const [internalCollapsed, setInternalCollapsed] = useState<boolean>(externalCollapsed ?? false);
     const lastSelectedKeyRef = useRef<string>('');
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const isHorizontal = mode === 'horizontal';
 
     const { rootMap, pathMap } = useMemo(() => {
         const nextRootMap = new Map<string, string>();
@@ -151,8 +169,11 @@ const Navigation: React.FC<NavigationProps> = ({
     }, [rootMap]);
 
     const collapsed = useMemo(() => {
+        if (isHorizontal) {
+            return false;
+        }
         return externalCollapsed !== undefined ? externalCollapsed : internalCollapsed;
-    }, [externalCollapsed, internalCollapsed]);
+    }, [externalCollapsed, internalCollapsed, isHorizontal]);
 
     const openKeySet = useMemo(() => new Set(internalOpenKeys), [internalOpenKeys]);
 
@@ -180,7 +201,7 @@ const Navigation: React.FC<NavigationProps> = ({
 
     // 当selectedKey变化时，自动展开包含选中项的父菜单
     useEffect(() => {
-        if (!actualSelectedKey || collapsed) {
+        if (!actualSelectedKey || collapsed || isHorizontal) {
             return;
         }
         setInternalOpenKeys(prev => {
@@ -194,17 +215,20 @@ const Navigation: React.FC<NavigationProps> = ({
             });
             return changed ? Array.from(merged) : prev;
         });
-    }, [actualSelectedKey, collapsed, selectedOpenKeys]);
+    }, [actualSelectedKey, collapsed, selectedOpenKeys, isHorizontal]);
 
-    const toggleOpenKey = useCallback((key: string) => {
+    const toggleOpenKey = useCallback((key: string, isRoot?: boolean) => {
         startTransition(() => {
-            setInternalOpenKeys(prev =>
-                prev.includes(key)
+            setInternalOpenKeys(prev => {
+                if (isHorizontal && isRoot) {
+                    return prev.includes(key) ? [] : [key];
+                }
+                return prev.includes(key)
                     ? prev.filter(k => k !== key)
-                    : [...prev, key]
-            );
+                    : [...prev, key];
+            });
         });
-    }, []);
+    }, [isHorizontal]);
 
     const toggleCollapsed = useCallback(() => {
         const newCollapsed = !collapsed;
@@ -217,6 +241,10 @@ const Navigation: React.FC<NavigationProps> = ({
     const handleItemClick = useCallback((item: NavigationItem) => {
         if (item.disabled) return;
         lastSelectedKeyRef.current = item.key;
+        const hasChildren = !!item.childrens && item.childrens.length > 0;
+        if (isHorizontal && !hasChildren) {
+            setInternalOpenKeys([]);
+        }
         // 如果有外部selectedKey，通知外部变更但不更新内部状态
         if (externalSelectedKey !== undefined) {
             onChange?.(item, item.key);
@@ -226,16 +254,35 @@ const Navigation: React.FC<NavigationProps> = ({
             setInternalSelectedKey(item.key);
         });
         onChange?.(item, item.key);
-    }, [externalSelectedKey, onChange]);
+    }, [externalSelectedKey, onChange, isHorizontal, pathMap]);
 
     const currentWidth = useMemo(() => {
+        if (isHorizontal) {
+            return '100%';
+        }
         return collapsed ? collapsedWidth : width;
-    }, [collapsed, width, collapsedWidth]);
+    }, [collapsed, width, collapsedWidth, isHorizontal]);
 
+    useEffect(() => {
+        if (!isHorizontal || !closeOnOutsideClick) {
+            return;
+        }
+        const handleOutsideClick = (event: MouseEvent) => {
+            const target = event.target as Node | null;
+            if (containerRef.current && target && !containerRef.current.contains(target)) {
+                setInternalOpenKeys([]);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        };
+    }, [isHorizontal, closeOnOutsideClick]);
 
     return (
         <div
-            className={`idp-navigation ${className} ${collapsed ? 'collapsed' : ''}`}
+            ref={containerRef}
+            className={`idp-navigation ${className} ${collapsed ? 'collapsed' : ''} ${isHorizontal ? 'horizontal' : ''}`}
             style={{
                 width: currentWidth,
                 transition: `width ${animationDuration}ms ease`,
@@ -243,18 +290,24 @@ const Navigation: React.FC<NavigationProps> = ({
             }}
         >
             {/* 头部区域 */}
-            <div className="navigation-header">
-                {!collapsed && (
-                    <h2 className="navigation-title">IDP Design</h2>
-                )}
-                <Button
-                    onClick={toggleCollapsed}
-                    className="navigation-collapse-button"
-                    variant="secondary"
-                >
-                    {collapsed ? '→' : '←'}
-                </Button>
-            </div>
+            {!isHorizontal && header !== null && header !== false && (
+                <div className="navigation-header">
+                    {header ?? (
+                        <>
+                            {!collapsed && (
+                                <h2 className="navigation-title">IDP Design</h2>
+                            )}
+                            <Button
+                                onClick={toggleCollapsed}
+                                className="navigation-collapse-button"
+                                variant="secondary"
+                            >
+                                {collapsed ? '→' : '←'}
+                            </Button>
+                        </>
+                    )}
+                </div>
+            )}
 
             {/* 菜单列表 */}
             <div className="navigation-list">
@@ -264,6 +317,7 @@ const Navigation: React.FC<NavigationProps> = ({
                         item={item}
                         level={0}
                         collapsed={collapsed}
+                        mode={mode}
                         openKeySet={openKeySet}
                         selectedKey={selectedKey}
                         onItemClick={handleItemClick}
@@ -273,10 +327,14 @@ const Navigation: React.FC<NavigationProps> = ({
             </div>
 
             {/* 底部信息 */}
-            {!collapsed && (
+            {!collapsed && !isHorizontal && footer !== null && footer !== false && (
                 <div className="navigation-footer">
-                    <p>IDP Design v1.0.0</p>
-                    <p>IDP Studio</p>
+                    {footer ?? (
+                        <>
+                            <p>IDP Design v1.0.0</p>
+                            <p>IDP Studio</p>
+                        </>
+                    )}
                 </div>
             )}
         </div>

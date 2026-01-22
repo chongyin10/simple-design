@@ -1,0 +1,14 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-01-22T09:03:05.320Z
+provider: 
+---
+
+规则规范：1.npm替代为yarn执行，若是yarn执行有问题则启用npm执行
+2. 所有的AI终端都在同一个终端窗口终端执行，若是不得已，则可以开启其他终端使用
+3. 所有代码的例子都在src/example/{X}, 其中{X}为文件夹名称，X的取的名称在src/components/{X}相互对应；
+4. 终端窗口中禁止自动执行yarn dev，若是必须要执行，需要提示是否执行前置条件
+5. 在src/example/{X}例子组件中，禁止引入国际化的代码useI18n等，禁止被国际化，除了src/example/I18n文件夹中的代码
+6. 在src/example/{X}改写例子组件时，参考src/components/Breadcrumb中的布局格式和编写风格，同时若是css样式有flex布局格式，则启用Flex组件进行编写。
