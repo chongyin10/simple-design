@@ -315,6 +315,16 @@
   background: transparent;
   border-radius: 0px;
   margin-top: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  min-width: 0;
+}
+
+.idp-tabs--card .idp-tabs-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .idp-tabs--card .idp-tabs-tab {
@@ -395,4 +405,33 @@
   margin-top: -1px;
   position: relative;
   z-index: 2;
+}
+
+/* 卡片式页签的增加按钮 */
+.idp-tabs--card .idp-tabs-tab--add {
+  background: #fafafa;
+  border: 1px dashed #bfbfbf;
+  color: #8c8cff;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 5;
+}
+
+.idp-tabs--card .idp-tabs-tab--add:hover {
+  background: #e6f7ff;
+  border-color: #91d5ff;
+  color: #1677ff;
+  box-shadow: 0 2px 6px rgba(22, 119, 255, 0.1);
+}
+
+.idp-tabs--card .idp-tabs-tab--add:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 3px rgba(22, 119, 255, 0.15);
+}
+
+/* 当增加按钮接近右端时，固定在可视区域 */
+.idp-tabs--card .idp-tabs-tab--add.sticky {
+  position: sticky;
+  right: 0;
 }

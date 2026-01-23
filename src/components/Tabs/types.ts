@@ -22,6 +22,7 @@ export interface TabsProps {
   tabsClosable?: boolean;
   tabPlacement?: TabPlacement;
   type?: TabType;
+  onAdd?: () => void;
   className?: string;
   style?: React.CSSProperties;
   contentStyle?: React.CSSProperties;

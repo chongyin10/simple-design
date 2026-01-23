@@ -13,6 +13,7 @@ const Tabs: React.FC<TabsProps> = ({
   tabsClosable = false,
   tabPlacement = 'top',
   type = 'line',
+  onAdd,
   className,
   style,
   contentStyle
@@ -20,12 +21,15 @@ const Tabs: React.FC<TabsProps> = ({
   const [innerActiveKey, setInnerActiveKey] = useState<string | undefined>(() => defaultActiveKey);
   const tabsNavRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const addTabRef = useRef<HTMLDivElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const [showScrollButtons, setShowScrollButtons] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isNavHovered, setIsNavHovered] = useState(false);
   const isScrollingRef = useRef(false);
   const isFirstUpdateRef = useRef(true);
+  const [isAddButtonSticky, setIsAddButtonSticky] = useState(false);
 
   useEffect(() => {
     if (activeKey !== undefined) {
@@ -248,6 +252,48 @@ const Tabs: React.FC<TabsProps> = ({
     };
   }, [checkOverflow, currentActiveKey]);
 
+  // 检测 add 按钮是否需要固定显示
+  useEffect(() => {
+    const checkAddButtonPosition = () => {
+      if (!addTabRef.current || !tabsNavRef.current || type !== 'card' || !onAdd) {
+        setIsAddButtonSticky(false);
+        return;
+      }
+
+      const container = tabsNavRef.current;
+      const addButton = addTabRef.current;
+      const containerRect = container.getBoundingClientRect();
+      const addButtonRect = addButton.getBoundingClientRect();
+
+      // 如果 add 按钮距离右端小于等于 20px，则固定显示
+      const distanceToRight = containerRect.right - addButtonRect.right;
+      const shouldBeSticky = distanceToRight <= 20;
+
+      setIsAddButtonSticky(shouldBeSticky);
+    };
+
+    // 初始检查
+    checkAddButtonPosition();
+
+    // 监听滚动和 resize
+    const handleScrollOrResize = () => {
+      checkAddButtonPosition();
+    };
+
+    const container = tabsNavRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScrollOrResize);
+      window.addEventListener('resize', handleScrollOrResize);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScrollOrResize);
+      }
+      window.removeEventListener('resize', handleScrollOrResize);
+    };
+  }, [type, onAdd, items]);
+
   const handleTabClick = (item: TabItem) => {
     if (item.disabled) return;
 
@@ -267,12 +313,66 @@ const Tabs: React.FC<TabsProps> = ({
     onClose?.(item.key);
   };
 
+  const handleAddTab = () => {
+    onAdd?.();
+    // 等待DOM更新后滚动到新增的tab
+    // items.length 代表当前tab数量，新增后的索引是 items.length
+    setTimeout(() => {
+      if (tabsNavRef.current) {
+        // 新增的tab索引将是 items.length（因为onAdd会更新items）
+        // 但此时items还未更新，所以我们需要等待下一次渲染
+        // 使用 requestAnimationFrame 确保在DOM更新后执行
+        requestAnimationFrame(() => {
+          if (tabsNavRef.current && tabRefs.current.size > 0) {
+            // 获取所有tab的keys，最后一个就是新增的
+            const tabKeys = Array.from(tabRefs.current.keys());
+            if (tabKeys.length > 0) {
+              const lastKey = tabKeys[tabKeys.length - 1];
+              const lastTab = tabRefs.current.get(lastKey);
+              const container = tabsNavRef.current;
+
+              if (lastTab && container && addTabRef.current) {
+                // 卡片式页签需要考虑 add 按钮的宽度
+                if (type === 'card') {
+                  const addButton = addTabRef.current;
+                  const addButtonWidth = addButton.offsetWidth + 4; // 加上 gap 的间距
+                  const tabLeft = lastTab.offsetLeft;
+                  const tabRight = tabLeft + lastTab.offsetWidth;
+                  const containerWidth = container.clientWidth;
+                  const scrollLeft = container.scrollLeft;
+
+                  // 计算 tab 相对于容器的右边界
+                  const tabRightInViewport = tabRight - scrollLeft;
+
+                  // 如果 tab 的右边界加上 add 按钮宽度超过了容器宽度，需要向左滚动
+                  if (tabRightInViewport > containerWidth - addButtonWidth) {
+                    const targetScrollLeft = tabRight - containerWidth + addButtonWidth;
+                    container.scrollTo({
+                      left: targetScrollLeft,
+                      behavior: 'smooth'
+                    });
+                  }
+                } else {
+                  lastTab.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+                }
+              }
+            }
+          }
+        });
+      }
+    }, 100);
+  };
+
   const renderNav = () => {
     const isHorizontal = tabPlacement === 'top' || tabPlacement === 'bottom';
     const isCardType = type === 'card';
 
     return (
-      <div className="idp-tabs-nav-wrapper">
+      <div 
+        className="idp-tabs-nav-wrapper"
+        onMouseEnter={() => setIsNavHovered(true)}
+        onMouseLeave={() => setIsNavHovered(false)}
+      >
         {isHorizontal && showScrollButtons && !isCardType && (
           <button
             className={classNames(
@@ -280,7 +380,7 @@ const Tabs: React.FC<TabsProps> = ({
               'idp-tabs-nav__button--left',
               {
                 'idp-tabs-nav__button--disabled': !canScrollLeft,
-                'idp-tabs-nav__button--visible': true
+                'idp-tabs-nav__button--visible': isNavHovered
               }
             )}
             onClick={() => scrollTabs('left')}
@@ -324,6 +424,19 @@ const Tabs: React.FC<TabsProps> = ({
               </div>
             );
           })}
+          {/* 卡片式页签的增加按钮 */}
+          {type === 'card' && onAdd && (
+            <div
+              ref={addTabRef}
+              className={classNames('idp-tabs-tab idp-tabs-tab--add', {
+                'sticky': isAddButtonSticky
+              })}
+              role="tab"
+              onClick={handleAddTab}
+            >
+              <Icon type="plus" size={16} />
+            </div>
+          )}
           <div className="idp-tabs-indicator" style={indicatorStyle} />
         </div>
 
@@ -334,7 +447,7 @@ const Tabs: React.FC<TabsProps> = ({
               'idp-tabs-nav__button--right',
               {
                 'idp-tabs-nav__button--disabled': !canScrollRight,
-                'idp-tabs-nav__button--visible': true
+                'idp-tabs-nav__button--visible': isNavHovered
               }
             )}
             onClick={() => scrollTabs('right')}

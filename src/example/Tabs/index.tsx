@@ -57,6 +57,27 @@ const TabsExample: React.FC = () => {
     { key: 'tab-3', label: '报表', content: <div>报表内容区域</div>, closable: true }
   ]);
 
+  const [cardTabs, setCardTabs] = useState<TabItem[]>([
+    { key: 'card-1', label: '工作台', content: <div style={{ padding: '20px' }}>工作台内容区域，展示日常工作概览和快捷操作</div> },
+    { key: 'card-2', label: '消息', content: <div style={{ padding: '20px' }}>消息中心，查看系统通知和消息</div> },
+    { key: 'card-3', label: '日程', content: <div style={{ padding: '20px' }}>日程安排，管理个人和团队日程</div> }
+  ]);
+
+  const handleAddCardTab = () => {
+    const newTabIndex = cardTabs.length + 1;
+    const newTab: TabItem = {
+      key: `card-${newTabIndex}`,
+      label: `新页面${newTabIndex}`,
+      content: <div style={{ padding: '20px' }}>这是新添加的标签页内容 {newTabIndex}</div>,
+      closable: true
+    };
+    setCardTabs(prev => [...prev, newTab]);
+  };
+
+  const handleCloseCardTab = (key: string) => {
+    setCardTabs(prev => prev.filter(item => item.key !== key));
+  };
+
   const handleClose = (key: string) => {
     setClosableItems(prev => prev.filter(item => item.key !== key));
   };
@@ -76,7 +97,8 @@ const TabsExample: React.FC = () => {
     { name: 'onClose', type: '(key: string) => void', default: '-', description: '关闭选项卡回调' },
     { name: 'tabsClosable', type: 'boolean', default: 'false', description: '全局可关闭开关' },
     { name: 'tabPlacement', type: "'top' | 'start' | 'end' | 'bottom'", default: "'top'", description: '标签页位置（仅 line 类型支持垂直布局）' },
-    { name: 'type', type: "'line' | 'card'", default: "'line'", description: '标签页类型' },
+    { name: 'type', type: "'line' | 'card'", default: "'line'", description: '标签页类型（card 类型仅支持顶部布局）' },
+    { name: 'onAdd', type: '() => void', default: '-', description: '增加标签页回调（仅 card 类型支持）' },
     { name: 'className', type: 'string', default: '-', description: '自定义类名' },
     { name: 'style', type: 'React.CSSProperties', default: '-', description: '容器样式' },
     { name: 'contentStyle', type: 'React.CSSProperties', default: '-', description: '内容区域样式' }
@@ -119,6 +141,16 @@ const TabsExample: React.FC = () => {
         <h4>卡片式页签</h4>
         <div style={{ marginBottom: '20px' }}>
           <Tabs items={baseItems} type="card" />
+        </div>
+
+        <h4>卡片式页签（带增加和关闭）</h4>
+        <div style={{ marginBottom: '20px' }}>
+          <Tabs
+            items={cardTabs}
+            type="card"
+            onClose={handleCloseCardTab}
+            onAdd={handleAddCardTab}
+          />
         </div>
 
         <h4>容器内部使用</h4>
