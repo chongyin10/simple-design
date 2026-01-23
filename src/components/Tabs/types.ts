@@ -26,4 +26,6 @@ export interface TabsProps {
   className?: string;
   style?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
+  draggable?: boolean;
+  onDragEnd?: (items: TabItem[]) => void;
 }

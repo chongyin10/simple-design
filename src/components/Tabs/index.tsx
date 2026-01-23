@@ -1,8 +1,104 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCenter
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  useSortable,
+  arrayMove
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import Icon from '../Icon';
 import { TabItem, TabsProps } from './types';
 import './Tabs.css';
+
+interface SortableTabProps {
+  item: TabItem;
+  isActive: boolean;
+  isClosable: boolean;
+  onClick: () => void;
+  onClose: (event: React.MouseEvent) => void;
+  tabRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
+}
+
+const SortableTab: React.FC<SortableTabProps> = ({
+  item,
+  isActive,
+  isClosable,
+  onClick,
+  onClose,
+  tabRefs
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ 
+    id: item.key, 
+    disabled: item.disabled 
+  });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 'auto',
+    position: 'relative'
+  };
+
+  return (
+    <div
+      ref={(el) => {
+        setNodeRef(el);
+        if (el) {
+          tabRefs.current.set(item.key, el);
+        } else {
+          tabRefs.current.delete(item.key);
+        }
+      }}
+      className={classNames('idp-tabs-tab', {
+        'idp-tabs-tab--active': isActive,
+        'idp-tabs-tab--disabled': item.disabled,
+        'idp-tabs-tab--dragging': isDragging
+      })}
+      role="tab"
+      aria-selected={isActive}
+      style={style}
+    >
+      <div
+        className="idp-tabs-tab__drag-handle"
+        {...attributes}
+        {...listeners}
+        onClick={onClick}
+        style={{ 
+          cursor: item.disabled ? 'not-allowed' : 'grab',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        {item.icon && <span className="idp-tabs-tab__icon">{item.icon}</span>}
+        <span className="idp-tabs-tab__label">{item.label}</span>
+      </div>
+      {isClosable && !item.disabled && (
+        <span className="idp-tabs-tab__close" onClick={(event) => onClose(event)}>
+          <Icon type="close" size={12} />
+        </span>
+      )}
+    </div>
+  );
+};
 
 const Tabs: React.FC<TabsProps> = ({
   items = [],
@@ -16,7 +112,9 @@ const Tabs: React.FC<TabsProps> = ({
   onAdd,
   className,
   style,
-  contentStyle
+  contentStyle,
+  draggable = false,
+  onDragEnd
 }) => {
   const [innerActiveKey, setInnerActiveKey] = useState<string | undefined>(() => defaultActiveKey);
   const tabsNavRef = useRef<HTMLDivElement>(null);
@@ -30,12 +128,17 @@ const Tabs: React.FC<TabsProps> = ({
   const isScrollingRef = useRef(false);
   const isFirstUpdateRef = useRef(true);
   const [isAddButtonSticky, setIsAddButtonSticky] = useState(false);
+  const [dragItems, setDragItems] = useState<TabItem[]>(items);
 
   useEffect(() => {
     if (activeKey !== undefined) {
       setInnerActiveKey(activeKey);
     }
   }, [activeKey]);
+
+  useEffect(() => {
+    setDragItems(items);
+  }, [items]);
 
   useEffect(() => {
     if (activeKey !== undefined) return;
@@ -363,11 +466,84 @@ const Tabs: React.FC<TabsProps> = ({
     }, 100);
   };
 
+  // 拖拽相关
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
+
+  const handleDragStart = (_event: DragStartEvent) => {
+    // 拖拽开始时的逻辑
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = dragItems.findIndex(item => item.key === active.id);
+    const newIndex = dragItems.findIndex(item => item.key === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newItems = arrayMove(dragItems, oldIndex, newIndex);
+      setDragItems(newItems);
+      onDragEnd?.(newItems);
+    }
+  };
+
   const renderNav = () => {
     const isHorizontal = tabPlacement === 'top' || tabPlacement === 'bottom';
     const isCardType = type === 'card';
+    const effectiveItems = draggable ? dragItems : items;
 
-    return (
+    const renderTabContent = (item: TabItem, isActive: boolean, isClosable: boolean) => {
+      if (draggable && !item.disabled && (tabPlacement === 'top' || tabPlacement === 'bottom')) {
+        return (
+          <SortableTab
+            key={item.key}
+            item={item}
+            isActive={isActive}
+            isClosable={isClosable}
+            onClick={() => handleTabClick(item)}
+            onClose={(event) => handleClose(event, item)}
+            tabRefs={tabRefs}
+          />
+        );
+      }
+
+      return (
+        <div
+          key={item.key}
+          ref={(el) => {
+            if (el) {
+              tabRefs.current.set(item.key, el);
+            } else {
+              tabRefs.current.delete(item.key);
+            }
+          }}
+          className={classNames('idp-tabs-tab', {
+            'idp-tabs-tab--active': isActive,
+            'idp-tabs-tab--disabled': item.disabled
+          })}
+          role="tab"
+          aria-selected={isActive}
+          onClick={() => handleTabClick(item)}
+        >
+          {item.icon && <span className="idp-tabs-tab__icon">{item.icon}</span>}
+          <span className="idp-tabs-tab__label">{item.label}</span>
+          {isClosable && !item.disabled && (
+            <span className="idp-tabs-tab__close" onClick={(event) => handleClose(event, item)}>
+              <Icon type="close" size={12} />
+            </span>
+          )}
+        </div>
+      );
+    };
+
+    const navContent = (
       <div 
         className="idp-tabs-nav-wrapper"
         onMouseEnter={() => setIsNavHovered(true)}
@@ -392,44 +568,17 @@ const Tabs: React.FC<TabsProps> = ({
         )}
 
         <div className="idp-tabs-nav" ref={tabsNavRef}>
-          {items.map(item => {
+          {effectiveItems.map(item => {
             const isActive = item.key === currentActiveKey;
             const isClosable = tabsClosable || item.closable;
-
-            return (
-              <div
-                key={item.key}
-                ref={(el) => {
-                  if (el) {
-                    tabRefs.current.set(item.key, el);
-                  } else {
-                    tabRefs.current.delete(item.key);
-                  }
-                }}
-                className={classNames('idp-tabs-tab', {
-                  'idp-tabs-tab--active': isActive,
-                  'idp-tabs-tab--disabled': item.disabled
-                })}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => handleTabClick(item)}
-              >
-                {item.icon && <span className="idp-tabs-tab__icon">{item.icon}</span>}
-                <span className="idp-tabs-tab__label">{item.label}</span>
-                {isClosable && !item.disabled && (
-                  <span className="idp-tabs-tab__close" onClick={(event) => handleClose(event, item)}>
-                    <Icon type="close" size={12} />
-                  </span>
-                )}
-              </div>
-            );
+            return renderTabContent(item, isActive, isClosable || false);
           })}
           {/* 卡片式页签的增加按钮 */}
           {type === 'card' && onAdd && (
             <div
               ref={addTabRef}
               className={classNames('idp-tabs-tab idp-tabs-tab--add', {
-                'sticky': isAddButtonSticky
+                'sticky': isAddButtonSticky === true
               })}
               role="tab"
               onClick={handleAddTab}
@@ -459,6 +608,26 @@ const Tabs: React.FC<TabsProps> = ({
         )}
       </div>
     );
+
+    if (draggable && !isCardType && (tabPlacement === 'top' || tabPlacement === 'bottom')) {
+      return (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={effectiveItems.map(item => item.key)}
+            strategy={horizontalListSortingStrategy}
+          >
+            {navContent}
+          </SortableContext>
+        </DndContext>
+      );
+    }
+
+    return navContent;
   };
 
   const renderContent = () => (

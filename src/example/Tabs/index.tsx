@@ -63,6 +63,13 @@ const TabsExample: React.FC = () => {
     { key: 'card-3', label: '日程', content: <div style={{ padding: '20px' }}>日程安排，管理个人和团队日程</div> }
   ]);
 
+  const [draggableTabs, setDraggableTabs] = useState<TabItem[]>([
+    { key: 'drag-1', label: '数据分析', content: <div style={{ padding: '20px' }}>数据分析仪表板</div> },
+    { key: 'drag-2', label: '用户管理', content: <div style={{ padding: '20px' }}>用户管理系统</div> },
+    { key: 'drag-3', label: '权限配置', content: <div style={{ padding: '20px' }}>权限配置中心</div> },
+    { key: 'drag-4', label: '系统日志', content: <div style={{ padding: '20px' }}>系统日志查看</div> }
+  ]);
+
   const handleAddCardTab = () => {
     const newTabIndex = cardTabs.length + 1;
     const newTab: TabItem = {
@@ -101,7 +108,9 @@ const TabsExample: React.FC = () => {
     { name: 'onAdd', type: '() => void', default: '-', description: '增加标签页回调（仅 card 类型支持）' },
     { name: 'className', type: 'string', default: '-', description: '自定义类名' },
     { name: 'style', type: 'React.CSSProperties', default: '-', description: '容器样式' },
-    { name: 'contentStyle', type: 'React.CSSProperties', default: '-', description: '内容区域样式' }
+    { name: 'contentStyle', type: 'React.CSSProperties', default: '-', description: '内容区域样式' },
+    { name: 'draggable', type: 'boolean', default: 'false', description: '是否启用拖拽功能（仅支持顶部和底部的 line 类型）' },
+    { name: 'onDragEnd', type: '(items: TabItem[]) => void', default: '-', description: '拖拽结束回调，返回新的 items 顺序' }
   ];
 
   const itemApiDataSource = [
@@ -150,6 +159,15 @@ const TabsExample: React.FC = () => {
             type="card"
             onClose={handleCloseCardTab}
             onAdd={handleAddCardTab}
+          />
+        </div>
+
+        <h4>可拖拽标签页</h4>
+        <div style={{ marginBottom: '20px' }}>
+          <Tabs
+            items={draggableTabs}
+            draggable
+            onDragEnd={(newItems) => setDraggableTabs(newItems)}
           />
         </div>
 
@@ -312,6 +330,35 @@ const DynamicTabsExample = () => {
         tabsClosable
       />
     </div>
+  );
+};`}
+        </SyntaxHighlighter>
+
+        <h4 style={{ marginTop: '20px' }}>可拖拽标签页</h4>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+{`import { useState } from 'react';
+import { Tabs } from '@zjpcy/simple-design';
+import type { TabItem } from '@zjpcy/simple-design/lib/Tabs/types';
+
+const DraggableTabsExample = () => {
+  const [tabs, setTabs] = useState<TabItem[]>([
+    { key: 'tab-1', label: '标签1', content: <div>内容1</div> },
+    { key: 'tab-2', label: '标签2', content: <div>内容2</div> },
+    { key: 'tab-3', label: '标签3', content: <div>内容3</div> },
+    { key: 'tab-4', label: '标签4', content: <div>内容4</div> }
+  ]);
+
+  const handleDragEnd = (newItems: TabItem[]) => {
+    setTabs(newItems);
+    console.log('新的标签顺序:', newItems.map(item => item.label));
+  };
+
+  return (
+    <Tabs 
+      items={tabs}
+      draggable  // 启用拖拽功能
+      onDragEnd={handleDragEnd}  // 拖拽结束回调
+    />
   );
 };`}
         </SyntaxHighlighter>

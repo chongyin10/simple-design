@@ -266,6 +266,28 @@
   margin-left: 6px;
 }
 
+/* 拖拽手柄 */
+.idp-tabs-tab__drag-handle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+/* 拖拽中的样式 */
+.idp-tabs-tab--dragging {
+  opacity: 0.5;
+  cursor: grabbing !important;
+}
+
+/* 拖拽占位符 */
+.idp-tabs-tab__placeholder {
+  background-color: rgba(22, 119, 255, 0.1);
+  border: 2px dashed #1677ff;
+  border-radius: 8px;
+  height: 100%;
+}
+
 .idp-tabs-content {
   min-height: 120px;
   margin-top: 0;
