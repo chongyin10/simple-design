@@ -29,6 +29,7 @@
   font-size: var(--pagination-font-size);
   color: var(--pagination-color);
   margin-top: 4px;
+  padding: 10px;
 }
 
 .idp-pagination.align-center {

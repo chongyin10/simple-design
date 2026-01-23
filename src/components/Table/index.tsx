@@ -219,6 +219,11 @@ const Table = ({
             style.zIndex = 5;
         }
 
+        const lastFixedLeftIndex = fixedLeftColumns.length ? fixedLeftColumns.length - 1 : -1;
+        const firstFixedRightIndex = fixedRightColumns.length ? fixedLeftColumns.length + normalColumns.length : -1;
+        const shouldShowLeftShadow = (column.fixed === 'start' || column.fixed === true) && colIndex === lastFixedLeftIndex;
+        const shouldShowRightShadow = column.fixed === 'end' && colIndex === firstFixedRightIndex;
+
         let content = column.dataIndex ? record[column.dataIndex] : null;
 
         if (column.render) {
@@ -226,7 +231,11 @@ const Table = ({
         }
 
         return (
-            <td key={column.key || column.dataIndex || column._index} style={style}>
+            <td
+                key={column.key || column.dataIndex || column._index}
+                style={style}
+                className={`${shouldShowLeftShadow ? 'idp-table-fixed-left-shadow' : ''}${shouldShowRightShadow ? ' idp-table-fixed-right-shadow' : ''}`}
+            >
                 {content}
             </td>
         );
@@ -239,6 +248,7 @@ const Table = ({
     const bodyStyle: React.CSSProperties = {
         maxHeight: scroll.y ? (typeof scroll.y === 'number' ? `${scroll.y}px` : scroll.y) : 'auto',
         overflowY: scroll.y ? 'auto' : 'visible',
+        overflowX: scroll.x ? 'auto' : 'visible',
     };
 
     const allColumns = [...fixedLeftColumns, ...normalColumns, ...fixedRightColumns];

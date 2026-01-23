@@ -3,6 +3,8 @@
   font-size: 14px;
   color: rgba(0, 0, 0, 0.88);
   background: #ffffff;
+  box-shadow: 0 2px 8px #00000021;
+  border-radius: 8px;
 }
 
 .custom-table-container.bordered {
@@ -20,20 +22,10 @@
 }
 
 .custom-table-header-inner {
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   scroll-behavior: auto;
   will-change: scroll-position;
-}
-
-.custom-table-header-inner::-webkit-scrollbar {
-  height: 0;
-  width: 0;
-}
-
-.custom-table-header-inner {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 .custom-table-body {
@@ -135,6 +127,19 @@
 .custom-table thead td[style*="position: sticky"] {
   top: 0;
   z-index: 10 !important;
+}
+
+/* 固定列阴影强调（仅表体） */
+.custom-table tbody td.idp-table-fixed-left-shadow {
+  background-color: #fff;
+  z-index: 6;
+  box-shadow: inset -3px 0px 12px -10px rgb(166 57 57 / 24%) !important
+}
+
+.custom-table tbody td.idp-table-fixed-right-shadow {
+  background-color: #fff;
+  z-index: 6;
+  box-shadow: inset 3px 0px 12px -10px rgb(166 57 57 / 24%) !important;
 }
 
 /* 分页样式 */
