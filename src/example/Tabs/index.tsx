@@ -14,7 +14,14 @@ const TabsExample: React.FC = () => {
 
   const [customTabs, setCustomTabs] = useState<TabItem[]>([
     { key: 'tab-1', label: '客户管理', content: <div>客户列表和管理界面</div>, closable: true },
-    { key: 'tab-2', label: '订单查询', content: <div>订单查询和统计</div>, closable: true }
+    { key: 'tab-2', label: '订单查询', content: <div>订单查询和统计</div>, closable: true },
+    { key: 'tab-3', label: '产品管理', content: <div>订单查询和统计</div>, closable: true },
+    { key: 'tab-4', label: '订单查询-1', content: <div>订单查询和统计</div>, closable: true },
+    { key: 'tab-5', label: '订单查询-2', content: <div>订单查询和统计</div>, closable: true },
+    { key: 'tab-6', label: '订单查询-3', content: <div>订单查询和统计</div>, closable: true },
+    { key: 'tab-7', label: '订单查询-4', content: <div>订单查询和统计</div>, closable: true },
+    { key: 'tab-8', label: '订单查询-5', content: <div>订单查询和统计</div>, closable: true },
+    { key: 'tab-9', label: '订单查询-6', content: <div>订单查询和统计</div>, closable: true }
   ]);
 
   const handleAddTab = () => {

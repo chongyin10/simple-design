@@ -84,14 +84,17 @@ const Tabs: React.FC<TabsProps> = ({
           height: undefined
         });
 
-        // 确保激活的tab在可视区域内
-        const tabLeft = activeTab.offsetLeft;
-        const tabRight = tabLeft + activeTab.offsetWidth;
-        const scrollLeft = container.scrollLeft;
-        const containerWidth = container.clientWidth;
+        // 只在非动画模式下（初始化、resize时）才自动滚动到可视区域
+        // 避免在用户手动滚动时产生冲突
+        if (!animate) {
+          const tabLeft = activeTab.offsetLeft;
+          const tabRight = tabLeft + activeTab.offsetWidth;
+          const scrollLeft = container.scrollLeft;
+          const containerWidth = container.clientWidth;
 
-        if (tabLeft < scrollLeft || tabRight > scrollLeft + containerWidth) {
-          activeTab.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+          if (tabLeft < scrollLeft || tabRight > scrollLeft + containerWidth) {
+            activeTab.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+          }
         }
       } else {
         setIndicatorStyle({
@@ -151,20 +154,28 @@ const Tabs: React.FC<TabsProps> = ({
     if (!tabsNavRef.current || isScrollingRef.current) return;
 
     const container = tabsNavRef.current;
-    const scrollAmount = 200; // 每次滚动的像素值
-    
+    const containerWidth = container.clientWidth;
+    const scrollAmount = Math.max(200, containerWidth * 0.6); // 每次滚动至少200px，或容器宽度的60%
+
     isScrollingRef.current = true;
-    
+
     if (direction === 'left') {
-      container.scrollLeft -= scrollAmount;
+      container.scrollTo({
+        left: container.scrollLeft - scrollAmount,
+        behavior: 'smooth'
+      });
     } else {
-      container.scrollLeft += scrollAmount;
+      container.scrollTo({
+        left: container.scrollLeft + scrollAmount,
+        behavior: 'smooth'
+      });
     }
-    
+
     // 重置滚动状态，允许下一次滚动
     setTimeout(() => {
       isScrollingRef.current = false;
-    }, 350); // 比CSS过渡时间稍长
+      checkOverflow(); // 滚动后更新按钮状态
+    }, 400);
   };
 
   useEffect(() => {
@@ -208,12 +219,8 @@ const Tabs: React.FC<TabsProps> = ({
       // 防抖处理，避免滚动期间频繁更新
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
-        checkOverflow();
-        // 滚动结束后更新indicator
-        if (currentActiveKey) {
-          updateIndicatorWithKey(currentActiveKey, false); // 滚动时不使用动画
-        }
-      }, 100);  // 增加延迟到100ms，确保滚动完全停止
+        checkOverflow(); // 只更新按钮状态，不更新indicator位置
+      }, 100);
     };
     
     const container = tabsNavRef.current;
