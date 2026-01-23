@@ -12,6 +12,7 @@ const Tabs: React.FC<TabsProps> = ({
   onClose,
   tabsClosable = false,
   tabPlacement = 'top',
+  type = 'line',
   className,
   style,
   contentStyle
@@ -122,17 +123,25 @@ const Tabs: React.FC<TabsProps> = ({
 
     const container = tabsNavRef.current;
     const isHorizontal = tabPlacement === 'top' || tabPlacement === 'bottom';
-    
+
+    // 卡片式页签不显示滚动按钮
+    if (type === 'card') {
+      setShowScrollButtons(false);
+      setCanScrollLeft(false);
+      setCanScrollRight(false);
+      return;
+    }
+
     if (isHorizontal) {
       // 精确计算是否有溢出，考虑小数点精度
       const hasOverflow = Math.ceil(container.scrollWidth) > Math.floor(container.clientWidth);
       setShowScrollButtons(hasOverflow);
-      
+
       if (hasOverflow) {
         // 检查是否可以向左滚动（当前滚动位置 > 0）
         const canLeft = container.scrollLeft > 1;
         setCanScrollLeft(canLeft);
-        
+
         // 检查是否可以向右滚动（当前滚动位置 + 容器宽度 < 内容宽度 - 1）
         const maxScroll = container.scrollWidth - container.clientWidth;
         const canRight = container.scrollLeft < maxScroll - 1;
@@ -148,7 +157,7 @@ const Tabs: React.FC<TabsProps> = ({
       setCanScrollLeft(false);
       setCanScrollRight(false);
     }
-  }, [tabPlacement]);
+  }, [tabPlacement, type]);
 
   const scrollTabs = (direction: 'left' | 'right') => {
     if (!tabsNavRef.current || isScrollingRef.current) return;
@@ -260,14 +269,15 @@ const Tabs: React.FC<TabsProps> = ({
 
   const renderNav = () => {
     const isHorizontal = tabPlacement === 'top' || tabPlacement === 'bottom';
-    
+    const isCardType = type === 'card';
+
     return (
       <div className="idp-tabs-nav-wrapper">
-        {isHorizontal && showScrollButtons && (
+        {isHorizontal && showScrollButtons && !isCardType && (
           <button
             className={classNames(
-              'idp-tabs-nav__button', 
-              'idp-tabs-nav__button--left', 
+              'idp-tabs-nav__button',
+              'idp-tabs-nav__button--left',
               {
                 'idp-tabs-nav__button--disabled': !canScrollLeft,
                 'idp-tabs-nav__button--visible': true
@@ -316,12 +326,12 @@ const Tabs: React.FC<TabsProps> = ({
           })}
           <div className="idp-tabs-indicator" style={indicatorStyle} />
         </div>
-        
-        {isHorizontal && showScrollButtons && (
+
+        {isHorizontal && showScrollButtons && !isCardType && (
           <button
             className={classNames(
-              'idp-tabs-nav__button', 
-              'idp-tabs-nav__button--right', 
+              'idp-tabs-nav__button',
+              'idp-tabs-nav__button--right',
               {
                 'idp-tabs-nav__button--disabled': !canScrollRight,
                 'idp-tabs-nav__button--visible': true
@@ -349,6 +359,7 @@ const Tabs: React.FC<TabsProps> = ({
       className={classNames(
         'idp-tabs',
         `idp-tabs--${tabPlacement}`,
+        `idp-tabs--${type}`,
         className
       )}
       style={style}

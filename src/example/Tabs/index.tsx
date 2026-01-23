@@ -75,7 +75,8 @@ const TabsExample: React.FC = () => {
     { name: 'onChange', type: '(key: string) => void', default: '-', description: '切换选项卡回调' },
     { name: 'onClose', type: '(key: string) => void', default: '-', description: '关闭选项卡回调' },
     { name: 'tabsClosable', type: 'boolean', default: 'false', description: '全局可关闭开关' },
-    { name: 'tabPlacement', type: "'top' | 'start' | 'end' | 'bottom'", default: "'top'", description: '标签页位置' },
+    { name: 'tabPlacement', type: "'top' | 'start' | 'end' | 'bottom'", default: "'top'", description: '标签页位置（仅 line 类型支持垂直布局）' },
+    { name: 'type', type: "'line' | 'card'", default: "'line'", description: '标签页类型' },
     { name: 'className', type: 'string', default: '-', description: '自定义类名' },
     { name: 'style', type: 'React.CSSProperties', default: '-', description: '容器样式' },
     { name: 'contentStyle', type: 'React.CSSProperties', default: '-', description: '内容区域样式' }
@@ -113,6 +114,11 @@ const TabsExample: React.FC = () => {
         <h4>可关闭 Tabs</h4>
         <div style={{ marginBottom: '20px' }}>
           <Tabs items={closableItems} onClose={handleClose} tabsClosable />
+        </div>
+
+        <h4>卡片式页签</h4>
+        <div style={{ marginBottom: '20px' }}>
+          <Tabs items={baseItems} type="card" />
         </div>
 
         <h4>容器内部使用</h4>

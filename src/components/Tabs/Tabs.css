@@ -13,6 +13,7 @@
 .idp-tabs--end {
   display: flex;
   align-items: flex-start;
+  gap: 0;
 }
 
 .idp-tabs--end {
@@ -25,6 +26,14 @@
   align-items: center;
   flex: 1;
   min-width: 0;
+}
+
+/* 垂直布局时的 nav-wrapper 样式 */
+.idp-tabs--start .idp-tabs-nav-wrapper,
+.idp-tabs--end .idp-tabs-nav-wrapper {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: unset;
 }
 
 .idp-tabs-nav {
@@ -47,6 +56,9 @@
   padding: 16px 4px;
   width: auto;
   overflow: visible;
+  flex: 0 0 auto;
+  min-width: auto;
+  max-width: none;
 }
 
 .idp-tabs--top .idp-tabs-nav,
@@ -176,6 +188,9 @@
 .idp-tabs--start .idp-tabs-tab,
 .idp-tabs--end .idp-tabs-tab {
   justify-content: flex-start;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .idp-tabs-tab:hover {
@@ -203,6 +218,7 @@
   width: 2px;
   height: auto;
   transition: top 0.5s cubic-bezier(0.4, 0, 0.2, 1), height 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 2px;
 }
 
 .idp-tabs--end .idp-tabs-indicator {
@@ -282,8 +298,101 @@
   flex: 1;
   border-radius: 0px 8px 8px 0px;
   margin-top: 0;
+  margin-left: 0;
+  min-height: 200px;
+  min-width: 0;
+  overflow: auto;
 }
 
 .idp-tabs--end .idp-tabs-content {
   border-radius: 8px 0px 0px 8px;
+}
+
+/* 卡片式页签样式 */
+.idp-tabs--card .idp-tabs-nav {
+  gap: 2px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0px;
+  margin-top: 10px;
+}
+
+.idp-tabs--card .idp-tabs-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px 8px 0px 0px;
+  color: rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.idp-tabs--card .idp-tabs-tab:hover:not(.idp-tabs-tab--disabled) {
+  color: #1677ff;
+  background: #f0f5ff;
+  border-color: #91d5ff;
+  box-shadow: 0 2px 4px rgba(22, 119, 255, 0.1);
+}
+
+.idp-tabs--card .idp-tabs-tab--active {
+  background: #1677ff;
+  color: #fff;
+  border-color: #1677ff;
+  border-bottom-color: #1677ff;
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.2),
+              0 1px 3px rgba(22, 119, 255, 0.15);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.idp-tabs--card .idp-tabs-tab--active:hover {
+  background: #4096ff;
+  border-color: #4096ff;
+}
+
+.idp-tabs--card .idp-tabs-tab--disabled {
+  background: #fafafa;
+  color: rgba(0, 0, 0, 0.25);
+  border-color: #e8e8e8;
+  cursor: not-allowed;
+}
+
+.idp-tabs--card .idp-tabs-tab--disabled:hover {
+  background: #fafafa;
+  color: rgba(0, 0, 0, 0.25);
+  border-color: #e8e8e8;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.idp-tabs--card .idp-tabs-tab__close {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.idp-tabs--card .idp-tabs-tab--active .idp-tabs-tab__close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.idp-tabs--card .idp-tabs-indicator {
+  display: none;
+}
+
+.idp-tabs--card .idp-tabs-content {
+  border-top: 1px solid #f0f0f0;
+  border-radius: 0 0 8px 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.15);
+  margin-top: -1px;
+  position: relative;
+  z-index: 2;
 }

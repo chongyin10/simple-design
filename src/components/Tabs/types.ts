@@ -11,6 +11,8 @@ export interface TabItem {
 
 export type TabPlacement = 'top' | 'start' | 'end' | 'bottom';
 
+export type TabType = 'line' | 'card';
+
 export interface TabsProps {
   items?: TabItem[];
   activeKey?: string;
@@ -19,6 +21,7 @@ export interface TabsProps {
   onClose?: (key: string) => void;
   tabsClosable?: boolean;
   tabPlacement?: TabPlacement;
+  type?: TabType;
   className?: string;
   style?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
