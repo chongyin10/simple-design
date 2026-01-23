@@ -29,6 +29,7 @@ import MenuExample from './Menu';
 import PaginationExample from './Pagination';
 import NavigationExample from './Navigation';
 import StepsExample from './Steps';
+import TabsExample from './Tabs';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -73,6 +74,7 @@ const App: React.FC = () => {
         { key: 'pagination', name: 'Pagination', description: '分页器组件', icon: '📄' },
         { key: 'navigation', name: 'Navigation', description: '导航组件', icon: '🧭' },
         { key: 'steps', name: 'Steps', description: '步骤条组件', icon: '📋' },
+        { key: 'tabs', name: 'Tabs', description: '选项卡组件', icon: '🗂️' },
         { key: 'api', name: 'API 参考', description: '所有组件的 API 文档', icon: '📋' },
     ];
 
@@ -99,6 +101,7 @@ const App: React.FC = () => {
         { key: 'pagination', name: 'Pagination', description: '分页器组件' },
         { key: 'navigation', name: 'Navigation', description: '导航组件' },
         { key: 'steps', name: 'Steps', description: '步骤条组件' },
+        { key: 'tabs', name: 'Tabs', description: '选项卡组件' },
         { key: 'empty', name: 'Empty', description: '空状态组件' },
         { key: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { key: 'input', name: 'Input', description: '输入框组件' },
@@ -305,6 +308,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <NavigationExample />;
             case 'steps':
                 return <StepsExample />;
+            case 'tabs':
+                return <TabsExample />;
             default:
                 return <ButtonExample />;
         }
