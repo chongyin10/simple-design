@@ -1,0 +1,242 @@
+.cascader {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.5715;
+    color: rgba(0, 0, 0, 0.88);
+    min-width: 180px;
+}
+
+.cascader-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 4px 11px;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    user-select: none;
+}
+
+.cascader:hover:not(.cascader-disabled) .cascader-trigger {
+    border-color: #4096ff;
+}
+
+.cascader.cascader-open .cascader-trigger {
+    border-color: #4096ff;
+    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
+}
+
+.cascader.cascader-disabled .cascader-trigger {
+    color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.04);
+    cursor: not-allowed;
+}
+
+.cascader-selection-placeholder {
+    color: rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cascader-selection-value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.cascader-selection-hidden {
+    display: none;
+}
+
+.cascader-arrow {
+    flex-shrink: 0;
+    margin-left: 5px;
+    color: rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.cascader-open .cascader-arrow {
+    transform: rotate(180deg);
+}
+
+.cascader-clear {
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    background: #fff;
+}
+
+.cascader-clear:hover {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.cascader-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1050;
+    min-width: 180px;
+    margin-top: 4px;
+    background-color: transparent;
+}
+
+.cascader-menus {
+    display: flex;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.cascader-menu {
+    position: relative;
+    min-width: 180px;
+    flex: 0 0 auto;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #f0f0f0;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    margin-left: -1px;
+    background-color: #fff;
+    box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cascader-menu:first-child {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px 0 0 8px;
+  margin-left: 0;
+}
+
+/* 空状态样式 */
+.cascader-menu-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.cascader-menu-empty .idp-empty {
+  padding: 0;
+}
+
+.cascader-menu-empty .idp-empty__icon-wrapper {
+  margin-bottom: 8px;
+}
+
+.cascader-menu-empty .idp-empty__description {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.cascader-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cascader-menu::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.cascader-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.cascader-menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+    line-height: 22px;
+}
+
+.cascader-menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.cascader-menu-item-active {
+    background-color: #e6f4ff;
+    color: #1677ff;
+}
+
+.cascader-menu-item-selected {
+    background-color: #1677ff;
+    color: #fff;
+}
+
+.cascader-menu-item-selected .cascader-menu-item-expand-icon {
+    color: #fff;
+}
+
+.cascader-menu-item-disabled {
+    color: rgba(0, 0, 0, 0.25);
+    cursor: not-allowed;
+}
+
+.cascader-menu-item-disabled:hover {
+    background-color: transparent;
+}
+
+.cascader-menu-item-content {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cascader-menu-item-expand-icon {
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* 尺寸变体 */
+.cascader-large .cascader-trigger {
+    min-height: 40px;
+    padding: 6.5px 11px;
+    font-size: 16px;
+}
+
+.cascader-small .cascader-trigger {
+    min-height: 24px;
+    padding: 0 7px;
+    font-size: 14px;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.cascader-dropdown {
+    animation: fadeIn 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+}

@@ -30,6 +30,7 @@ import PaginationExample from './Pagination';
 import NavigationExample from './Navigation';
 import StepsExample from './Steps';
 import TabsExample from './Tabs';
+import CascaderExample from './Cascader';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -69,6 +70,7 @@ const App: React.FC = () => {
         { key: 'space', name: 'Space', description: '组件间距设置', icon: '⚫' },
         { key: 'anchor', name: 'Anchor', description: '锚点导航组件', icon: '🔗' },
         { key: 'breadcrumb', name: 'Breadcrumb', description: '面包屑组件', icon: '📁' },
+        { key: 'cascader', name: 'Cascader', description: '级联选择器组件', icon: '🔀' },
         { key: 'dropdown', name: 'Dropdown', description: '下拉菜单组件', icon: '🔽' },
         { key: 'menu', name: 'Menu', description: '菜单组件', icon: '🍽️' },
         { key: 'pagination', name: 'Pagination', description: '分页器组件', icon: '📄' },
@@ -96,6 +98,7 @@ const App: React.FC = () => {
         { key: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
         { key: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
         { key: 'divider', name: 'Divider', description: '分割线组件' },
+        { key: 'cascader', name: 'Cascader', description: '级联选择器组件' },
         { key: 'dropdown', name: 'Dropdown', description: '下拉菜单组件' },
         { key: 'menu', name: 'Menu', description: '菜单组件' },
         { key: 'pagination', name: 'Pagination', description: '分页器组件' },
@@ -298,6 +301,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <AnchorExample />;
             case 'breadcrumb':
                 return <BreadcrumbExample />;
+            case 'cascader':
+                return <CascaderExample />;
             case 'dropdown':
                 return <DropdownExample />;
             case 'menu':
