@@ -581,9 +581,6 @@ const CascaderExample: React.FC = () => {
                 width={350}
                 dropdownWidth={500}
                 dropdownHeight={180}
-                dropdownStyle={{
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
-                }}
                 placeholder="组合使用多个参数"
               />
             </div>

@@ -65,6 +65,8 @@
     align-items: center;
     position: absolute;
     right: 10px;
+    width: 5px;
+    justify-content: center;
 }
 
 .cascader-open .cascader-arrow {
