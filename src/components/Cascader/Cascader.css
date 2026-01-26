@@ -63,6 +63,8 @@
     transition: transform 0.2s;
     display: flex;
     align-items: center;
+    position: absolute;
+    right: 10px;
 }
 
 .cascader-open .cascader-arrow {
@@ -71,15 +73,18 @@
 
 .cascader-clear {
     position: absolute;
-    right: 28px;
+    right: 18px;
     top: 50%;
     transform: translateY(-50%);
     color: rgba(0, 0, 0, 0.25);
     cursor: pointer;
     transition: color 0.2s;
     display: flex;
-    align-items: center;
     background: #fff;
+    height: 100%;
+    width: 18px;
+    align-items: center;
+    justify-content: center;
 }
 
 .cascader-clear:hover {
@@ -120,31 +125,31 @@
 }
 
 .cascader-menu:first-child {
-  border: 1px solid #f0f0f0;
-  border-radius: 8px 0 0 8px;
-  margin-left: 0;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px 0 0 8px;
+    margin-left: 0;
 }
 
 /* 空状态样式 */
 .cascader-menu-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0;
-  text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    text-align: center;
 }
 
 .cascader-menu-empty .idp-empty {
-  padding: 0;
+    padding: 0;
 }
 
 .cascader-menu-empty .idp-empty__icon-wrapper {
-  margin-bottom: 8px;
+    margin-bottom: 8px;
 }
 
 .cascader-menu-empty .idp-empty__description {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.45);
 }
 
 .cascader-menu::-webkit-scrollbar {
