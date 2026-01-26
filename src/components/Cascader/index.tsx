@@ -450,6 +450,61 @@ const Cascader: React.FC<CascaderProps> = ({
     setActivePath([]);
   }, [onChange, value, checkbox]);
 
+  // 处理删除单个选中项
+  const handleRemoveItem = useCallback((e: React.MouseEvent, option: CascaderOption) => {
+    e.stopPropagation();
+    if (!checkbox) return;
+
+    const newSelectedOptions = [...selectedOptions];
+    const optionValue = getOptionValue(option);
+
+    // 移除该选项
+    const optionIndex = newSelectedOptions.findIndex(
+      opt => getOptionValue(opt) === optionValue
+    );
+
+    if (optionIndex > -1) {
+      newSelectedOptions.splice(optionIndex, 1);
+
+      // 同时移除该选项的所有子孙项的选中
+      const filteredOptions = newSelectedOptions.filter(
+        selectedOpt => !isDescendantOf(selectedOpt, option)
+      );
+      newSelectedOptions.splice(0, newSelectedOptions.length, ...filteredOptions);
+
+      // 检查父级选项，如果父级选项没有其他子孙被选中，也删除父级
+      const pathOptions = getOptionPathOptions(option);
+      // 从根到父，不包含当前选项
+      for (let i = pathOptions.length - 2; i >= 0; i--) {
+        const parentOpt = pathOptions[i];
+        const parentValue = getOptionValue(parentOpt);
+
+        // 检查是否有其他子孙（不包括当前被删除的选项）被选中
+        const hasSelectedDescendants = newSelectedOptions.some(selectedOpt => {
+          if (getOptionValue(selectedOpt) === parentValue) return false;
+          return isDescendantOf(selectedOpt, parentOpt);
+        });
+
+        if (!hasSelectedDescendants) {
+          // 父级没有其他子孙被选中，移除父级
+          const parentIndex = newSelectedOptions.findIndex(
+            opt => getOptionValue(opt) === parentValue
+          );
+          if (parentIndex > -1) {
+            newSelectedOptions.splice(parentIndex, 1);
+          }
+        }
+      }
+
+      setSelectedOptions(newSelectedOptions);
+      const newValues = newSelectedOptions.map(opt => getOptionPath(opt));
+      onChange?.(newValues, newSelectedOptions);
+      if (value === undefined) {
+        setInternalValue(newValues);
+      }
+    }
+  }, [selectedOptions, checkbox, getOptionValue, getOptionPath, getOptionPathOptions, isDescendantOf, onChange, value]);
+
   // 处理容器点击
   const handleContainerClick = useCallback(() => {
     if (!disabled) {
@@ -688,9 +743,32 @@ const Cascader: React.FC<CascaderProps> = ({
         <span className={`cascader-selection-placeholder ${checkbox ? (selectedOptions.length > 0 ? 'cascader-selection-hidden' : '') : (internalValue.length > 0 && internalValue[0]?.length > 0 ? 'cascader-selection-hidden' : '')}`}>
           {placeholder}
         </span>
-        <span className={`cascader-selection-value ${checkbox ? (selectedOptions.length === 0 ? 'cascader-selection-hidden' : '') : (!internalValue[0] || internalValue[0].length === 0 ? 'cascader-selection-hidden' : '')}`}>
-          {getDisplayText()}
-        </span>
+        {checkbox ? (
+          // 多选模式：渲染带删除按钮的标签
+          <div className={`cascader-selection-value ${selectedOptions.length === 0 ? 'cascader-selection-hidden' : ''}`}>
+            {selectedOptions
+              .filter(opt => {
+                const children = getOptionChildren(opt);
+                return !children || children.length === 0;
+              })
+              .map(opt => {
+                const labels = getOptionPathLabels(opt);
+                return (
+                  <span key={getOptionValue(opt)} className="cascader-tag">
+                    <span className="cascader-tag-content">{labels.join('/')}</span>
+                    <span className="cascader-tag-close" onClick={(e) => !disabled && handleRemoveItem(e, opt)}>
+                      <Icon type="close" size={10} />
+                    </span>
+                  </span>
+                );
+              })}
+          </div>
+        ) : (
+          // 单选模式：渲染文本
+          <span className={`cascader-selection-value ${!internalValue[0] || internalValue[0].length === 0 ? 'cascader-selection-hidden' : ''}`}>
+            {getDisplayText()}
+          </span>
+        )}
         <span className="cascader-arrow">
           <Icon type="arrowDown" size={12} />
         </span>

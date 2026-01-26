@@ -55,6 +55,45 @@
     flex: 1;
     min-width: 0;
     max-width: calc(100% - 28px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.cascader-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px;
+    background-color: #f0f0f0;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.88);
+    max-width: -webkit-fill-available;
+}
+
+.cascader-tag-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 16px);
+}
+
+.cascader-tag-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.45);
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.cascader-tag-close:hover {
+    color: rgba(0, 0, 0, 0.88);
 }
 
 .cascader-selection-hidden {
