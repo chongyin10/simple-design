@@ -131,7 +131,7 @@ const Cascader: React.FC<CascaderProps> = ({
         valArray = [];
       }
       setInternalValue(valArray);
-      // 根据值路径查找所有选中的选项
+      // 根据值路径查找所有选中的选项（允许选中任何级别的菜单）
       const selected = valArray.map(path => findSelectedOptionsByPath(path));
       setSelectedOptions(selected
         .map(item => {
@@ -150,20 +150,53 @@ const Cascader: React.FC<CascaderProps> = ({
     }
   }, [value, defaultValue, checkbox, findSelectedOptionsByPath]);
 
+  // 获取选项路径的标签（从根到该选项）
+  const getOptionPathLabels = useCallback((option: CascaderOption): string[] => {
+    const labels: string[] = [];
+    const findLabels = (currentOptions: CascaderOption[], targetOption: CascaderOption): boolean => {
+      for (const opt of currentOptions) {
+        if (getOptionValue(opt) === getOptionValue(targetOption)) {
+          labels.push(getOptionLabel(opt));
+          return true;
+        }
+        const children = getOptionChildren(opt);
+        if (children && children.length > 0) {
+          if (findLabels(children, targetOption)) {
+            labels.unshift(getOptionLabel(opt));
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    findLabels(options, option);
+    return labels;
+  }, [options, getOptionValue, getOptionLabel, getOptionChildren]);
+
   // 根据值查找显示文本
   const getDisplayText = useCallback(() => {
     if (checkbox) {
-      // 多选模式：显示所有选中的选项标签
+      // 多选模式：只显示叶子节点（最后一级）的选中项完整路径
       if (!selectedOptions || selectedOptions.length === 0) {
         return placeholder;
       }
-      const labels = selectedOptions.map(opt => getOptionLabel(opt));
+      // 过滤出叶子节点（没有子项的节点）
+      const leafOptions = selectedOptions.filter(opt => {
+        const children = getOptionChildren(opt);
+        return !children || children.length === 0;
+      });
+
+      const pathLabels = leafOptions.map(opt => {
+        const labels = getOptionPathLabels(opt);
+        return labels.join('/');
+      });
 
       // 当选中项超过 3 个时，只显示前 3 个，剩余用 +N 表示
-      if (labels.length > 3) {
-        return labels.slice(0, 3).join(', ') + ` +${labels.length - 3}`;
+      if (pathLabels.length > 3) {
+        return pathLabels.slice(0, 3).join(', ') + ` +${pathLabels.length - 3}`;
       }
-      return labels.join(', ');
+      return pathLabels.join(', ');
     } else {
       // 单选模式
       if (internalValue.length === 0 || !internalValue[0] || internalValue[0].length === 0) {
@@ -172,12 +205,80 @@ const Cascader: React.FC<CascaderProps> = ({
       const selectedOptions = findSelectedOptions(internalValue[0]);
       return selectedOptions.map(opt => getOptionLabel(opt)).join(' / ');
     }
-  }, [internalValue, selectedOptions, checkbox, findSelectedOptions, getOptionLabel, placeholder]);
+  }, [internalValue, selectedOptions, checkbox, findSelectedOptions, getOptionLabel, placeholder, getOptionPathLabels, getOptionChildren]);
 
-  // 处理选项点击
-  const handleOptionClick = useCallback((option: CascaderOption, level: number) => {
+  // 获取选项的完整路径（从根到该选项）
+  const getOptionPath = useCallback((option: CascaderOption): any[] => {
+    const path: any[] = [];
+    const findPath = (currentOptions: CascaderOption[], targetOption: CascaderOption, currentPath: any[]): boolean => {
+      for (const opt of currentOptions) {
+        const newPath = [...currentPath, getOptionValue(opt)];
+        if (getOptionValue(opt) === getOptionValue(targetOption)) {
+          path.push(...newPath);
+          return true;
+        }
+        const children = getOptionChildren(opt);
+        if (children && children.length > 0) {
+          if (findPath(children, targetOption, newPath)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    findPath(options, option, []);
+    return path;
+  }, [options, getOptionValue, getOptionChildren]);
+
+  // 判断一个选项是否是另一个选项的子孙
+  const isDescendantOf = useCallback((descendant: CascaderOption, ancestor: CascaderOption): boolean => {
+    const ancestorPath = getOptionPath(ancestor);
+    const descendantPath = getOptionPath(descendant);
+
+    // 如果子孙路径以祖先路径开头，并且子孙路径更长，则说明是子孙
+    if (descendantPath.length <= ancestorPath.length) {
+      return false;
+    }
+
+    for (let i = 0; i < ancestorPath.length; i++) {
+      if (ancestorPath[i] !== descendantPath[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }, [getOptionPath]);
+
+  // 获取选项路径中的所有选项对象（从根到该选项）
+  const getOptionPathOptions = useCallback((option: CascaderOption): CascaderOption[] => {
+    const pathOptions: CascaderOption[] = [];
+    const findPath = (currentOptions: CascaderOption[], targetOption: CascaderOption, currentPath: CascaderOption[]): boolean => {
+      for (const opt of currentOptions) {
+        if (getOptionValue(opt) === getOptionValue(targetOption)) {
+          pathOptions.unshift(opt);
+          return true;
+        }
+        const children = getOptionChildren(opt);
+        if (children && children.length > 0) {
+          if (findPath(children, targetOption, [...currentPath, opt])) {
+            pathOptions.unshift(opt);
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    findPath(options, option, []);
+    return pathOptions;
+  }, [options, getOptionValue, getOptionChildren]);
+
+  // 处理多选模式下 checkbox 点击（触发选中/取消选中）
+  const handleCheckboxClick = useCallback((e: React.MouseEvent, option: CascaderOption, level: number) => {
+    e.stopPropagation();
+
     if (checkbox) {
-      // 多选模式：点击 checkbox 切换选中状态
       const newSelectedOptions = [...selectedOptions];
       const optionIndex = newSelectedOptions.findIndex(
         opt => getOptionValue(opt) === getOptionValue(option)
@@ -186,9 +287,23 @@ const Cascader: React.FC<CascaderProps> = ({
       if (optionIndex > -1) {
         // 已选中，取消选中
         newSelectedOptions.splice(optionIndex, 1);
+        // 同时取消该选项的所有子孙项的选中
+        const filteredOptions = newSelectedOptions.filter(
+          selectedOpt => !isDescendantOf(selectedOpt, option)
+        );
+        newSelectedOptions.splice(0, newSelectedOptions.length, ...filteredOptions);
       } else {
-        // 未选中，添加选中
-        newSelectedOptions.push(option);
+        // 未选中，添加选中及其所有父级菜单
+        const pathOptions = getOptionPathOptions(option);
+        // 将路径中的所有选项添加到选中列表
+        pathOptions.forEach(pathOpt => {
+          const pathOptIndex = newSelectedOptions.findIndex(
+            opt => getOptionValue(opt) === getOptionValue(pathOpt)
+          );
+          if (pathOptIndex === -1) {
+            newSelectedOptions.push(pathOpt);
+          }
+        });
       }
 
       setSelectedOptions(newSelectedOptions);
@@ -196,6 +311,70 @@ const Cascader: React.FC<CascaderProps> = ({
       onChange?.(newValues, newSelectedOptions);
       if (value === undefined) {
         setInternalValue(newValues);
+      }
+
+      // 展开/更新子菜单
+      const children = getOptionChildren(option);
+      if (children && children.length > 0) {
+        // 有子项，展开下一级
+        const newValue = [...activePath.slice(0, level), getOptionValue(option)];
+        setActivePath(newValue);
+      } else {
+        // 没有子项，清空当前路径之后的路径
+        const newValue = activePath.slice(0, level + 1);
+        setActivePath(newValue);
+      }
+    }
+  }, [selectedOptions, checkbox, getOptionValue, getOptionChildren, getOptionPath, getOptionPathOptions, isDescendantOf, onChange, value, activePath]);
+
+  // 处理选项点击
+  const handleOptionClick = useCallback((option: CascaderOption, level: number) => {
+    if (checkbox) {
+      // 多选模式：点击 checkbox 切换选中状态，同时展开子菜单
+      const newSelectedOptions = [...selectedOptions];
+      const optionIndex = newSelectedOptions.findIndex(
+        opt => getOptionValue(opt) === getOptionValue(option)
+      );
+
+      if (optionIndex > -1) {
+        // 已选中，取消选中
+        newSelectedOptions.splice(optionIndex, 1);
+        // 同时取消该选项的所有子孙项的选中
+        const filteredOptions = newSelectedOptions.filter(
+          selectedOpt => !isDescendantOf(selectedOpt, option)
+        );
+        newSelectedOptions.splice(0, newSelectedOptions.length, ...filteredOptions);
+      } else {
+        // 未选中，添加选中及其所有父级菜单
+        const pathOptions = getOptionPathOptions(option);
+        // 将路径中的所有选项添加到选中列表
+        pathOptions.forEach(pathOpt => {
+          const pathOptIndex = newSelectedOptions.findIndex(
+            opt => getOptionValue(opt) === getOptionValue(pathOpt)
+          );
+          if (pathOptIndex === -1) {
+            newSelectedOptions.push(pathOpt);
+          }
+        });
+      }
+
+      setSelectedOptions(newSelectedOptions);
+      const newValues = newSelectedOptions.map(opt => getOptionPath(opt));
+      onChange?.(newValues, newSelectedOptions);
+      if (value === undefined) {
+        setInternalValue(newValues);
+      }
+
+      // 展开/更新子菜单
+      const children = getOptionChildren(option);
+      if (children && children.length > 0) {
+        // 有子项，展开下一级
+        const newValue = [...activePath.slice(0, level), getOptionValue(option)];
+        setActivePath(newValue);
+      } else {
+        // 没有子项，清空当前路径之后的路径
+        const newValue = activePath.slice(0, level + 1);
+        setActivePath(newValue);
       }
     } else {
       // 单选模式
@@ -225,7 +404,7 @@ const Cascader: React.FC<CascaderProps> = ({
         setActivePath([]);
       }
     }
-  }, [activePath, selectedOptions, checkbox, getOptionValue, getOptionLabel, getOptionChildren, changeOnSelect, findSelectedOptions, onChange, value]);
+  }, [activePath, selectedOptions, checkbox, getOptionValue, getOptionLabel, getOptionChildren, changeOnSelect, findSelectedOptions, getOptionPath, getOptionPathOptions, isDescendantOf, onChange, value]);
 
   // 处理选项悬停
   const handleOptionHover = useCallback((option: CascaderOption, level: number) => {
@@ -235,29 +414,23 @@ const Cascader: React.FC<CascaderProps> = ({
     }
   }, [activePath, expandTrigger, getOptionValue]);
 
-  // 获取选项的完整路径（从根到该选项）
-  const getOptionPath = useCallback((option: CascaderOption): any[] => {
-    const path: any[] = [];
-    const findPath = (currentOptions: CascaderOption[], targetOption: CascaderOption, currentPath: any[]): boolean => {
-      for (const opt of currentOptions) {
-        const newPath = [...currentPath, getOptionValue(opt)];
-        if (getOptionValue(opt) === getOptionValue(targetOption)) {
-          path.push(...newPath);
-          return true;
-        }
-        const children = getOptionChildren(opt);
-        if (children && children.length > 0) {
-          if (findPath(children, targetOption, newPath)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
+  // 处理菜单项内容点击（只展开子菜单，不触发选中）
+  const handleContentClick = useCallback((e: React.MouseEvent, option: CascaderOption, level: number) => {
+    e.stopPropagation();
 
-    findPath(options, option, []);
-    return path;
-  }, [options, getOptionValue, getOptionChildren]);
+    if (checkbox) {
+      // 多选模式：只展开子菜单，不触发选中
+      const children = getOptionChildren(option);
+      if (children && children.length > 0) {
+        // 有子项，展开下一级
+        const newValue = [...activePath.slice(0, level), getOptionValue(option)];
+        setActivePath(newValue);
+      }
+    } else {
+      // 单选模式：使用原有的点击逻辑
+      handleOptionClick(option, level);
+    }
+  }, [checkbox, activePath, getOptionValue, getOptionChildren, handleOptionClick]);
 
   // 清除选择
   const handleClear = useCallback((e: React.MouseEvent) => {
@@ -382,20 +555,25 @@ const Cascader: React.FC<CascaderProps> = ({
             <li
               key={`${getOptionValue(option)}-${index}`}
               className={`cascader-menu-item ${isSelected ? 'cascader-menu-item-selected' : ''} ${isActive ? 'cascader-menu-item-active' : ''} ${isDisabled ? 'cascader-menu-item-disabled' : ''}`}
-              onClick={() => !isDisabled && handleOptionClick(option, level)}
+              onClick={() => !isDisabled && (checkbox ? undefined : handleOptionClick(option, level))}
               onMouseEnter={() => !isDisabled && handleOptionHover(option, level)}
             >
               {checkbox && (
-                <span className="cascader-menu-item-checkbox">
+                <span
+                  className="cascader-menu-item-checkbox"
+                  onClick={(e) => !isDisabled && handleCheckboxClick(e, option, level)}
+                >
                   <input
                     type="checkbox"
                     checked={isSelected}
                     readOnly
-                    onClick={(e) => e.stopPropagation()}
                   />
                 </span>
               )}
-              <span className="cascader-menu-item-content">
+              <span
+                className="cascader-menu-item-content"
+                onClick={(e) => !isDisabled && handleContentClick(e, option, level)}
+              >
                 {getOptionLabel(option)}
               </span>
               {hasChildren && (
