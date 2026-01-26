@@ -6,6 +6,7 @@
     line-height: 1.5715;
     color: rgba(0, 0, 0, 0.88);
     min-width: 180px;
+    max-width: 100%;
 }
 
 .cascader-trigger {
@@ -20,6 +21,7 @@
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     user-select: none;
+    overflow: hidden;
 }
 
 .cascader:hover:not(.cascader-disabled) .cascader-trigger {
@@ -42,6 +44,8 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    padding-right: 10px;
+    max-width: 100%;
 }
 
 .cascader-selection-value {
@@ -50,6 +54,7 @@
     text-overflow: ellipsis;
     flex: 1;
     min-width: 0;
+    max-width: calc(100% - 28px);
 }
 
 .cascader-selection-hidden {
@@ -101,6 +106,30 @@
     min-width: 180px;
     margin-top: 4px;
     background-color: transparent;
+}
+
+/* placement: bottomRight */
+.cascader-dropdown-bottomRight {
+    left: auto;
+    right: 0;
+}
+
+/* placement: topLeft */
+.cascader-dropdown-topLeft {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+
+/* placement: topRight */
+.cascader-dropdown-topRight {
+    top: auto;
+    bottom: 100%;
+    left: auto;
+    right: 0;
+    margin-top: 0;
+    margin-bottom: 4px;
 }
 
 .cascader-menus {
@@ -179,6 +208,27 @@
     line-height: 22px;
 }
 
+/* Checkbox 模式 */
+.cascader-menu-checkbox .cascader-menu-item {
+    padding-left: 32px;
+}
+
+.cascader-menu-item-checkbox {
+    position: absolute;
+    left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cascader-menu-item-checkbox input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
 .cascader-menu-item:hover {
     background-color: #deaff21c;
     color: #1677ff;
@@ -199,11 +249,12 @@
 }
 
 .cascader-menu-item-disabled {
-    color: rgba(0, 0, 0, 0.25);
+    color: rgba(0, 0, 0, 0.25) !important;
     cursor: not-allowed;
 }
 
 .cascader-menu-item-disabled:hover {
+    color: rgba(0, 0, 0, 0.25) !important;
     background-color: transparent;
 }
 

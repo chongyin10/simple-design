@@ -22,22 +22,19 @@ const Cascader: React.FC<CascaderProps> = ({
   dropdownWidth,
   dropdownHeight,
   dropdownStyle = {},
-  dropdownClassName = ''
+  dropdownClassName = '',
+  placement = 'bottomLeft',
+  checkbox = false,
+  autoWidth = false
 }) => {
   const [open, setOpen] = useState(false);
-  const [internalValue, setInternalValue] = useState<any[]>(value || defaultValue || []);
+  // 存储所有选中的叶子节点选项
+  const [selectedOptions, setSelectedOptions] = useState<CascaderOption[]>([]);
   const [activePath, setActivePath] = useState<any[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const { label = 'label', value: valueKey = 'value', children: childrenKey = 'children' } = fieldNames;
-
-  // 同步外部value
-  useEffect(() => {
-    if (value !== undefined) {
-      setInternalValue(value);
-    }
-  }, [value]);
 
   // 获取选项的值
   const getOptionValue = useCallback((option: CascaderOption) => {
@@ -54,11 +51,11 @@ const Cascader: React.FC<CascaderProps> = ({
     return option[childrenKey as keyof CascaderOption] || option.children;
   }, [childrenKey]);
 
-  // 根据值路径查找选中的选项
+  // 根据值路径查找选中的选项（用于单选）
   const findSelectedOptions = useCallback((valuePath: any[]): CascaderOption[] => {
     const result: CascaderOption[] = [];
     let currentOptions = options;
-    
+
     for (const val of valuePath) {
       const found = currentOptions.find(opt => getOptionValue(opt) === val);
       if (found) {
@@ -68,48 +65,167 @@ const Cascader: React.FC<CascaderProps> = ({
         return result;
       }
     }
-    
+
     return result;
   }, [options, getOptionValue, getOptionChildren]);
 
+  // 根据值路径查找选中的选项（用于多选）
+  const findSelectedOptionsByPath = useCallback((valuePath: any[]): CascaderOption[] => {
+    const result: CascaderOption[] = [];
+    let currentOptions = options;
+
+    for (const val of valuePath) {
+      const found = currentOptions.find(opt => getOptionValue(opt) === val);
+      if (found) {
+        result.push(found);
+        currentOptions = getOptionChildren(found) || [];
+      } else {
+        return result;
+      }
+    }
+
+    return result;
+  }, [options, getOptionValue, getOptionChildren]);
+
+  // 根据模式初始化内部值
+  const getInitialValue = useCallback((): any[][] => {
+    const val = value !== undefined ? value : defaultValue;
+    if (!val || (Array.isArray(val) && val.length === 0)) {
+      return [];
+    }
+    if (checkbox) {
+      // 多选模式：val 应该是 any[][] 类型
+      return Array.isArray(val) && Array.isArray(val[0]) ? val : [val];
+    } else {
+      // 单选模式：val 应该是 any[] 类型，需要包装成 [any[]]
+      return Array.isArray(val) && !Array.isArray(val[0]) ? [val] : [];
+    }
+  }, [value, defaultValue, checkbox]);
+  const [internalValue, setInternalValue] = useState<any[][]>(getInitialValue());
+
+  // 同步外部value
+  useEffect(() => {
+    const val = value !== undefined ? value : defaultValue;
+
+    if (!val) {
+      // 清空
+      setInternalValue([]);
+      setSelectedOptions([]);
+      return;
+    }
+
+    if (checkbox) {
+      // 多选模式
+      let valArray: any[][];
+      if (Array.isArray(val)) {
+        if (val.length === 0) {
+          valArray = [];
+        } else if (Array.isArray(val[0])) {
+          // 已经是多选格式 any[][]
+          valArray = val;
+        } else {
+          // 是单选格式 any[]，包装成多选格式
+          valArray = [val];
+        }
+      } else {
+        valArray = [];
+      }
+      setInternalValue(valArray);
+      // 根据值路径查找所有选中的选项
+      const selected = valArray.map(path => findSelectedOptionsByPath(path));
+      setSelectedOptions(selected
+        .map(item => {
+          if (!item || item.length === 0) return null;
+          return item[item.length - 1];
+        })
+        .filter((item): item is CascaderOption => item !== null));
+    } else {
+      // 单选模式
+      const valArray = Array.isArray(val) && !Array.isArray(val[0]) ? val : val[0];
+      if (valArray && valArray.length > 0) {
+        setInternalValue([valArray]);
+      } else {
+        setInternalValue([]);
+      }
+    }
+  }, [value, defaultValue, checkbox, findSelectedOptionsByPath]);
+
   // 根据值查找显示文本
   const getDisplayText = useCallback(() => {
-    if (internalValue.length === 0) {
-      return placeholder;
+    if (checkbox) {
+      // 多选模式：显示所有选中的选项标签
+      if (!selectedOptions || selectedOptions.length === 0) {
+        return placeholder;
+      }
+      const labels = selectedOptions.map(opt => getOptionLabel(opt));
+
+      // 当选中项超过 3 个时，只显示前 3 个，剩余用 +N 表示
+      if (labels.length > 3) {
+        return labels.slice(0, 3).join(', ') + ` +${labels.length - 3}`;
+      }
+      return labels.join(', ');
+    } else {
+      // 单选模式
+      if (internalValue.length === 0 || !internalValue[0] || internalValue[0].length === 0) {
+        return placeholder;
+      }
+      const selectedOptions = findSelectedOptions(internalValue[0]);
+      return selectedOptions.map(opt => getOptionLabel(opt)).join(' / ');
     }
-    
-    const selectedOptions = findSelectedOptions(internalValue);
-    return selectedOptions.map(opt => getOptionLabel(opt)).join(' / ');
-  }, [internalValue, findSelectedOptions, getOptionLabel, placeholder]);
+  }, [internalValue, selectedOptions, checkbox, findSelectedOptions, getOptionLabel, placeholder]);
 
   // 处理选项点击
   const handleOptionClick = useCallback((option: CascaderOption, level: number) => {
-    const newValue = [...activePath.slice(0, level), getOptionValue(option)];
-    setActivePath(newValue);
+    if (checkbox) {
+      // 多选模式：点击 checkbox 切换选中状态
+      const newSelectedOptions = [...selectedOptions];
+      const optionIndex = newSelectedOptions.findIndex(
+        opt => getOptionValue(opt) === getOptionValue(option)
+      );
 
-    const children = getOptionChildren(option);
-    
-    if (children && children.length > 0) {
-      // 有子项，不关闭，继续展开下一级
-      if (changeOnSelect) {
-        // 如果允许选中任意级别，触发onChange
+      if (optionIndex > -1) {
+        // 已选中，取消选中
+        newSelectedOptions.splice(optionIndex, 1);
+      } else {
+        // 未选中，添加选中
+        newSelectedOptions.push(option);
+      }
+
+      setSelectedOptions(newSelectedOptions);
+      const newValues = newSelectedOptions.map(opt => getOptionPath(opt));
+      onChange?.(newValues, newSelectedOptions);
+      if (value === undefined) {
+        setInternalValue(newValues);
+      }
+    } else {
+      // 单选模式
+      const newValue = [...activePath.slice(0, level), getOptionValue(option)];
+      setActivePath(newValue);
+
+      const children = getOptionChildren(option);
+
+      if (children && children.length > 0) {
+        // 有子项，不关闭，继续展开下一级
+        if (changeOnSelect) {
+          // 如果允许选中任意级别，触发onChange
+          const selectedOptions = findSelectedOptions(newValue);
+          onChange?.(newValue, selectedOptions);
+          if (value === undefined) {
+            setInternalValue([newValue]);
+          }
+        }
+      } else {
+        // 没有子项，选中并关闭
         const selectedOptions = findSelectedOptions(newValue);
         onChange?.(newValue, selectedOptions);
         if (value === undefined) {
-          setInternalValue(newValue);
+          setInternalValue([newValue]);
         }
+        setOpen(false);
+        setActivePath([]);
       }
-    } else {
-      // 没有子项，选中并关闭
-      const selectedOptions = findSelectedOptions(newValue);
-      onChange?.(newValue, selectedOptions);
-      if (value === undefined) {
-        setInternalValue(newValue);
-      }
-      setOpen(false);
-      setActivePath([]);
     }
-  }, [activePath, getOptionValue, getOptionChildren, changeOnSelect, findSelectedOptions, onChange, value]);
+  }, [activePath, selectedOptions, checkbox, getOptionValue, getOptionLabel, getOptionChildren, changeOnSelect, findSelectedOptions, onChange, value]);
 
   // 处理选项悬停
   const handleOptionHover = useCallback((option: CascaderOption, level: number) => {
@@ -119,15 +235,47 @@ const Cascader: React.FC<CascaderProps> = ({
     }
   }, [activePath, expandTrigger, getOptionValue]);
 
+  // 获取选项的完整路径（从根到该选项）
+  const getOptionPath = useCallback((option: CascaderOption): any[] => {
+    const path: any[] = [];
+    const findPath = (currentOptions: CascaderOption[], targetOption: CascaderOption, currentPath: any[]): boolean => {
+      for (const opt of currentOptions) {
+        const newPath = [...currentPath, getOptionValue(opt)];
+        if (getOptionValue(opt) === getOptionValue(targetOption)) {
+          path.push(...newPath);
+          return true;
+        }
+        const children = getOptionChildren(opt);
+        if (children && children.length > 0) {
+          if (findPath(children, targetOption, newPath)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    findPath(options, option, []);
+    return path;
+  }, [options, getOptionValue, getOptionChildren]);
+
   // 清除选择
   const handleClear = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    onChange?.([], []);
-    if (value === undefined) {
-      setInternalValue([]);
+    if (checkbox) {
+      onChange?.([], []);
+      setSelectedOptions([]);
+      if (value === undefined) {
+        setInternalValue([]);
+      }
+    } else {
+      onChange?.([], []);
+      if (value === undefined) {
+        setInternalValue([]);
+      }
     }
     setActivePath([]);
-  }, [onChange, value]);
+  }, [onChange, value, checkbox]);
 
   // 处理容器点击
   const handleContainerClick = useCallback(() => {
@@ -177,20 +325,29 @@ const Cascader: React.FC<CascaderProps> = ({
 
   // 初始化activePath
   useEffect(() => {
-    if (open && internalValue.length > 0) {
-      setActivePath(internalValue);
-    } else if (!open) {
-      setActivePath([]);
+    if (!checkbox) {
+      if (open && internalValue.length > 0 && internalValue[0]) {
+        setActivePath(internalValue[0]);
+      } else if (!open) {
+        setActivePath([]);
+      }
     }
-  }, [open, internalValue]);
+  }, [open, internalValue, checkbox]);
 
-  // 判断选项是否被选中
-  const isOptionSelected = useCallback((option: CascaderOption, level: number) => {
-    if (level >= internalValue.length) {
+  // 判断选项是否被选中（多选模式）
+  const isOptionSelectedInCheckbox = useCallback((option: CascaderOption) => {
+    if (!checkbox) return false;
+    return selectedOptions.some(opt => getOptionValue(opt) === getOptionValue(option));
+  }, [selectedOptions, checkbox, getOptionValue]);
+
+  // 判断选项是否被选中（单选模式）
+  const isOptionSelectedInSingle = useCallback((option: CascaderOption, level: number) => {
+    if (checkbox) return false;
+    if (level >= internalValue.length || !internalValue[0]) {
       return false;
     }
-    return internalValue[level] === getOptionValue(option);
-  }, [internalValue, getOptionValue]);
+    return internalValue[0][level] === getOptionValue(option);
+  }, [internalValue, checkbox, getOptionValue]);
 
   // 判断选项是否处于激活路径中
   const isOptionActive = useCallback((option: CascaderOption, level: number) => {
@@ -214,9 +371,9 @@ const Cascader: React.FC<CascaderProps> = ({
     }
 
     return (
-      <ul className={`cascader-menu cascader-menu-${level}`}>
+      <ul className={`cascader-menu cascader-menu-${level} ${checkbox ? 'cascader-menu-checkbox' : ''}`}>
         {optionsAtLevel.map((option, index) => {
-          const isSelected = isOptionSelected(option, level);
+          const isSelected = checkbox ? isOptionSelectedInCheckbox(option) : isOptionSelectedInSingle(option, level);
           const isActive = isOptionActive(option, level);
           const hasChildren = getOptionChildren(option) && getOptionChildren(option)!.length > 0;
           const isDisabled = option.disabled;
@@ -228,6 +385,16 @@ const Cascader: React.FC<CascaderProps> = ({
               onClick={() => !isDisabled && handleOptionClick(option, level)}
               onMouseEnter={() => !isDisabled && handleOptionHover(option, level)}
             >
+              {checkbox && (
+                <span className="cascader-menu-item-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    readOnly
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </span>
+              )}
               <span className="cascader-menu-item-content">
                 {getOptionLabel(option)}
               </span>
@@ -271,17 +438,56 @@ const Cascader: React.FC<CascaderProps> = ({
 
   // 计算触发器宽度
   const triggerStyle = useCallback(() => {
+    const baseStyle = { ...style };
+
     if (width) {
-      return { ...style, width: typeof width === 'number' ? `${width}px` : width };
+      baseStyle.width = typeof width === 'number' ? `${width}px` : width;
     }
-    return style;
-  }, [width, style]);
+
+    // 默认情况下禁止自动扩展宽度，除非显式设置 autoWidth = true
+    if (!autoWidth && !width) {
+      baseStyle.minWidth = '180px';
+      baseStyle.maxWidth = '100%';
+    } else if (autoWidth && !width) {
+      // autoWidth 为 true 时，允许自动扩展，但设置一个最小宽度
+      baseStyle.minWidth = '180px';
+    } else if (!autoWidth && width) {
+      // 设置了固定宽度且 autoWidth 为 false，确保不会扩展
+      baseStyle.maxWidth = typeof width === 'number' ? `${width}px` : width;
+    }
+
+    return baseStyle;
+  }, [width, style, autoWidth]);
 
   // 计算下拉框样式
   const computedDropdownStyle = useCallback(() => {
     const baseStyle: React.CSSProperties = {
       ...dropdownStyle
     };
+
+    // 根据 placement 设置位置
+    switch (placement) {
+      case 'bottomLeft':
+        baseStyle.top = '100%';
+        baseStyle.left = '0';
+        baseStyle.marginTop = '4px';
+        break;
+      case 'bottomRight':
+        baseStyle.top = '100%';
+        baseStyle.right = '0';
+        baseStyle.marginTop = '4px';
+        break;
+      case 'topLeft':
+        baseStyle.bottom = '100%';
+        baseStyle.left = '0';
+        baseStyle.marginBottom = '4px';
+        break;
+      case 'topRight':
+        baseStyle.bottom = '100%';
+        baseStyle.right = '0';
+        baseStyle.marginBottom = '4px';
+        break;
+    }
 
     if (dropdownWidth) {
       baseStyle.width = typeof dropdownWidth === 'number' ? `${dropdownWidth}px` : dropdownWidth;
@@ -292,7 +498,7 @@ const Cascader: React.FC<CascaderProps> = ({
     }
 
     return baseStyle;
-  }, [dropdownWidth, dropdownHeight, dropdownStyle]);
+  }, [dropdownWidth, dropdownHeight, dropdownStyle, placement]);
 
   return (
     <div
@@ -301,16 +507,16 @@ const Cascader: React.FC<CascaderProps> = ({
       style={triggerStyle()}
     >
       <div className="cascader-trigger" onClick={handleContainerClick}>
-        <span className={`cascader-selection-placeholder ${internalValue.length > 0 ? 'cascader-selection-hidden' : ''}`}>
+        <span className={`cascader-selection-placeholder ${checkbox ? (selectedOptions.length > 0 ? 'cascader-selection-hidden' : '') : (internalValue.length > 0 && internalValue[0]?.length > 0 ? 'cascader-selection-hidden' : '')}`}>
           {placeholder}
         </span>
-        <span className={`cascader-selection-value ${internalValue.length === 0 ? 'cascader-selection-hidden' : ''}`}>
+        <span className={`cascader-selection-value ${checkbox ? (selectedOptions.length === 0 ? 'cascader-selection-hidden' : '') : (!internalValue[0] || internalValue[0].length === 0 ? 'cascader-selection-hidden' : '')}`}>
           {getDisplayText()}
         </span>
         <span className="cascader-arrow">
           <Icon type="arrowDown" size={12} />
         </span>
-        {allowClear && internalValue.length > 0 && !disabled && (
+        {allowClear && (checkbox ? selectedOptions.length > 0 : (internalValue.length > 0 && internalValue[0]?.length > 0)) && !disabled && (
           <span className="cascader-clear" onClick={handleClear}>
             <Icon type="close" size={12} />
           </span>
@@ -318,7 +524,7 @@ const Cascader: React.FC<CascaderProps> = ({
       </div>
 
       {open && (
-        <div className={`cascader-dropdown ${dropdownClassName}`} ref={menuRef} style={computedDropdownStyle()}>
+        <div className={`cascader-dropdown cascader-dropdown-${placement} ${dropdownClassName}`} ref={menuRef} style={computedDropdownStyle()}>
           <div className="cascader-menus" style={{ width: dropdownWidth ? undefined : `${getMenuCount() * 180}px` }}>
             {Array.from({ length: getMenuCount() }).map((_, level) => renderOptions(level))}
           </div>

@@ -149,6 +149,7 @@ const CascaderExample: React.FC = () => {
   const [value2, setValue2] = useState<any[]>([]);
   const [value3, setValue3] = useState<any[]>([]);
   const [value4, setValue4] = useState<any[]>(['zhejiang', 'hangzhou', 'xihu']);
+  const [checkboxValue, setCheckboxValue] = useState<any[][]>([]);
 
   const handleChange = (value: any[], selectedOptions: any[]) => {
     console.log('选中的值:', value);
@@ -168,6 +169,13 @@ const CascaderExample: React.FC = () => {
     setValue4(value);
   };
 
+  const handleCheckboxChange = (value: any[][], selectedOptions: any[]) => {
+    console.log('多选选中的值:', value);
+    console.log('多选选中的选项:', selectedOptions);
+    console.log('selectedOptions:', selectedOptions);
+    setCheckboxValue(value);
+  };
+
   const apiColumns: Column[] = [
     { dataIndex: 'name', title: '属性名', width: '150px' },
     { dataIndex: 'type', title: '类型', width: '200px' },
@@ -176,7 +184,7 @@ const CascaderExample: React.FC = () => {
   ];
 
   const apiDataSource = [
-    { name: 'value', type: 'any[]', default: '[]', description: '当前选中的值' },
+    { name: 'value', type: 'any[]', default: '[]', description: '当前选中的值（多选模式下为多个值路径的数组）' },
     { name: 'defaultValue', type: 'any[]', default: '[]', description: '默认选中的值' },
     { name: 'onChange', type: '(value, selectedOptions) => void', default: '-', description: '选项改变时的回调' },
     { name: 'options', type: 'CascaderOption[]', default: '[]', description: '可选项数据源' },
@@ -191,7 +199,9 @@ const CascaderExample: React.FC = () => {
     { name: 'dropdownWidth', type: 'number | string', default: '-', description: '下拉框宽度' },
     { name: 'dropdownHeight', type: 'number | string', default: '-', description: '下拉框高度' },
     { name: 'dropdownStyle', type: 'CSSProperties', default: '-', description: '下拉框样式对象' },
-    { name: 'dropdownClassName', type: 'string', default: '-', description: '下拉框的自定义类名' }
+    { name: 'dropdownClassName', type: 'string', default: '-', description: '下拉框的自定义类名' },
+    { name: 'placement', type: 'bottomLeft | bottomRight | topLeft | topRight', default: '\'bottomLeft\'', description: '下拉菜单的弹出位置' },
+    { name: 'checkbox', type: 'boolean', default: 'false', description: '是否启用多选模式（启用后显示复选框，支持多选）' }
   ];
 
   const optionColumns: Column[] = [
@@ -303,6 +313,44 @@ const CascaderExample: React.FC = () => {
                   }
                 ]}
                 placeholder="禁用某些选项"
+              />
+            </div>
+          </div>
+        </Flex>
+      </div>
+
+      {/* 多选模式 */}
+      <div style={{ marginBottom: '40px' }}>
+        <h3>多选模式</h3>
+        <p style={{ color: '#666', marginBottom: '16px' }}>
+          通过设置 <code>checkbox</code> 属性为 true，启用多选模式，支持同时选择多个选项
+        </p>
+        <Flex direction="column" gap="middle">
+          <div>
+            <h4>基础多选</h4>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                value={checkboxValue}
+                onChange={handleCheckboxChange}
+                checkbox
+                placeholder="请选择多个地区"
+              />
+            </div>
+            <p style={{ color: '#666', marginTop: '8px' }}>
+              已选择 {checkboxValue.length} 个选项
+            </p>
+          </div>
+          <div>
+            <h4>多选 + 宽度</h4>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                value={checkboxValue}
+                onChange={handleCheckboxChange}
+                checkbox
+                width={300}
+                placeholder="多选且限制宽度"
               />
             </div>
           </div>
@@ -549,6 +597,96 @@ const CascaderExample: React.FC = () => {
           <div>
             <h4>设置下拉框高度</h4>
             <p style={{ color: '#666', marginBottom: '8px' }}>
+              下拉框超过指定高度时会出现滚动条
+            </p>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                dropdownHeight={180}
+                placeholder="下拉框高度设置为180px"
+              />
+            </div>
+          </div>
+        </Flex>
+      </div>
+
+      {/* 弹出位置 */}
+      <div style={{ marginBottom: '40px' }}>
+        <h3>弹出位置</h3>
+        <p style={{ color: '#666', marginBottom: '16px' }}>
+          支持 4 个弹出位置：bottomLeft（默认）、bottomRight、topLeft、topRight
+        </p>
+        <Flex direction="column" gap="middle">
+          <div>
+            <h4>bottomLeft（默认）</h4>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                placement="bottomLeft"
+                placeholder="左下方弹出"
+              />
+            </div>
+          </div>
+          <div>
+            <h4>bottomRight</h4>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                placement="bottomRight"
+                placeholder="右下方弹出"
+              />
+            </div>
+          </div>
+          <div>
+            <h4>topLeft</h4>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                placement="topLeft"
+                placeholder="左上方弹出"
+              />
+            </div>
+          </div>
+          <div>
+            <h4>topRight</h4>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                placement="topRight"
+                placeholder="右上方弹出"
+              />
+            </div>
+          </div>
+        </Flex>
+      </div>
+
+      {/* 组合使用 */}
+      <div style={{ marginBottom: '40px' }}>
+        <h3>组合使用</h3>
+        <Flex direction="column" gap="middle">
+          <div>
+            <h4>宽度 + 高度</h4>
+            <div style={{ marginTop: '16px' }}>
+              <Cascader
+                options={options}
+                width={350}
+                dropdownWidth={500}
+                dropdownHeight={180}
+                placement="bottomRight"
+                placeholder="组合使用多个参数"
+              />
+            </div>
+          </div>
+        </Flex>
+      </div>
+
+      {/* 尺寸控制 */}
+      <div style={{ marginBottom: '40px' }}>
+        <h3>尺寸控制</h3>
+        <Flex direction="column" gap="middle">
+          <div>
+            <h4>设置下拉框高度</h4>
+            <p style={{ color: '#666', marginBottom: '8px' }}>
               控制下拉菜单的最大高度，超过后显示滚动条
             </p>
             <div style={{ marginTop: '16px' }}>
@@ -678,6 +816,52 @@ function App() {
     children: 'subItems'
   }}
   placeholder="自定义字段名"
+/>`}
+        </SyntaxHighlighter>
+
+        <h3 style={{ marginTop: '24px' }}>多选模式</h3>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus}>
+{`const [value, setValue] = useState<any[]>([]);
+
+const handleChange = (value: any[], selectedOptions: any[]) => {
+  console.log('选中的值:', value);
+  console.log('选中的选项:', selectedOptions);
+  setValue(value);
+};
+
+<Cascader
+  options={options}
+  value={value}
+  onChange={handleChange}
+  checkbox
+  placeholder="请选择多个地区"
+/>`}
+        </SyntaxHighlighter>
+
+        <h3 style={{ marginTop: '24px' }}>弹出位置</h3>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus}>
+{`<Cascader
+  options={options}
+  placement="bottomLeft"
+  placeholder="左下方弹出（默认）"
+/>
+
+<Cascader
+  options={options}
+  placement="bottomRight"
+  placeholder="右下方弹出"
+/>
+
+<Cascader
+  options={options}
+  placement="topLeft"
+  placeholder="左上方弹出"
+/>
+
+<Cascader
+  options={options}
+  placement="topRight"
+  placeholder="右上方弹出"
 />`}
         </SyntaxHighlighter>
       </div>

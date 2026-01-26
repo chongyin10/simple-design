@@ -32,4 +32,7 @@ export interface CascaderProps {
   dropdownHeight?: number | string;
   dropdownStyle?: React.CSSProperties;
   dropdownClassName?: string;
+  placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight';
+  checkbox?: boolean;
+  autoWidth?: boolean;
 }

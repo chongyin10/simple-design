@@ -82,7 +82,8 @@
     "classnames": "^2.3.0",
     "prismjs": "^1.30.0",
     "react-color": "^2.19.3",
-    "react-syntax-highlighter": "^16.1.0"
+    "react-syntax-highlighter": "^16.1.0",
+    "styled-components": "^6.3.8"
   },
   "repository": {
     "type": "git",
