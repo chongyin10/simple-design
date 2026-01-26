@@ -180,7 +180,8 @@
 }
 
 .cascader-menu-item:hover {
-    background-color: rgba(0, 0, 0, 0.04);
+    background-color: #deaff21c;
+    color: #1677ff;
 }
 
 .cascader-menu-item-active {
@@ -188,9 +189,9 @@
     color: #1677ff;
 }
 
-.cascader-menu-item-selected {
-    background-color: #1677ff;
-    color: #fff;
+.cascader-menu-item-selected.cascader-menu-item-active {
+    background-color: #e6f4ff;
+    color: #1677ff;
 }
 
 .cascader-menu-item-selected .cascader-menu-item-expand-icon {
