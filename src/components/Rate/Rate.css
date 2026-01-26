@@ -1,0 +1,99 @@
+.rate {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 5px;
+}
+
+.rate.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.rate-star {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  user-select: none;
+}
+
+.rate-star:hover {
+  transform: scale(1.15);
+}
+
+.rate.disabled .rate-star:hover {
+  transform: none;
+}
+
+.rate-star-bg {
+  display: block;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, color, opacity;
+  pointer-events: none; /* 背景图标不响应事件 */
+}
+
+.rate-star-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  pointer-events: none; /* 前景图标不响应事件 */
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width, opacity;
+}
+
+.rate-star-fill.half {
+  width: 50%;
+  opacity: 1;
+}
+
+.rate-star-fill.full {
+  width: 100%;
+  opacity: 1;
+}
+
+/* 确保空星状态完全隐藏 */
+.rate-star-fill:not(.half):not(.full) {
+  width: 0;
+  opacity: 0;
+}
+
+.rate-star-fill .rate-star-icon {
+  flex-shrink: 0;
+}
+
+/* 左半区域 - 控制半星 */
+.rate-star-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2; /* 确保在图标上方 */
+}
+
+/* 右半区域 - 控制全星 */
+.rate-star-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2; /* 确保在图标上方 */
+}
+
+.rate.disabled .rate-star-left,
+.rate.disabled .rate-star-right {
+  cursor: not-allowed;
+}
