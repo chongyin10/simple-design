@@ -4,6 +4,7 @@
   cursor: pointer;
   user-select: none;
   gap: 5px;
+  justify-content: center;
 }
 
 .rate.disabled {
@@ -21,7 +22,8 @@
   user-select: none;
 }
 
-.rate-star:hover {
+/* 只在默认星星模式下启用hover放大效果 */
+.rate-star-mode .rate-star:hover {
   transform: scale(1.15);
 }
 
@@ -94,6 +96,35 @@
 }
 
 .rate.disabled .rate-star-left,
-.rate.disabled .rate-star-right {
+.rate.disabled .rate-star-right,
+.rate.disabled .rate-character-full {
+  cursor: not-allowed;
+}
+
+
+/* chats 模式 */
+.rate-chats-mode .rate-star {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-size: inherit;
+}
+
+.rate-chats-mode .rate-chat-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: inherit;
+  border-radius: 2px;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rate-chats-mode.disabled .rate-chat-item {
+  background-color: transparent !important;
   cursor: not-allowed;
 }
