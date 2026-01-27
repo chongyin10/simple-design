@@ -12,6 +12,9 @@ export const Slider: React.FC<SliderProps> = ({
   marks = {},
   showValue = false,
   transitionSpeed = 300,
+  trackColor = '#1890ff',
+  handleColor = '#1890ff',
+  gradient,
   onChange,
   onAfterChange,
   className = '',
@@ -152,18 +155,74 @@ export const Slider: React.FC<SliderProps> = ({
   const filledWidth = `${position * 100}%`;
   const handleLeft = `${position * 100}%`;
 
+  // 获取当前值对应的分段配置
+  const getSegmentConfig = useCallback((val: number) => {
+    const markEntries = Object.entries(marks).sort((a, b) => Number(a[0]) - Number(b[0]));
+    
+    for (let i = 0; i < markEntries.length; i++) {
+      const [key, value] = markEntries[i];
+      const markValue = Number(key);
+      
+      if (val <= markValue) {
+        const config = typeof value === 'string' 
+          ? { trackColor: undefined, handleColor: undefined, mark: value }
+          : value;
+        return config;
+      }
+    }
+    
+    // 如果值大于所有标记点，使用最后一个标记点的配置
+    const lastEntry = markEntries[markEntries.length - 1];
+    if (lastEntry) {
+      const [_, value] = lastEntry;
+      return typeof value === 'string' 
+        ? { trackColor: undefined, handleColor: undefined, mark: value }
+        : value;
+    }
+    
+    return { trackColor: undefined, handleColor: undefined, mark: '' };
+  }, [marks]);
+
+  const currentSegment = getSegmentConfig(currentValue);
+  
+  // 获取 style 中的 CSS 变量值（如果存在）
+  const styleTrackColor = style && (style as any)['--slider-track-filled-bg-color'];
+  const styleHandleColor = style && (style as any)['--slider-handle-border-color'];
+  
+  // 判断是否可以使用 gradient
+  // 只有当 marks 中没有 trackColor、style 中没有 trackColor、没有 trackColor 参数时才使用
+  const canUseGradient = gradient && 
+    !currentSegment.trackColor && 
+    !styleTrackColor && 
+    trackColor === '#1890ff'; // 只有使用默认颜色时才启用渐变
+  
+  // 优先级：marks > style > SliderProps > gradient > 默认
+  const effectiveTrackColor = currentSegment.trackColor || styleTrackColor || trackColor;
+  const effectiveHandleColor = currentSegment.handleColor || styleHandleColor || handleColor;
+
   const markArray = Object.entries(marks)
-    .map(([key, label]) => ({
-      value: Number(key),
-      label,
-      position: getPositionFromValue(Number(key))
-    }))
+    .map(([key, value]) => {
+      const markValue = Number(key);
+      const markConfig = typeof value === 'string' 
+        ? { trackColor: undefined, handleColor: undefined, mark: value }
+        : value;
+      
+      return {
+        value: markValue,
+        label: markConfig.mark,
+        trackColor: markConfig.trackColor,
+        handleColor: markConfig.handleColor,
+        position: getPositionFromValue(markValue)
+      };
+    })
     .sort((a, b) => a.value - b.value);
 
   return (
     <div 
       className={`slider-container ${disabled ? 'disabled' : ''} ${className}`}
       style={{
+        ['--slider-track-filled-bg-color' as any]: effectiveTrackColor,
+        ['--slider-handle-border-color' as any]: effectiveHandleColor,
         ['--slider-track-filled-transition' as any]: `width ${transitionSpeed}ms ease`,
         ['--slider-handle-transition' as any]: `all ${transitionSpeed}ms ease`,
         ...style
@@ -177,7 +236,12 @@ export const Slider: React.FC<SliderProps> = ({
       >
         <div 
           className="slider-track-filled" 
-          style={{ width: filledWidth }}
+          style={{ 
+            width: filledWidth,
+            ...(canUseGradient && gradient ? {
+              background: `linear-gradient(to right, ${gradient.startColor}, ${gradient.endColor})`
+            } : {})
+          }}
         />
         <div
           className="slider-handle"
@@ -204,7 +268,10 @@ export const Slider: React.FC<SliderProps> = ({
             <div
               key={mark.value}
               className="slider-mark"
-              style={{ left: `${mark.position * 100}%` }}
+              style={{ 
+                left: `${mark.position * 100}%`,
+                color: mark.trackColor || undefined
+              }}
             >
               {mark.label}
             </div>
