@@ -1,15 +1,61 @@
+:root {
+  /* 禁用状态透明度 */
+  --rate-disabled-opacity: 0.6;
+  
+  /* 星星间距 */
+  --rate-star-gap: 5px;
+  
+  /* hover 放大比例 */
+  --rate-hover-scale: 1.15;
+  
+  /* 过渡动画时间 */
+  --rate-transition-fast: 0.2s;
+  --rate-transition-medium: 0.3s;
+  
+  /* 过渡动画曲线 */
+  --rate-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 半星宽度 */
+  --rate-half-width: 50%;
+  
+  /* 全星宽度 */
+  --rate-full-width: 100%;
+  
+  /* 空星宽度 */
+  --rate-empty-width: 0;
+  
+  /* 空星透明度 */
+  --rate-empty-opacity: 0;
+  
+  /* 层级索引 */
+  --rate-z-index: 2;
+  
+  /* 鼠标样式 */
+  --rate-cursor-pointer: pointer;
+  --rate-cursor-not-allowed: not-allowed;
+  
+  /* 指针事件 */
+  --rate-pointer-events-none: none;
+  
+  /* chats 模式尺寸 */
+  --rate-chats-size: 1em;
+  
+  /* chats 模式圆角 */
+  --rate-chats-radius: 2px;
+}
+
 .rate {
   display: inline-flex;
   align-items: center;
-  cursor: pointer;
+  cursor: var(--rate-cursor-pointer);
   user-select: none;
-  gap: 5px;
+  gap: var(--rate-star-gap);
   justify-content: center;
 }
 
 .rate.disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+  cursor: var(--rate-cursor-not-allowed);
+  opacity: var(--rate-disabled-opacity);
 }
 
 .rate-star {
@@ -17,14 +63,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--rate-transition-fast) var(--rate-transition-timing);
   will-change: transform;
   user-select: none;
 }
 
 /* 只在默认星星模式下启用hover放大效果 */
 .rate-star-mode .rate-star:hover {
-  transform: scale(1.15);
+  transform: scale(var(--rate-hover-scale));
 }
 
 .rate.disabled .rate-star:hover {
@@ -33,40 +79,40 @@
 
 .rate-star-bg {
   display: block;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--rate-transition-fast) var(--rate-transition-timing);
   will-change: transform, color, opacity;
-  pointer-events: none; /* 背景图标不响应事件 */
+  pointer-events: var(--rate-pointer-events-none); /* 背景图标不响应事件 */
 }
 
 .rate-star-fill {
   position: absolute;
   left: 0;
   top: 0;
-  width: 0;
+  width: var(--rate-empty-width);
   height: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  pointer-events: none; /* 前景图标不响应事件 */
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: var(--rate-pointer-events-none); /* 前景图标不响应事件 */
+  transition: width var(--rate-transition-medium) var(--rate-transition-timing), opacity var(--rate-transition-medium) var(--rate-transition-timing);
   will-change: width, opacity;
 }
 
 .rate-star-fill.half {
-  width: 50%;
+  width: var(--rate-half-width);
   opacity: 1;
 }
 
 .rate-star-fill.full {
-  width: 100%;
+  width: var(--rate-full-width);
   opacity: 1;
 }
 
 /* 确保空星状态完全隐藏 */
 .rate-star-fill:not(.half):not(.full) {
-  width: 0;
-  opacity: 0;
+  width: var(--rate-empty-width);
+  opacity: var(--rate-empty-opacity);
 }
 
 .rate-star-fill .rate-star-icon {
@@ -78,10 +124,10 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 50%;
+  width: var(--rate-half-width);
   height: 100%;
-  cursor: pointer;
-  z-index: 2; /* 确保在图标上方 */
+  cursor: var(--rate-cursor-pointer);
+  z-index: var(--rate-z-index); /* 确保在图标上方 */
 }
 
 /* 右半区域 - 控制全星 */
@@ -89,16 +135,16 @@
   position: absolute;
   right: 0;
   top: 0;
-  width: 50%;
+  width: var(--rate-half-width);
   height: 100%;
-  cursor: pointer;
-  z-index: 2; /* 确保在图标上方 */
+  cursor: var(--rate-cursor-pointer);
+  z-index: var(--rate-z-index); /* 确保在图标上方 */
 }
 
 .rate.disabled .rate-star-left,
 .rate.disabled .rate-star-right,
 .rate.disabled .rate-character-full {
-  cursor: not-allowed;
+  cursor: var(--rate-cursor-not-allowed);
 }
 
 
@@ -108,8 +154,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1em;
-  height: 1em;
+  width: var(--rate-chats-size);
+  height: var(--rate-chats-size);
   font-size: inherit;
 }
 
@@ -120,11 +166,11 @@
   width: 100%;
   height: 100%;
   font-size: inherit;
-  border-radius: 2px;
-  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--rate-chats-radius);
+  transition: color var(--rate-transition-fast) var(--rate-transition-timing);
 }
 
 .rate-chats-mode.disabled .rate-chat-item {
   background-color: transparent !important;
-  cursor: not-allowed;
+  cursor: var(--rate-cursor-not-allowed);
 }

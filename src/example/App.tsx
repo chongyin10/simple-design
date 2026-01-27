@@ -32,6 +32,7 @@ import StepsExample from './Steps';
 import TabsExample from './Tabs';
 import CascaderExample from './Cascader';
 import RateExample from './Rate';
+import SliderExample from './Slider';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -63,6 +64,7 @@ const App: React.FC = () => {
         { key: 'notification', name: 'Notification', description: '通知组件', icon: '🔔' },
         { key: 'radio', name: 'Radio', description: '单选框组件', icon: '🔘' },
         { key: 'select', name: 'Select', description: '选择器组件', icon: '🔽' },
+        { key: 'slider', name: 'Slider', description: '滑动条组件', icon: '🎚️' },
         { key: 'table', name: 'Table', description: '表格组件', icon: '📊' },
         { key: 'top', name: 'Top', description: '回到顶部组件', icon: '⬆️' },
         { key: 'typography', name: 'Typography', description: '排版组件', icon: '📝' },
@@ -118,6 +120,7 @@ const App: React.FC = () => {
         { key: 'notification', name: 'Notification', description: '通知组件' },
         { key: 'radio', name: 'Radio', description: '单选框组件' },
         { key: 'select', name: 'Select', description: '选择器组件' },
+        { key: 'slider', name: 'Slider', description: '滑动条组件' },
         { key: 'table', name: 'Table', description: '表格组件' },
         { key: 'top', name: 'Top', description: '回到顶部组件' },
         { key: 'typography', name: 'Typography', description: '排版组件' },
@@ -280,6 +283,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <RadioExample />;
             case 'select':
                 return <SelectExample />;
+            case 'slider':
+                return <SliderExample />;
             case 'modal':
                 return <ModalExample />;
             case 'notification':

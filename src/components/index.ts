@@ -28,5 +28,6 @@ export { default as Menu } from './Menu';
 export { default as Pagination } from './Pagination';
 export { default as Navigation } from './Navigation';
 export { default as Rate } from './Rate';
+export { default as Slider } from './Slider';
 export { default as Steps } from './Steps';
 export { default as Tabs } from './Tabs';
