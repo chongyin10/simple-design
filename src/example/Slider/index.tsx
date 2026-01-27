@@ -26,6 +26,7 @@ const SliderExample: React.FC = () => {
     { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用' },
     { param: 'marks', type: 'Record<number, string>', default: '{}', description: '标记点，key为数值，value为显示文本' },
     { param: 'showValue', type: 'boolean', default: 'false', description: '是否显示当前值' },
+    { param: 'transitionSpeed', type: 'number', default: '300', description: '滑动动画速度（毫秒）' },
     { param: 'onChange', type: '(value: number) => void', default: '-', description: '值改变时的回调函数' },
     { param: 'onAfterChange', type: '(value: number) => void', default: '-', description: '拖拽结束后的回调函数' },
     { param: 'className', type: 'string', default: '-', description: '自定义 CSS 类名' },
@@ -301,11 +302,69 @@ const SliderExample: React.FC = () => {
         </SyntaxHighlighter>
       </div>
 
+      {/* 滑动速度控制 */}
+      <div style={{ marginBottom: '40px' }}>
+        <h3>滑动速度控制</h3>
+        <p>通过 transitionSpeed 属性控制滑动动画的速度（毫秒）。</p>
+
+        <h4>快速滑动（100ms）</h4>
+        <div style={{ marginBottom: '20px', maxWidth: '400px' }}>
+          <Slider 
+            showValue 
+            transitionSpeed={100}
+            defaultValue={30}
+            onChange={(val) => console.log('快速滑动值：', val)}
+          />
+        </div>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+          {`<Slider 
+  showValue 
+  transitionSpeed={100}
+  defaultValue={30}
+  onChange={(val) => console.log('快速滑动值：', val)}
+/>`}
+        </SyntaxHighlighter>
+
+        <h4>慢速滑动（1000ms）</h4>
+        <div style={{ marginBottom: '20px', maxWidth: '400px' }}>
+          <Slider 
+            showValue 
+            transitionSpeed={1000}
+            defaultValue={50}
+            onChange={(val) => console.log('慢速滑动值：', val)}
+          />
+        </div>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+          {`<Slider 
+  showValue 
+  transitionSpeed={1000}
+  defaultValue={50}
+  onChange={(val) => console.log('慢速滑动值：', val)}
+/>`}
+        </SyntaxHighlighter>
+
+        <h4>默认速度（300ms）</h4>
+        <div style={{ marginBottom: '20px', maxWidth: '400px' }}>
+          <Slider 
+            showValue 
+            defaultValue={70}
+            onChange={(val) => console.log('默认滑动值：', val)}
+          />
+        </div>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+          {`<Slider 
+  showValue 
+  defaultValue={70}
+  onChange={(val) => console.log('默认滑动值：', val)}
+/>`}
+        </SyntaxHighlighter>
+      </div>
+
       {/* API 文档 */}
       <div style={{ marginBottom: '40px' }}>
         <h3>API 文档</h3>
         <p>Slider 组件的属性配置。</p>
-        <Table columns={apiColumns} dataSource={apiDataSource} />
+        <Table columns={apiColumns} pagination={false} dataSource={apiDataSource} />
       </div>
 
       {/* 安装和使用说明 */}

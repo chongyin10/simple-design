@@ -11,6 +11,7 @@ export const Slider: React.FC<SliderProps> = ({
   disabled = false,
   marks = {},
   showValue = false,
+  transitionSpeed = 300,
   onChange,
   onAfterChange,
   className = '',
@@ -162,7 +163,11 @@ export const Slider: React.FC<SliderProps> = ({
   return (
     <div 
       className={`slider-container ${disabled ? 'disabled' : ''} ${className}`}
-      style={style}
+      style={{
+        ['--slider-track-filled-transition' as any]: `width ${transitionSpeed}ms ease`,
+        ['--slider-handle-transition' as any]: `all ${transitionSpeed}ms ease`,
+        ...style
+      }}
     >
       <div 
         ref={trackRef}

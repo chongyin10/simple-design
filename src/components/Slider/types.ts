@@ -7,6 +7,7 @@ export interface SliderProps {
   disabled?: boolean;
   marks?: Record<number, string>;
   showValue?: boolean;
+  transitionSpeed?: number;
   onChange?: (value: number) => void;
   onAfterChange?: (value: number) => void;
   className?: string;
