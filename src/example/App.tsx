@@ -29,6 +29,7 @@ import MenuExample from './Menu';
 import PaginationExample from './Pagination';
 import NavigationExample from './Navigation';
 import StepsExample from './Steps';
+import SwitchExample from './Switch';
 import TabsExample from './Tabs';
 import CascaderExample from './Cascader';
 import RateExample from './Rate';
@@ -78,10 +79,11 @@ const App: React.FC = () => {
         { key: 'menu', name: 'Menu', description: '菜单组件', icon: '🍽️' },
         { key: 'pagination', name: 'Pagination', description: '分页器组件', icon: '📄' },
         { key: 'navigation', name: 'Navigation', description: '导航组件', icon: '🧭' },
-        { key: 'rate', name: 'Rate', description: '评分组件', icon: '⭐' },
-        { key: 'steps', name: 'Steps', description: '步骤条组件', icon: '📋' },
-        { key: 'tabs', name: 'Tabs', description: '选项卡组件', icon: '🗂️' },
-        { key: 'api', name: 'API 参考', description: '所有组件的 API 文档', icon: '📋' },
+    { key: 'rate', name: 'Rate', description: '评分组件', icon: '⭐' },
+    { key: 'steps', name: 'Steps', description: '步骤条组件', icon: '📋' },
+    { key: 'switch', name: 'Switch', description: '开关组件', icon: '🔛' },
+    { key: 'tabs', name: 'Tabs', description: '选项卡组件', icon: '🗂️' },
+    { key: 'api', name: 'API 参考', description: '所有组件的 API 文档', icon: '📋' },
     ];
 
     // 从URL中获取初始选中的组件ID
@@ -107,10 +109,11 @@ const App: React.FC = () => {
         { key: 'menu', name: 'Menu', description: '菜单组件' },
         { key: 'pagination', name: 'Pagination', description: '分页器组件' },
         { key: 'navigation', name: 'Navigation', description: '导航组件' },
-        { key: 'rate', name: 'Rate', description: '评分组件' },
-        { key: 'steps', name: 'Steps', description: '步骤条组件' },
-        { key: 'tabs', name: 'Tabs', description: '选项卡组件' },
-        { key: 'empty', name: 'Empty', description: '空状态组件' },
+    { key: 'rate', name: 'Rate', description: '评分组件' },
+    { key: 'steps', name: 'Steps', description: '步骤条组件' },
+    { key: 'switch', name: 'Switch', description: '开关组件' },
+    { key: 'tabs', name: 'Tabs', description: '选项卡组件' },
+    { key: 'empty', name: 'Empty', description: '空状态组件' },
         { key: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { key: 'input', name: 'Input', description: '输入框组件' },
         { key: 'marquee', name: 'Marquee', description: '跑马灯组件' },
@@ -321,6 +324,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <NavigationExample />;
             case 'steps':
                 return <StepsExample />;
+            case 'switch':
+                return <SwitchExample />;
             case 'tabs':
                 return <TabsExample />;
             case 'rate':

@@ -30,4 +30,5 @@ export { default as Navigation } from './Navigation';
 export { default as Rate } from './Rate';
 export { default as Slider } from './Slider';
 export { default as Steps } from './Steps';
+export { default as Switch } from './Switch';
 export { default as Tabs } from './Tabs';

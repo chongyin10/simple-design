@@ -1,0 +1,30 @@
+:root {
+  /* Switch 尺寸变量 - default */
+  --switch-default-width: 44px;
+  --switch-default-height: 22px;
+  --switch-default-thumb-size: 18px;
+  --switch-default-thumb-left: 2px;
+  --switch-default-thumb-checked-left: 24px;
+  
+  /* Switch 尺寸变量 - small */
+  --switch-small-width: 28px;
+  --switch-small-height: 16px;
+  --switch-small-thumb-size: 12px;
+  --switch-small-thumb-left: 2px;
+  --switch-small-thumb-checked-left: 14px;
+  
+  /* 颜色和样式变量 */
+  --switch-track-bg: #dcdfe6;
+  --switch-track-active-bg: #409eff;
+  --switch-track-radius: 10px;
+  --switch-thumb-bg: #fff;
+  --switch-thumb-radius: 50%;
+  --switch-thumb-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --switch-transition: 0.3s;
+  
+  /* 加载动画变量 */
+  --switch-loading-size: 12px;
+  --switch-loading-border: transparent;
+  --switch-loading-border-top: #fff;
+  --switch-loading-animation: switch-spin 1s linear infinite;
+}
