@@ -106,6 +106,7 @@ const TableExample: React.FC = () => {
     { name: 'width', type: 'number | string', default: '-', description: '列宽度，支持数值或CSS字符串如"100px"' },
     { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: '文本对齐方式' },
     { name: 'fixed', type: "boolean | 'start' | 'end'", default: '-', description: '固定列位置，start/true为左侧固定，end为右侧固定' },
+    { name: 'maxLines', type: 'number', default: '-', description: '限制单元格内容显示的最大行数，超出时显示省略号' },
     { name: 'render', type: '(value, record, index) => React.ReactNode', default: '-', description: '自定义渲染函数，返回单元格内容' }
   ];
 
@@ -114,6 +115,14 @@ const TableExample: React.FC = () => {
     { name: 'total', type: 'number', default: '-', description: '数据总条数' },
     { name: 'current', type: 'number', default: '1', description: '当前页码' },
     { name: 'onChange', type: '(page: number, pageSize: number) => void', default: '-', description: '页码变化回调函数' }
+  ];
+
+  // 长文本数据
+  const longTextDataSource = [
+    { id: 1, title: '项目简介', content: '这是一个非常长的项目简介，包含了项目的详细背景、目标、范围和预期成果。项目将在未来六个月内完成，涉及多个团队的协作。' },
+    { id: 2, title: '技术方案', content: '采用前后端分离架构，前端使用React + TypeScript，后端使用Node.js + MySQL。整个系统将部署在云服务器上，支持高并发访问和自动扩容。' },
+    { id: 3, title: '团队介绍', content: '我们的团队由资深工程师、产品经理、UI设计师和测试工程师组成。团队成员平均工作经验超过5年，在各自的领域都有丰富的实战经验。' },
+    { id: 4, title: '里程碑', content: '第一阶段：需求分析和设计（1个月）\n第二阶段：核心功能开发（2个月）\n第三阶段：测试和优化（2个月）\n第四阶段：上线和运维（1个月）' }
   ];
 
   return (
@@ -299,6 +308,34 @@ const TableExample: React.FC = () => {
             columns={basicColumns}
             dataSource={basicDataSource}
             rowKey={(record) => `user-${record.id}`}
+          />
+        </div>
+
+        <h4>限制内容行数 (maxLines)</h4>
+        <div style={{ marginBottom: '20px' }}>
+          <Table
+            columns={[
+              { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
+              { dataIndex: 'title', title: '标题', width: '120px' },
+              { dataIndex: 'content', title: '内容（限制2行）', maxLines: 2 }
+            ]}
+            dataSource={longTextDataSource}
+            bordered={true}
+          />
+        </div>
+
+        <h4>限制内容行数 - 不同行数对比</h4>
+        <div style={{ marginBottom: '20px' }}>
+          <Table
+            columns={[
+              { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
+              { dataIndex: 'content', title: '1行', width: '200px', maxLines: 1 },
+              { dataIndex: 'content', title: '2行', width: '200px', maxLines: 2 },
+              { dataIndex: 'content', title: '3行', width: '200px', maxLines: 3 },
+              { dataIndex: 'content', title: '不限制' }
+            ]}
+            dataSource={longTextDataSource}
+            bordered={true}
           />
         </div>
 
@@ -498,6 +535,19 @@ const TableExample: React.FC = () => {
   ]}
   dataSource={[]}
   scroll={{ y: 300 }}
+/>
+
+// 限制内容行数
+<Table
+  columns={[
+    { dataIndex: 'id', title: 'ID', width: '60px', align: 'center' },
+    { dataIndex: 'title', title: '标题', width: '120px' },
+    { dataIndex: 'content', title: '内容', maxLines: 2 }
+  ]}
+  dataSource={[
+    { id: 1, title: '简介', content: '这是一段很长的文本内容...' },
+    { id: 2, title: '说明', content: '这是另一段很长的文本内容...' }
+  ]}
 />
 
 // 带边框表格

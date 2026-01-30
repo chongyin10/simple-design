@@ -3,10 +3,10 @@
   --pagination-color: #333;
   --pagination-bg: #fff;
   --pagination-border-color: #e8e8e8;
-  --pagination-hover-color: #1a2980;
+  --pagination-hover-color: #339af0;
   --pagination-hover-bg: rgba(26, 41, 128, 0.08);
   --pagination-active-color: #fff;
-  --pagination-active-bg: #1a2980;
+  --pagination-active-bg: #339af0;
   --pagination-disabled-color: #ccc;
   --pagination-disabled-bg: #fafafa;
   --pagination-item-size: 32px;

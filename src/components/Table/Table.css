@@ -18,7 +18,7 @@
 .custom-table-header {
   overflow-x: hidden;
   overflow-y: hidden;
-  border-bottom: 1px solid #f0f0f0;
+  /* border-bottom: 1px solid #f0f0f0; */
   flex-shrink: 0;
 }
 
@@ -43,7 +43,20 @@
 
 .custom-table.bordered th,
 .custom-table.bordered td {
-  border: 1px solid #e8e8e8;
+  border: 1px solid #f0f0f0;
+}
+
+.custom-table.bordered th {
+  background-color: #fafafa;
+  font-weight: 500;
+}
+
+.custom-table.bordered tbody tr:hover td {
+  background-color: #f5f5f5;
+}
+
+.custom-table.bordered tbody tr:last-child td {
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .custom-table thead {
@@ -229,4 +242,17 @@
 
 .custom-table-pagination-select:focus {
   border-color: #1a2980;
+}
+
+/* 单元格内容多行省略样式 */
+.idp-table-cell-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 含有省略内容的单元格样式 */
+.idp-table-cell-has-ellipsis {
+  overflow: hidden;
 }

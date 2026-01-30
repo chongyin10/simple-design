@@ -10,6 +10,8 @@ export interface Column {
     width?: number | string;
     align?: 'left' | 'center' | 'right';
     fixed?: boolean | 'start' | 'end';
+    /** 限制单元格内容显示的最大行数，超出时显示省略号 */
+    maxLines?: number;
     render?: (value: any, record: any, index: number) => ReactNode;
     [key: string]: any;
 }
@@ -230,13 +232,21 @@ const Table = ({
             content = column.render(content, record, rowIndex);
         }
 
+        // 处理 maxLines 属性
+        const shouldApplyMaxLines = column.maxLines && column.maxLines > 0;
+        const cellContent = shouldApplyMaxLines ? (
+            <div className="idp-table-cell-ellipsis" style={{ WebkitLineClamp: column.maxLines }}>
+                {content}
+            </div>
+        ) : content;
+
         return (
             <td
                 key={column.key || column.dataIndex || column._index}
                 style={style}
-                className={`${shouldShowLeftShadow ? 'idp-table-fixed-left-shadow' : ''}${shouldShowRightShadow ? ' idp-table-fixed-right-shadow' : ''}`}
+                className={`${shouldShowLeftShadow ? 'idp-table-fixed-left-shadow' : ''}${shouldShowRightShadow ? ' idp-table-fixed-right-shadow' : ''}${shouldApplyMaxLines ? ' idp-table-cell-has-ellipsis' : ''}`}
             >
-                {content}
+                {cellContent}
             </td>
         );
     };
