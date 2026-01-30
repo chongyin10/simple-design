@@ -1,0 +1,130 @@
+import React from 'react';
+import Label from '../../components/Label';
+import { Table } from '../../components';
+import type { Column } from '../../components/Table';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+const LabelExample: React.FC = () => {
+  // API参数列配置
+  const apiColumns: Column[] = [
+    { dataIndex: 'param', title: '参数名', width: '150px' },
+    { dataIndex: 'type', title: '类型', width: '300px' },
+    { dataIndex: 'default', title: '默认值', width: '150px' },
+    { dataIndex: 'description', title: '描述', width: '300px' }
+  ];
+
+  // API参数数据源
+  const apiDataSource = [
+    { param: 'title', type: 'ReactNode', default: '-', description: '标签内容' },
+    { param: 'indicatorColor', type: 'string', default: 'blue', description: '左侧指示器颜色' },
+    { param: 'indicatorWidth', type: 'string | number', default: '3px', description: '左侧指示器宽度' },
+    { param: 'indicatorHeight', type: 'string | number', default: '100%', description: '左侧指示器高度（内容上下居中）' },
+    { param: 'paddingRight', type: 'string | number', default: '8px', description: '右侧内边距' }
+  ];
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h2>Label 组件</h2>
+      <p>简单的标签展示组件，支持自定义左侧指示器样式。</p>
+
+      {/* 基本使用示例 */}
+      <div style={{ marginBottom: '40px' }}>
+        <h3>基本使用</h3>
+        <p>展示不同内容的标签。</p>
+
+        <h4>文本标签</h4>
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <Label title="默认标签" />
+          <Label title="标题文本" />
+          <Label title="说明信息" />
+        </div>
+
+        <h4>自定义指示器颜色</h4>
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <Label title="红色指示器" indicatorColor="#ff4d4f" />
+          <Label title="绿色指示器" indicatorColor="#52c41a" />
+          <Label title="蓝色指示器" indicatorColor="#1890ff" />
+          <Label title="橙色指示器" indicatorColor="#fa8c16" />
+        </div>
+
+        <h4>自定义指示器宽高</h4>
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <Label title="宽指示器" indicatorWidth={6} />
+          <Label title="窄指示器" indicatorWidth={1} />
+          <Label title="高指示器" indicatorHeight="80%" />
+          <Label title="矮指示器" indicatorHeight="40%" />
+          <Label title="完全自定义" indicatorColor="#722ed1" indicatorWidth={4} indicatorHeight={12} />
+        </div>
+
+        <h4>自定义右侧内边距</h4>
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <Label title="默认边距" />
+          <Label title="大边距" paddingRight={24} />
+          <Label title="超大边距" paddingRight={40} />
+        </div>
+      </div>
+
+      {/* API 文档 */}
+        <h3>API 参数</h3>
+        <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
+
+      {/* 代码示例 */}
+      <div style={{ marginBottom: '40px' }}>
+        <h3>代码示例</h3>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
+{`import { Label } from '@zjpcy/simple-design';
+
+// 基本用法
+<Label title="默认标签" />
+
+// 自定义指示器颜色
+<Label title="红色指示器" indicatorColor="#ff4d4f" />
+<Label title="绿色指示器" indicatorColor="#52c41a" />
+
+// 自定义指示器宽度
+<Label title="宽指示器" indicatorWidth={6} />
+<Label title="窄指示器" indicatorWidth={1} />
+
+// 自定义指示器高度（自动上下居中）
+<Label title="高指示器" indicatorHeight="80%" />
+<Label title="矮指示器" indicatorHeight="40%" />
+
+// 完全自定义
+<Label
+  title="完全自定义"
+  indicatorColor="#722ed1"
+  indicatorWidth={4}
+  indicatorHeight={12}
+  paddingRight={24}
+/>`}
+        </SyntaxHighlighter>
+      </div>
+
+      {/* 在其他项目中引用示例 */}
+      <div>
+        <h3>在其他项目中引用</h3>
+        <div style={{ margin: '15px 0' }}>
+          <h4>1. 安装</h4>
+          <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+            {`npm i @zjpcy/simple-design`}
+          </SyntaxHighlighter>
+        </div>
+        <div>
+          <h4>2. 引用组件</h4>
+          <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+{`// 方式一：单独引入
+import Label from '@zjpcy/simple-design/lib/Label';
+import '@zjpcy/simple-design/lib/Label/Label.css';
+
+// 方式二：批量引入
+import { Label } from '@zjpcy/simple-design';
+import '@zjpcy/simple-design/lib/index.css';`}
+          </SyntaxHighlighter>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LabelExample;

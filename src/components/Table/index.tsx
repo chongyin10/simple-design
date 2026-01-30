@@ -162,7 +162,7 @@ const Table = ({
         const style: React.CSSProperties = {
             width: column.width || 'auto',
             textAlign: column.align || 'left',
-            backgroundColor: '#fafafa',
+            backgroundColor: '#fafafa !important',
             top: 0,
         };
 
@@ -296,21 +296,19 @@ const Table = ({
             style={tableStyle}
         >
             {/* 表头 */}
-            <div className="custom-table-header">
-                <div className="custom-table-header-inner" ref={headerInnerRef} onScroll={handleHeaderScroll}>
-                    <table className={`custom-table ${bordered ? 'bordered' : ''}`}>
-                        <colgroup>
-                            {allColumns.map((col, index) => (
-                                <col key={index} style={{ width: col.width || 'auto' }} />
-                            ))}
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                {allColumns.map((col, index) => renderHeaderCell(col, index, allColumns))}
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+            <div className="custom-table-header" ref={headerInnerRef} onScroll={handleHeaderScroll}>
+                <table className={`custom-table ${bordered ? 'bordered' : ''}`}>
+                    <colgroup>
+                        {allColumns.map((col, index) => (
+                            <col key={index} style={{ width: col.width || 'auto' }} />
+                        ))}
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            {allColumns.map((col, index) => renderHeaderCell(col, index, allColumns))}
+                        </tr>
+                    </thead>
+                </table>
             </div>
 
             {/* 表体 */}
