@@ -34,6 +34,7 @@ import TabsExample from './Tabs';
 import CascaderExample from './Cascader';
 import RateExample from './Rate';
 import SliderExample from './Slider';
+import TransferExample from './Transfer';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -83,6 +84,7 @@ const App: React.FC = () => {
     { key: 'steps', name: 'Steps', description: '步骤条组件', icon: '📋' },
     { key: 'switch', name: 'Switch', description: '开关组件', icon: '🔛' },
     { key: 'tabs', name: 'Tabs', description: '选项卡组件', icon: '🗂️' },
+    { key: 'transfer', name: 'Transfer', description: '穿梭框组件', icon: '🔄' },
     { key: 'api', name: 'API 参考', description: '所有组件的 API 文档', icon: '📋' },
     ];
 
@@ -113,6 +115,7 @@ const App: React.FC = () => {
     { key: 'steps', name: 'Steps', description: '步骤条组件' },
     { key: 'switch', name: 'Switch', description: '开关组件' },
     { key: 'tabs', name: 'Tabs', description: '选项卡组件' },
+    { key: 'transfer', name: 'Transfer', description: '穿梭框组件' },
     { key: 'empty', name: 'Empty', description: '空状态组件' },
         { key: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { key: 'input', name: 'Input', description: '输入框组件' },
@@ -330,6 +333,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <TabsExample />;
             case 'rate':
                 return <RateExample />;
+            case 'transfer':
+                return <TransferExample />;
             default:
                 return <ButtonExample />;
         }

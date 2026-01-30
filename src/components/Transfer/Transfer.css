@@ -1,0 +1,51 @@
+:root {
+  /* Transfer 尺寸变量 */
+  --transfer-width: 200px;
+  --transfer-height: 300px;
+  --transfer-list-width: 200px;
+  --transfer-list-height: 240px;
+  --transfer-header-height: 40px;
+  --transfer-item-height: 32px;
+  --transfer-search-height: 32px;
+  --transfer-operation-width: 40px;
+  
+  /* Transfer 颜色变量 */
+  --transfer-border-color: #d9d9d9;
+  --transfer-border-radius: 6px;
+  --transfer-bg: #fff;
+  --transfer-header-bg: #fafafa;
+  --transfer-item-hover-bg: #f5f5f5;
+  --transfer-item-selected-bg: #e6f7ff;
+  --transfer-item-disabled-color: rgba(0, 0, 0, 0.25);
+  --transfer-item-text-color: rgba(0, 0, 0, 0.85);
+  
+  /* Transfer 操作按钮变量 */
+  --transfer-operation-bg: #f5f5f5;
+  --transfer-operation-border: #d9d9d9;
+  --transfer-operation-hover-bg: #e6f7ff;
+  --transfer-operation-hover-border: #1890ff;
+  --transfer-operation-disabled-bg: #f5f5f5;
+  --transfer-operation-disabled-color: rgba(0, 0, 0, 0.25);
+  
+  /* Transfer 搜索框变量 */
+  --transfer-search-border: #d9d9d9;
+  --transfer-search-focus-border: #1890ff;
+  --transfer-search-placeholder-color: rgba(0, 0, 0, 0.45);
+  
+  /* Transfer 描述文本变量 */
+  --transfer-description-color: rgba(0, 0, 0, 0.45);
+  --transfer-description-font-size: 12px;
+  
+  /* Transfer 字体变量 */
+  --transfer-font-size: 14px;
+  --transfer-header-font-size: 14px;
+  --transfer-item-font-size: 14px;
+  
+  /* Transfer 间距变量 */
+  --transfer-padding: 12px;
+  --transfer-item-padding: 0 12px;
+  --transfer-search-padding: 0 8px;
+  
+  /* Transfer 过渡动画 */
+  --transfer-transition: all 0.3s;
+}
