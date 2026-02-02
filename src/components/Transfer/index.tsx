@@ -100,7 +100,8 @@ const TransferList: React.FC<TransferListProps> = ({
       onSelectChange(newSelectedKeys);
     } else {
       // 全选
-      const newSelectedKeys = [...new Set([...selectedKeys, ...availableKeys])];
+      const combined = [...selectedKeys, ...availableKeys];
+      const newSelectedKeys = combined.filter((item, index) => combined.indexOf(item) === index);
       onSelectChange(newSelectedKeys);
     }
   }, [disabled, filteredDataSource, selectedKeys, isCheckedAll, onSelectChange]);
