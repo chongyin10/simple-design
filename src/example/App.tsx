@@ -36,6 +36,7 @@ import RateExample from './Rate';
 import SliderExample from './Slider';
 import TransferExample from './Transfer';
 import LabelExample from './Label';
+import TreeSelectExample from './TreeSelect';
 import { MessageProvider } from '../components/Message';
 import '../components/variables.css';
 import './App.css';
@@ -87,6 +88,7 @@ const App: React.FC = () => {
     { key: 'tabs', name: 'Tabs', description: '选项卡组件', icon: '🗂️' },
     { key: 'transfer', name: 'Transfer', description: '穿梭框组件', icon: '🔄' },
     { key: 'label', name: 'Label', description: '标签组件', icon: '🏷️' },
+    { key: 'treeselect', name: 'TreeSelect', description: '树型选择器组件', icon: '🌲' },
     { key: 'api', name: 'API 参考', description: '所有组件的 API 文档', icon: '📋' },
     ];
 
@@ -119,6 +121,7 @@ const App: React.FC = () => {
     { key: 'tabs', name: 'Tabs', description: '选项卡组件' },
     { key: 'transfer', name: 'Transfer', description: '穿梭框组件' },
     { key: 'label', name: 'Label', description: '标签组件' },
+    { key: 'treeselect', name: 'TreeSelect', description: '树型选择器组件' },
     { key: 'empty', name: 'Empty', description: '空状态组件' },
         { key: 'flex', name: 'Flex', description: 'Flex布局组件' },
         { key: 'input', name: 'Input', description: '输入框组件' },
@@ -340,6 +343,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <TransferExample />;
             case 'label':
                 return <LabelExample />;
+            case 'treeselect':
+                return <TreeSelectExample />;
             default:
                 return <ButtonExample />;
         }

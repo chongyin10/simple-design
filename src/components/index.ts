@@ -1,5 +1,6 @@
 export { default as Button } from './Button';
 export { default as Cascader } from './Cascader';
+export { default as TreeSelect } from './TreeSelect';
 export { default as ColorPicker } from './ColorPicker';
 export { default as CopyToClipboard, useOnCopy as useCopy } from './CopyToClipboard';
 export { default as Divider } from './Divider';
