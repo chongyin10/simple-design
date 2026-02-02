@@ -125,6 +125,22 @@
     width: 100%;
 }
 
+/* InputBase容器样式 */
+.input-base-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* 默认提示信息样式 */
+.input-extra {
+    font-size: 12px;
+    color: #00000073;
+    line-height: 1.5;
+    padding: 4px 0px;
+    text-align: left;
+}
+
 /* 错误状态样式 */
 .input-error {
     border-color: #f5222d !important;
@@ -136,52 +152,43 @@
     box-shadow: 0 0 0 2px rgba(245, 34, 45, 0.2) !important;
 }
 
-/* 错误消息样式 */
+/* 错误消息样式 - 从上而下动画 */
 .input-error-message {
     font-size: 12px;
     color: #f5222d;
     line-height: 1.5;
-    padding: 4px 8px;
+    padding: 4px 0px;
     text-align: left;
     opacity: 0;
     visibility: hidden;
-    transform: scaleX(0);
-    transform-origin: left center;
+    transform: translateY(-10px);
+    transform-origin: top center;
     border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(245, 34, 45, 0.1);
-    transition: 
-        opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+        opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     max-height: 50px;
-    width: 0;
     overflow: hidden;
-    white-space: nowrap;
-    float: left;
-    clear: left;
+    white-space: normal;
+    word-wrap: break-word;
     position: relative;
     z-index: 10;
 }
 
-/* 当错误消息显示时，左右逐渐淡入 */
+/* 当错误消息显示时，从上而下淡入 */
 .input-error-message.visible {
     opacity: 1;
     visibility: visible;
-    transform: scaleX(1);
-    width: auto;
-    max-height: 50px;
+    transform: translateY(0);
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 当错误消息消失时，左右逐渐淡出 */
+/* 当错误消息消失时，从下而上淡出 */
 .input-error-message:not(.visible) {
     opacity: 0;
     visibility: hidden;
-    transform: scaleX(0);
-    width: 0;
-    max-height: 50px;
+    transform: translateY(-10px);
     transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
 }
 

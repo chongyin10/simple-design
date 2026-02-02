@@ -19,6 +19,8 @@ export interface InputProps {
     prefix?: string | React.ReactNode;
     suffix?: string | React.ReactNode;
     clear?: boolean;
+    /** 默认提示信息，与错误信息互斥 */
+    extra?: string | React.ReactNode;
 }
 
 const InputBase: React.FC<InputProps> = ({
@@ -37,6 +39,7 @@ const InputBase: React.FC<InputProps> = ({
     prefix,
     suffix,
     clear = false,
+    extra,
     ...rest
 }) => {
     const [isFocused, setIsFocused] = React.useState(false);
@@ -81,36 +84,43 @@ const InputBase: React.FC<InputProps> = ({
                           value.toString().length > 0;
 
     return (
-        <div 
-            className={`input-wrapper ${className} ${disabled ? 'input-disabled' : ''} ${readOnly ? 'input-readonly' : ''}`}
-            style={{
-                width,
-                ...style
-            }}
-        >
-            {prefix && <div className="input-prefix">{renderIcon(prefix)}</div>}
-            <input
-                type={type}
-                placeholder={placeholder}
-                className="input-inner"
-                value={value}
-                onChange={onChange}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                disabled={disabled}
-                readOnly={readOnly}
-                onKeyDown={onKeyDown}
-                {...rest}
-            />
-            <div className="input-suffix-group">
-                <div 
-                    className={`input-suffix-clear ${showClearButton ? 'visible' : ''}`} 
-                    onClick={handleClear}
-                >
-                    <Icon type="close" size="medium" color="#1890ff" />
+        <div className="input-base-container">
+            <div 
+                className={`input-wrapper ${className} ${disabled ? 'input-disabled' : ''} ${readOnly ? 'input-readonly' : ''}`}
+                style={{
+                    width,
+                    ...style
+                }}
+            >
+                {prefix && <div className="input-prefix">{renderIcon(prefix)}</div>}
+                <input
+                    type={type}
+                    placeholder={placeholder}
+                    className="input-inner"
+                    value={value}
+                    onChange={onChange}
+                    onBlur={handleBlur}
+                    onFocus={handleFocus}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    onKeyDown={onKeyDown}
+                    {...rest}
+                />
+                <div className="input-suffix-group">
+                    <div 
+                        className={`input-suffix-clear ${showClearButton ? 'visible' : ''}`} 
+                        onClick={handleClear}
+                    >
+                        <Icon type="close" size="medium" color="#1890ff" />
+                    </div>
+                    {suffix && <div className="input-suffix-content">{renderIcon(suffix)}</div>}
                 </div>
-                {suffix && <div className="input-suffix-content">{renderIcon(suffix)}</div>}
             </div>
+            {extra && (
+                <div className="input-extra">
+                    {extra}
+                </div>
+            )}
         </div>
     );
 };

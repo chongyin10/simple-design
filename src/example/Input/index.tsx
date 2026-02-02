@@ -32,13 +32,15 @@ const InputExample: React.FC = () => {
     { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' },
     { param: 'prefix', type: 'string | React.ReactNode', default: '-', description: '输入框前缀' },
     { param: 'suffix', type: 'string | React.ReactNode', default: '-', description: '输入框后缀' },
-    { param: 'clear', type: 'boolean', default: 'false', description: '是否显示清除按钮，当输入框有值且获得焦点时显示' }
+    { param: 'clear', type: 'boolean', default: 'false', description: '是否显示清除按钮，当输入框有值且获得焦点时显示' },
+    { param: 'extra', type: 'string | React.ReactNode', default: '-', description: '默认提示信息，与错误信息互斥，字体颜色为#00000073' }
   ];
 
   // Number组件API参数数据源
   const numberApiDataSource = [
     { param: 'nType', type: 'NumberType', default: '-', description: '数字类型验证，可选值：positive-float, negative-float, positive-integer, negative-integer, integer, negative, positive' },
-    { param: 'errorMessage', type: 'string', default: '-', description: '自定义错误消息' }
+    { param: 'errorMessage', type: 'string', default: '-', description: '自定义错误消息' },
+    { param: 'extra', type: 'string | React.ReactNode', default: '-', description: '默认提示信息，与错误信息互斥' }
   ];
 
   // Search组件API参数数据源
@@ -381,6 +383,64 @@ const InputExample: React.FC = () => {
               width="100%"
             />
           </div>
+          
+          <h5>带提示信息（extra）</h5>
+          <div style={{ marginBottom: '10px', width: '300px' }}>
+            <Input.Number
+              placeholder="正整数"
+              nType="positive-integer"
+              extra="请输入大于0的整数"
+              width="100%"
+            />
+          </div>
+          
+          <h5>提示信息与错误消息互斥</h5>
+          <div style={{ marginBottom: '10px', width: '300px' }}>
+            <p style={{ fontSize: '12px', color: '#909399', marginBottom: '8px' }}>
+              输入负数会触发验证错误，此时extra会隐藏，显示errorMessage
+            </p>
+            <Input.Number
+              placeholder="正整数"
+              nType="positive-integer"
+              extra="请输入大于0的整数"
+              width="100%"
+            />
+          </div>
+        </div>
+
+        <h4>带提示信息（extra）</h4>
+        <div style={{ marginBottom: '20px' }}>
+          <p>extra属性用于显示默认提示信息，与错误信息互斥</p>
+          
+          <h5>基本用法</h5>
+          <div style={{ marginBottom: '10px', width: '300px' }}>
+            <Input
+              placeholder="请输入用户名"
+              extra="用户名长度6-20个字符"
+              width="100%"
+            />
+          </div>
+          
+          <h5>带前后缀的提示信息</h5>
+          <div style={{ marginBottom: '10px', width: '300px' }}>
+            <Input
+              placeholder="请输入金额"
+              prefix="¥"
+              suffix="元"
+              extra="支持小数点后两位"
+              width="100%"
+            />
+          </div>
+          
+          <h5>带清除按钮的提示信息</h5>
+          <div style={{ marginBottom: '10px', width: '300px' }}>
+            <Input
+              placeholder="请输入内容"
+              clear
+              extra="输入内容后显示清除按钮"
+              width="100%"
+            />
+          </div>
         </div>
       </div>
       
@@ -600,6 +660,39 @@ const InputExample: React.FC = () => {
   placeholder="正整数"
   nType="positive-integer"
   errorMessage="请输入有效的正整数"
+  width="300px"
+/>
+
+// 带提示信息（extra）
+<Input
+  placeholder="请输入用户名"
+  extra="用户名长度6-20个字符"
+  width="300px"
+/>
+
+// 带前后缀的提示信息
+<Input
+  placeholder="请输入金额"
+  prefix="¥"
+  suffix="元"
+  extra="支持小数点后两位"
+  width="300px"
+/>
+
+// 带提示信息的数字输入框
+<Input.Number
+  placeholder="正整数"
+  nType="positive-integer"
+  extra="请输入大于0的整数"
+  width="300px"
+/>
+
+// 提示信息与错误消息互斥
+// 当验证出错时，extra会自动隐藏，显示errorMessage
+<Input.Number
+  placeholder="正整数"
+  nType="positive-integer"
+  extra="请输入大于0的整数"
   width="300px"
 />`}
         </SyntaxHighlighter>

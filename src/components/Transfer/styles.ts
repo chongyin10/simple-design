@@ -102,11 +102,16 @@ export const TransferHeaderCount = styled.span`
 `;
 
 /**
- * Transfer 搜索框容器
+ * Transfer 搜索框容器 - 左右布局
  */
 export const TransferSearchWrapper = styled.div`
   padding: 8px ${getCSSVar('--transfer-padding', '12px')};
   border-bottom: 1px solid ${getCSSVar('--transfer-border-color', '#d9d9d9')};
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
 
   &.transfer-search-wrapper {
     /* 外部可通过 .transfer-search-wrapper 选择器覆盖样式 */
@@ -117,7 +122,8 @@ export const TransferSearchWrapper = styled.div`
  * Transfer 搜索框
  */
 export const TransferSearch = styled.input<{ $styles?: CSSProperties }>`
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   height: ${getCSSVar('--transfer-search-height', '32px')};
   padding: ${getCSSVar('--transfer-search-padding', '0 8px')};
   border: 1px solid ${getCSSVar('--transfer-search-border', '#d9d9d9')};
@@ -141,6 +147,42 @@ export const TransferSearch = styled.input<{ $styles?: CSSProperties }>`
   }
 
   ${({ $styles }) => $styles && Object.entries($styles).map(([key, value]) => `${key}: ${value};`).join('\n')}
+`;
+
+/**
+ * Transfer 搜索按钮
+ */
+export const TransferSearchButton = styled.button<{ $disabled?: boolean }>`
+  width: 32px;
+  min-width: 32px;
+  height: ${getCSSVar('--transfer-search-height', '32px')};
+  border: 1px solid ${getCSSVar('--transfer-search-border', '#d9d9d9')};
+  border-radius: 4px;
+  background: ${getCSSVar('--transfer-bg', '#fff')};
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: ${getCSSVar('--transfer-transition', 'all 0.3s')};
+  opacity: ${({ $disabled }) => ($disabled ? 0.6 : 1)};
+  flex-shrink: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  &:hover:not(:disabled) {
+    border-color: ${getCSSVar('--transfer-search-focus-border', '#1890ff')};
+    color: ${getCSSVar('--transfer-search-focus-border', '#1890ff')};
+  }
+
+  &:disabled {
+    background: #f5f5f5;
+  }
+
+  /* 搜索图标 */
+  .search-icon {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 /**

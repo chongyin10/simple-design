@@ -13,6 +13,7 @@ import {
   TransferHeaderCount,
   TransferSearchWrapper,
   TransferSearch,
+  TransferSearchButton,
   TransferListBody,
   TransferListItem,
   TransferItemCheckbox,
@@ -25,6 +26,7 @@ import {
   TransferLoading,
   TransferLoadingSpinner,
 } from './styles';
+import Icon from '../Icon';
 import './Transfer.css';
 
 /**
@@ -133,10 +135,29 @@ const TransferList: React.FC<TransferListProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setSearchValue(value);
-      onSearch?.(value);
     },
-    [onSearch]
+    []
   );
+
+  // 触发搜索
+  const triggerSearch = useCallback(() => {
+    onSearch?.(searchValue);
+  }, [onSearch, searchValue]);
+
+  // 搜索框回车事件
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        triggerSearch();
+      }
+    },
+    [triggerSearch]
+  );
+
+  // 搜索按钮点击
+  const handleSearchButtonClick = useCallback(() => {
+    triggerSearch();
+  }, [triggerSearch]);
 
   // 计数文本
   const countText = useMemo(() => {
@@ -245,14 +266,25 @@ const TransferList: React.FC<TransferListProps> = ({
               disabled,
             })
           ) : (
-            <TransferSearch
-              type="text"
-              placeholder={searchPlaceholder}
-              value={searchValue}
-              onChange={handleSearchChange}
-              disabled={disabled}
-              $styles={styles?.search}
-            />
+            <>
+              <TransferSearch
+                type="text"
+                placeholder={searchPlaceholder}
+                value={searchValue}
+                onChange={handleSearchChange}
+                onKeyDown={handleSearchKeyDown}
+                disabled={disabled}
+                $styles={styles?.search}
+              />
+              <TransferSearchButton
+                onClick={handleSearchButtonClick}
+                disabled={disabled}
+                $disabled={disabled}
+                aria-label="搜索"
+              >
+                <Icon type="search" size="small" color={disabled ? '#bfbfbf' : '#1890ff'} />
+              </TransferSearchButton>
+            </>
           )}
         </TransferSearchWrapper>
       )}

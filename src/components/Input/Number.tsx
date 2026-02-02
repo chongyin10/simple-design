@@ -14,11 +14,14 @@ export type NumberType =
 export interface NumberInputProps extends InputProps {
     nType?: NumberType;
     errorMessage?: string;
+    /** 默认提示信息，与错误信息互斥 */
+    extra?: string | React.ReactNode;
 }
 
 const NumberInput: React.FC<NumberInputProps> = ({
     nType,
     errorMessage: customErrorMessage,
+    extra,
     value,
     onChange,
     ...rest
@@ -130,6 +133,9 @@ const NumberInput: React.FC<NumberInputProps> = ({
     const displayErrorMessage = customErrorMessage || validation.message;
     const hasError = !!displayErrorMessage;
 
+    // extra 和错误信息互斥，当有错误时不显示 extra
+    const shouldShowExtra = !hasError && extra;
+
     return (
         <div className="number-input-wrapper">
             <InputBase
@@ -142,6 +148,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
             {hasError && (
                 <div className={`input-error-message ${hasError ? 'visible' : ''}`}>
                     {displayErrorMessage}
+                </div>
+            )}
+            {shouldShowExtra && (
+                <div className="input-extra">
+                    {extra}
                 </div>
             )}
         </div>

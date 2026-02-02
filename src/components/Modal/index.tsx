@@ -138,7 +138,7 @@ const Modal: React.FC<ModalProps> = ({
 
     const containerStyle: React.CSSProperties = {
         width: typeof width === 'number' ? `${width}px` : width,
-        height: height ? (typeof height === 'number' ? `${height}px` : height) : undefined,
+        // height: height ? (typeof height === 'number' ? `${height}px` : height) : undefined,
         top: top !== undefined ? `${top}px` : undefined,
         ['--idp-modal-origin-x' as any]: `${originOffset.x}px`,
         ['--idp-modal-origin-y' as any]: `${originOffset.y}px`,
