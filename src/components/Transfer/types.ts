@@ -2,14 +2,17 @@ import { CSSProperties, ReactNode } from 'react';
 
 /**
  * Transfer 数据项接口
+ * 支持自定义字段名，通过 fieldNames 属性指定 key 和 title 对应的字段
  */
 export interface TransferItem {
-  /** 唯一标识 */
-  key: string;
-  /** 显示标题 */
-  title: ReactNode;
+  /** 唯一标识（默认字段名，可通过 fieldNames.key 自定义） */
+  key?: string;
+  /** 显示标题（默认字段名，可通过 fieldNames.title 自定义） */
+  title?: ReactNode;
   /** 是否禁用 */
   disabled?: boolean;
+  /** 允许自定义字段 */
+  [key: string]: any;
 }
 
 /**
@@ -73,11 +76,11 @@ export interface TransferProps {
   /** 自定义渲染每一项 */
   render?: (item: TransferItem) => ReactNode;
   /** 自定义 header，传入 null 则不显示 header 区域 */
-  header?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[] }) => ReactNode | null;
+  header?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[]; sourceSelectedKeys: string[]; targetSelectedKeys: string[] }) => ReactNode | null;
   /** 自定义搜索区域，传入此函数则替换默认搜索框 */
   search?: (props: { direction: 'left' | 'right'; value: string; onChange: (value: string) => void; disabled?: boolean }) => ReactNode;
   /** 自定义 body 渲染，传入此函数则使用自定义内容替换默认列表 */
-  body?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[]; onSelectChange: (keys: string[]) => void }) => ReactNode;
+  body?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[]; sourceSelectedKeys: string[]; targetSelectedKeys: string[]; onSelectChange: (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void }) => ReactNode;
   /** 自定义 footer */
   footer?: (props: { direction: 'left' | 'right' }) => ReactNode;
   /** 自定义行样式 */
@@ -106,6 +109,10 @@ export interface TransferListProps {
   fieldNames?: FieldNames;
   /** 已选中的 key 集合 */
   selectedKeys: string[];
+  /** 源列表已选中的 key 集合 */
+  sourceSelectedKeys: string[];
+  /** 目标列表已选中的 key 集合 */
+  targetSelectedKeys: string[];
   /** 是否显示搜索框 */
   showSearch: boolean;
   /** 是否禁用 */
@@ -125,17 +132,17 @@ export interface TransferListProps {
   /** 列表宽度 */
   listWidth?: number | string;
   /** 选中项改变回调 */
-  onSelectChange: (keys: string[]) => void;
+  onSelectChange: (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void;
   /** 搜索回调 */
   onSearch?: (value: string) => void;
   /** 自定义渲染 */
   render?: (item: TransferItem) => ReactNode;
   /** 自定义 header */
-  header?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[] }) => ReactNode | null;
+  header?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[]; sourceSelectedKeys: string[]; targetSelectedKeys: string[] }) => ReactNode | null;
   /** 自定义搜索区域 */
   search?: (props: { direction: 'left' | 'right'; value: string; onChange: (value: string) => void; disabled?: boolean }) => ReactNode;
   /** 自定义 body */
-  body?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[]; onSelectChange: (keys: string[]) => void }) => ReactNode;
+  body?: (props: { direction: 'left' | 'right'; dataSource: TransferItem[]; selectedKeys: string[]; sourceSelectedKeys: string[]; targetSelectedKeys: string[]; onSelectChange: (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void }) => ReactNode;
   /** 自定义 footer */
   footer?: (props: { direction: 'left' | 'right' }) => ReactNode;
   /** 方向标识 */

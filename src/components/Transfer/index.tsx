@@ -4,7 +4,30 @@ import {
   TransferItem,
   TransferListProps,
   TransferOperationProps,
+  FieldNames,
 } from './types';
+
+/**
+ * 获取对象的字段值
+ */
+const getFieldValue = (item: any, fieldName: string | undefined, defaultField: string): any => {
+  if (!fieldName) return item[defaultField];
+  return item[fieldName];
+};
+
+/**
+ * 获取 TransferItem 的 key
+ */
+const getItemKey = (item: any, fieldNames?: FieldNames): string => {
+  return getFieldValue(item, fieldNames?.key, 'key');
+};
+
+/**
+ * 获取 TransferItem 的 title
+ */
+const getItemTitle = (item: any, fieldNames?: FieldNames): React.ReactNode => {
+  return getFieldValue(item, fieldNames?.title, 'title');
+};
 import {
   TransferWrapper,
   TransferListContainer,
@@ -34,6 +57,7 @@ import './Transfer.css';
  */
 const TransferList: React.FC<TransferListProps> = ({
   dataSource,
+  fieldNames,
   selectedKeys,
   showSearch,
   disabled,
@@ -55,6 +79,8 @@ const TransferList: React.FC<TransferListProps> = ({
   rowClassName,
   loading,
   loadingRender,
+  sourceSelectedKeys,
+  targetSelectedKeys,
 }) => {
   const [searchValue, setSearchValue] = useState('');
 
@@ -66,54 +92,64 @@ const TransferList: React.FC<TransferListProps> = ({
     }
     return dataSource.filter((item) => {
       // 将 title 转换为字符串进行搜索
-      const titleStr = item.title != null ? String(item.title) : '';
-      return titleStr.toLowerCase().includes(searchValue.toLowerCase());
+      const titleStr = getItemTitle(item, fieldNames);
+      const titleString = titleStr != null ? String(titleStr) : '';
+      return titleString.toLowerCase().includes(searchValue.toLowerCase());
     });
-  }, [dataSource, searchValue, filterOption]);
+  }, [dataSource, searchValue, filterOption, fieldNames]);
 
   // 是否全选
   const isCheckedAll = useMemo(() => {
     const availableItems = filteredDataSource.filter((item) => !item.disabled);
     if (availableItems.length === 0) return false;
-    return availableItems.every((item) => selectedKeys.includes(item.key));
-  }, [filteredDataSource, selectedKeys]);
+    return availableItems.every((item) => selectedKeys.includes(getItemKey(item, fieldNames)));
+  }, [filteredDataSource, selectedKeys, fieldNames]);
 
   // 是否部分选中（半选状态）
   const isIndeterminate = useMemo(() => {
     const availableItems = filteredDataSource.filter((item) => !item.disabled);
     if (availableItems.length === 0) return false;
     const selectedCount = availableItems.filter((item) =>
-      selectedKeys.includes(item.key)
+      selectedKeys.includes(getItemKey(item, fieldNames))
     ).length;
     return selectedCount > 0 && selectedCount < availableItems.length;
-  }, [filteredDataSource, selectedKeys]);
+  }, [filteredDataSource, selectedKeys, fieldNames]);
 
   // 全选/取消全选
   const handleCheckAll = useCallback(() => {
     if (disabled) return;
     const availableItems = filteredDataSource.filter((item) => !item.disabled);
-    const availableKeys = availableItems.map((item) => item.key);
+    const availableKeys = availableItems.map((item) => getItemKey(item, fieldNames));
 
     if (isCheckedAll) {
       // 取消全选
       const newSelectedKeys = selectedKeys.filter(
         (key) => !availableKeys.includes(key)
       );
-      onSelectChange(newSelectedKeys);
+      if (direction === 'left') {
+        onSelectChange(newSelectedKeys, targetSelectedKeys);
+      } else {
+        onSelectChange(sourceSelectedKeys, newSelectedKeys);
+      }
     } else {
       // 全选
       const combined = [...selectedKeys, ...availableKeys];
       const newSelectedKeys = combined.filter((item, index) => combined.indexOf(item) === index);
-      onSelectChange(newSelectedKeys);
+      if (direction === 'left') {
+        onSelectChange(newSelectedKeys, targetSelectedKeys);
+      } else {
+        onSelectChange(sourceSelectedKeys, newSelectedKeys);
+      }
     }
-  }, [disabled, filteredDataSource, selectedKeys, isCheckedAll, onSelectChange]);
+  }, [disabled, filteredDataSource, selectedKeys, isCheckedAll, onSelectChange, fieldNames, direction, sourceSelectedKeys, targetSelectedKeys]);
 
   // 选中/取消单个项
   const handleCheckItem = useCallback(
     (item: TransferItem) => {
       if (disabled || item.disabled) return;
 
-      const index = selectedKeys.indexOf(item.key);
+      const itemKey = getItemKey(item, fieldNames);
+      const index = selectedKeys.indexOf(itemKey);
       let newSelectedKeys: string[];
 
       if (index > -1) {
@@ -122,12 +158,16 @@ const TransferList: React.FC<TransferListProps> = ({
           ...selectedKeys.slice(index + 1),
         ];
       } else {
-        newSelectedKeys = [...selectedKeys, item.key];
+        newSelectedKeys = [...selectedKeys, itemKey];
       }
 
-      onSelectChange(newSelectedKeys);
+      if (direction === 'left') {
+        onSelectChange(newSelectedKeys, targetSelectedKeys);
+      } else {
+        onSelectChange(sourceSelectedKeys, newSelectedKeys);
+      }
     },
-    [disabled, selectedKeys, onSelectChange]
+    [disabled, selectedKeys, onSelectChange, fieldNames, direction, sourceSelectedKeys, targetSelectedKeys]
   );
 
   // 搜索框变化
@@ -169,7 +209,7 @@ const TransferList: React.FC<TransferListProps> = ({
   // 渲染自定义 header
   const renderHeader = () => {
     if (header) {
-      const headerContent = header({ direction, dataSource, selectedKeys });
+      const headerContent = header({ direction, dataSource, selectedKeys, sourceSelectedKeys, targetSelectedKeys });
       if (headerContent === null) return null;
       return headerContent;
     }
@@ -198,7 +238,14 @@ const TransferList: React.FC<TransferListProps> = ({
   // 渲染 body
   const renderBody = () => {
     if (body) {
-      return body({ direction, dataSource: filteredDataSource, selectedKeys, onSelectChange });
+      return body({
+        direction,
+        dataSource: filteredDataSource,
+        selectedKeys,
+        sourceSelectedKeys,
+        targetSelectedKeys,
+        onSelectChange,
+      });
     }
 
     // 加载状态
@@ -215,12 +262,13 @@ const TransferList: React.FC<TransferListProps> = ({
       <TransferListBody className="transfer-list-body">
         {filteredDataSource.length > 0 ? (
           filteredDataSource.map((item) => {
-            const isSelected = selectedKeys.includes(item.key);
+            const itemKey = getItemKey(item, fieldNames);
+            const isSelected = selectedKeys.includes(itemKey);
             const customClassName = rowClassName?.(item) || '';
 
             return (
               <TransferListItem
-                key={item.key}
+                key={itemKey}
                 className={`transfer-list-item ${customClassName}`}
                 $selected={isSelected}
                 $disabled={disabled || item.disabled}
@@ -229,7 +277,7 @@ const TransferList: React.FC<TransferListProps> = ({
               >
                 <TransferListItemCheckbox $checked={isSelected} />
                 <TransferItemContent>
-                  {render ? render(item) : item.title}
+                  {render ? render(item) : getItemTitle(item, fieldNames)}
                 </TransferItemContent>
               </TransferListItem>
             );
@@ -351,6 +399,7 @@ const TransferOperations: React.FC<TransferOperationProps> = ({
  */
 const Transfer: React.FC<TransferProps> = ({
   dataSource,
+  fieldNames,
   targetKeys: targetKeysProp,
   defaultTargetKeys = [],
   selectedKeys: selectedKeysProp,
@@ -402,34 +451,34 @@ const Transfer: React.FC<TransferProps> = ({
 
   // 源列表数据（未选中到右侧的）
   const sourceDataSource = useMemo(() => {
-    return dataSource.filter((item) => !targetKeys.includes(item.key));
-  }, [dataSource, targetKeys]);
+    return dataSource.filter((item) => !targetKeys.includes(getItemKey(item, fieldNames)));
+  }, [dataSource, targetKeys, fieldNames]);
 
   // 目标列表数据（已选中到右侧的）
   const targetDataSource = useMemo(() => {
-    return dataSource.filter((item) => targetKeys.includes(item.key));
-  }, [dataSource, targetKeys]);
+    return dataSource.filter((item) => targetKeys.includes(getItemKey(item, fieldNames)));
+  }, [dataSource, targetKeys, fieldNames]);
 
   // 处理源列表选中变化
   const handleSourceSelectChange = useCallback(
-    (keys: string[]) => {
+    (sourceKeys: string[], targetKeys: string[]) => {
       if (!isSelectedControlled) {
-        setInternalSourceSelectedKeys(keys);
+        setInternalSourceSelectedKeys(sourceKeys);
       }
-      onSelectChange?.(keys, targetSelectedKeys);
+      onSelectChange?.(sourceKeys, targetKeys);
     },
-    [isSelectedControlled, targetSelectedKeys, onSelectChange]
+    [isSelectedControlled, onSelectChange]
   );
 
   // 处理目标列表选中变化
   const handleTargetSelectChange = useCallback(
-    (keys: string[]) => {
+    (sourceKeys: string[], targetKeys: string[]) => {
       if (!isSelectedControlled) {
-        setInternalTargetSelectedKeys(keys);
+        setInternalTargetSelectedKeys(targetKeys);
       }
-      onSelectChange?.(sourceSelectedKeys, keys);
+      onSelectChange?.(sourceKeys, targetKeys);
     },
-    [isSelectedControlled, sourceSelectedKeys, onSelectChange]
+    [isSelectedControlled, onSelectChange]
   );
 
   // 移动到右侧
@@ -437,25 +486,20 @@ const Transfer: React.FC<TransferProps> = ({
     if (sourceSelectedKeys.length === 0) return;
 
     const newTargetKeys = [...targetKeys, ...sourceSelectedKeys];
+    const movedKeys = [...sourceSelectedKeys];
 
     if (!isControlled) {
       setInternalTargetKeys(newTargetKeys);
       setInternalSourceSelectedKeys([]);
     }
 
-    onChange?.(newTargetKeys, 'right', sourceSelectedKeys);
-
-    if (!isSelectedControlled) {
-      onSelectChange?.([], targetSelectedKeys);
-    }
+    // 触发 onChange 回调，传入最新的 targetKeys
+    onChange?.(newTargetKeys, 'right', movedKeys);
   }, [
     sourceSelectedKeys,
     targetKeys,
-    targetSelectedKeys,
     isControlled,
-    isSelectedControlled,
     onChange,
-    onSelectChange,
   ]);
 
   // 移动到左侧
@@ -465,25 +509,20 @@ const Transfer: React.FC<TransferProps> = ({
     const newTargetKeys = targetKeys.filter(
       (key) => !targetSelectedKeys.includes(key)
     );
+    const movedKeys = [...targetSelectedKeys];
 
     if (!isControlled) {
       setInternalTargetKeys(newTargetKeys);
       setInternalTargetSelectedKeys([]);
     }
 
-    onChange?.(newTargetKeys, 'left', targetSelectedKeys);
-
-    if (!isSelectedControlled) {
-      onSelectChange?.(sourceSelectedKeys, []);
-    }
+    // 触发 onChange 回调，传入最新的 targetKeys
+    onChange?.(newTargetKeys, 'left', movedKeys);
   }, [
     targetSelectedKeys,
     targetKeys,
-    sourceSelectedKeys,
     isControlled,
-    isSelectedControlled,
     onChange,
-    onSelectChange,
   ]);
 
   // 搜索回调
@@ -507,12 +546,12 @@ const Transfer: React.FC<TransferProps> = ({
 
   // 单栏模式：选中项直接作为 targetKeys
   const handleSingleSelectChange = useCallback(
-    (keys: string[]) => {
+    (_sourceKeys: string[], targetKeys: string[]) => {
       if (!isControlled) {
-        setInternalTargetKeys(keys);
+        setInternalTargetKeys(targetKeys);
       }
-      onChange?.(keys, 'right', keys);
-      onSelectChange?.([], keys);
+      onChange?.(targetKeys, 'right', targetKeys);
+      onSelectChange?.([], targetKeys);
     },
     [isControlled, onChange, onSelectChange]
   );
@@ -536,6 +575,7 @@ const Transfer: React.FC<TransferProps> = ({
         <TransferList
           direction="left"
           dataSource={singleDataSource}
+          fieldNames={fieldNames}
           selectedKeys={singleSelectedKeys}
           showSearch={showSearch}
           disabled={disabled}
@@ -555,6 +595,8 @@ const Transfer: React.FC<TransferProps> = ({
           rowClassName={rowClassName}
           loading={loading}
           loadingRender={loadingRender}
+          sourceSelectedKeys={[]}
+          targetSelectedKeys={singleSelectedKeys}
         />
       ) : (
         <>
@@ -562,6 +604,7 @@ const Transfer: React.FC<TransferProps> = ({
           <TransferList
             direction="left"
             dataSource={sourceDataSource}
+            fieldNames={fieldNames}
             selectedKeys={sourceSelectedKeys}
             showSearch={showSearch}
             disabled={disabled}
@@ -581,6 +624,8 @@ const Transfer: React.FC<TransferProps> = ({
             rowClassName={rowClassName}
             loading={loading}
             loadingRender={loadingRender}
+            sourceSelectedKeys={sourceSelectedKeys}
+            targetSelectedKeys={targetSelectedKeys}
           />
 
           {/* 操作按钮 */}
@@ -596,6 +641,7 @@ const Transfer: React.FC<TransferProps> = ({
           <TransferList
             direction="right"
             dataSource={targetDataSource}
+            fieldNames={fieldNames}
             selectedKeys={targetSelectedKeys}
             showSearch={showSearch}
             disabled={disabled}
@@ -615,6 +661,8 @@ const Transfer: React.FC<TransferProps> = ({
             rowClassName={rowClassName}
             loading={loading}
             loadingRender={loadingRender}
+            sourceSelectedKeys={sourceSelectedKeys}
+            targetSelectedKeys={targetSelectedKeys}
           />
         </>
       )}

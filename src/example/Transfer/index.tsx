@@ -391,45 +391,62 @@ const dataSource = [
           dataSource={mockData.slice(0, 6)}
           defaultTargetKeys={['1']}
           listHeight={200}
-          body={({ dataSource, selectedKeys, onSelectChange }) => (
+          body={({ direction, dataSource, selectedKeys, sourceSelectedKeys, targetSelectedKeys, onSelectChange }) => (
             <div style={{ padding: '8px', height: '100%', overflow: 'auto' }}>
-              {dataSource.map(item => (
-                <div
-                  key={item.key}
-                  onClick={() => !item.disabled && onSelectChange(
-                    selectedKeys.includes(item.key)
-                      ? selectedKeys.filter(k => k !== item.key)
-                      : [...selectedKeys, item.key]
-                  )}
-                  style={{
-                    padding: '8px 12px',
-                    margin: '4px 0',
-                    borderRadius: '4px',
-                    cursor: item.disabled ? 'not-allowed' : 'pointer',
-                    background: selectedKeys.includes(item.key) ? '#e6f7ff' : '#f5f5f5',
-                    border: selectedKeys.includes(item.key) ? '1px solid #1890ff' : '1px solid #d9d9d9',
-                  }}
-                >
-                  {selectedKeys.includes(item.key) ? '✅' : '⭕'} {item.title}
-                </div>
-              ))}
+              <div style={{ marginBottom: '8px', fontSize: '12px', color: '#666' }}>
+                左侧选中: {sourceSelectedKeys.length} | 右侧选中: {targetSelectedKeys.length}
+              </div>
+              {dataSource.map(item => {
+                const itemKey = item.key as string;
+                return (
+                  <div
+                    key={itemKey}
+                    onClick={() => {
+                      if (item.disabled) return;
+                      const newSelectedKeys = selectedKeys.includes(itemKey)
+                        ? selectedKeys.filter(k => k !== itemKey)
+                        : [...selectedKeys, itemKey];
+                      if (direction === 'left') {
+                        onSelectChange(newSelectedKeys, targetSelectedKeys);
+                      } else {
+                        onSelectChange(sourceSelectedKeys, newSelectedKeys);
+                      }
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      margin: '4px 0',
+                      borderRadius: '4px',
+                      cursor: item.disabled ? 'not-allowed' : 'pointer',
+                      background: selectedKeys.includes(itemKey) ? '#e6f7ff' : '#f5f5f5',
+                      border: selectedKeys.includes(itemKey) ? '1px solid #1890ff' : '1px solid #d9d9d9',
+                    }}
+                  >
+                    {selectedKeys.includes(itemKey) ? '✅' : '⭕'} {item.title}
+                  </div>
+                );
+              })}
             </div>
           )}
         />
-        <CopyBlock code={`body={({ dataSource, selectedKeys, onSelectChange }) => (
+        <CopyBlock code={`body={({ direction, dataSource, selectedKeys, sourceSelectedKeys, targetSelectedKeys, onSelectChange }) => (
   <div>
-    {dataSource.map(item => (
-      <div
-        key={item.key}
-        onClick={() => onSelectChange(
-          selectedKeys.includes(item.key)
-            ? selectedKeys.filter(k => k !== item.key)
-            : [...selectedKeys, item.key]
-        )}
-      >
-        {item.title}
-      </div>
-    ))}
+    <div>左侧选中: {sourceSelectedKeys.length} | 右侧选中: {targetSelectedKeys.length}</div>
+    {dataSource.map(item => {
+      const newSelectedKeys = selectedKeys.includes(item.key)
+        ? selectedKeys.filter(k => k !== item.key)
+        : [...selectedKeys, item.key];
+      return (
+        <div
+          key={item.key}
+          onClick={() => direction === 'left'
+            ? onSelectChange(newSelectedKeys, targetSelectedKeys)
+            : onSelectChange(sourceSelectedKeys, newSelectedKeys)
+          }
+        >
+          {item.title}
+        </div>
+      );
+    })}
   </div>
 )}`} />
       </Section>
@@ -462,6 +479,39 @@ const dataSource = [
       {value && <button onClick={() => onChange('')}>清空</button>}
     </div>
   )}
+/>`} />
+      </Section>
+
+      {/* 自定义字段名 */}
+      <Section title="自定义字段名">
+        <Transfer
+          dataSource={[
+            { id: '1', name: '用户 1', disabled: false },
+            { id: '2', name: '用户 2', disabled: false },
+            { id: '3', name: '用户 3', disabled: true },
+            { id: '4', name: '用户 4', disabled: false },
+            { id: '5', name: '用户 5', disabled: false },
+          ]}
+          defaultTargetKeys={['1', '2']}
+          showSearch
+          leftTitle="用户列表"
+          rightTitle="已选用户"
+          fieldNames={{ key: 'id', title: 'name' }}
+          onChange={(targetKeys) => {
+            console.log('目标 keys:', targetKeys);
+          }}
+        />
+        <CopyBlock code={`<Transfer
+  dataSource={[
+    { id: '1', name: '用户 1' },
+    { id: '2', name: '用户 2' },
+    { id: '3', name: '用户 3', disabled: true },
+    // ...
+  ]}
+  defaultTargetKeys={['1', '2']}
+  showSearch
+  fieldNames={{ key: 'id', title: 'name' }}
+  onChange={(targetKeys) => console.log(targetKeys)}
 />`} />
       </Section>
 
