@@ -244,6 +244,16 @@
     /* 默认自适应高度，不设置最大高度限制 */
 }
 
+/* 当没有设置 height 参数时，内容区域有最小高度 300px */
+.idp-modal-container:not([style*="height"]) .idp-modal-content {
+    min-height: 300px;
+}
+
+/* 当设置了 height 参数时，取消最小高度限制，以设置的 height 为准 */
+.idp-modal-container--has-height .idp-modal-content {
+    min-height: 0;
+}
+
 .idp-modal-footer {
     display: flex;
     flex-direction: column;

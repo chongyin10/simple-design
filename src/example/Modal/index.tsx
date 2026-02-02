@@ -77,6 +77,7 @@ const ModalExample: React.FC = () => {
     const [visible16, setVisible16] = useState(false);
     const [visible17, setVisible17] = useState(false);
     const [visible18, setVisible18] = useState(false);
+    const [visible19, setVisible19] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const customContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -92,7 +93,7 @@ const ModalExample: React.FC = () => {
         { param: 'visible', type: 'boolean', default: '-', description: '控制弹窗显示/隐藏（必填）' },
         { param: 'title', type: 'string', default: "'标题'", description: '弹窗标题' },
         { param: 'width', type: 'number | string', default: '600', description: '弹窗宽度' },
-        { param: 'height', type: 'number | string', default: '300', description: '弹窗高度（可选，不设置则自适应）' },
+        { param: 'height', type: 'number | string', default: '-', description: '弹窗高度（可选，不设置则内容区域有最小高度300px，设置后以设置的height为准）' },
         { param: 'headerHeight', type: 'number | string', default: '40', description: '顶部区域高度' },
         { param: 'footerHeight', type: 'number | string', default: '60', description: '底部区域高度' },
         { param: 'confirmLoading', type: 'boolean', default: 'false', description: '确认按钮是否显示加载状态' },
@@ -178,6 +179,12 @@ function App() {
                         大尺寸弹窗
                     </Button>
                 </DemoRow>
+                
+                <DemoRow title="最小高度测试">
+                    <Button variant="primary" onClick={() => setVisible19(true)}>
+                        最小高度测试
+                    </Button>
+                </DemoRow>
 
                 <Modal
                     visible={visible2}
@@ -203,6 +210,22 @@ function App() {
                         <p>示例内容块...</p>
                         <p>示例内容块...</p>
                         <p>示例内容块...</p>
+                    </div>
+                </Modal>
+                
+                <Modal
+                    visible={visible19}
+                    title="最小高度测试（未设置 height）"
+                    width={600}
+                    onCancel={() => setVisible19(false)}
+                    onOk={() => setVisible19(false)}
+                >
+                    <p>这个弹窗没有设置 height 参数。</p>
+                    <p>根据新的实现，内容区域会有最小高度 300px 的限制。</p>
+                    <p>即使内容很少，弹窗也不会小于这个最小高度。</p>
+                    <div style={{ padding: '15px', background: '#e6f7ff', borderRadius: '4px', marginTop: '10px' }}>
+                        <p>测试内容</p>
+                        <p>测试内容</p>
                     </div>
                 </Modal>
                 
@@ -273,7 +296,7 @@ const handleOk = () => {
             </Section>
 
             <Section title="高度自适应">
-                <p>当未设置height时，内容区域高度自适应；当设置height时，内容区域高度自动计算。</p>
+                <p>当未设置height时，内容区域有最小高度300px，高度根据内容自动扩展；当设置height时，以设置的height为准，取消最小高度限制。</p>
 
                 <DemoRow title="自适应高度">
                     <Button variant="primary" onClick={() => setVisible5(true)}>
@@ -294,8 +317,9 @@ const handleOk = () => {
                     onCancel={() => setVisible5(false)}
                     onOk={() => setVisible5(false)}
                 >
-                    <p>这是一个未设置height的弹窗，内容区域高度会根据内容自动调整。</p>
-                    <p>你可以添加更多内容来测试自适应效果。</p>
+                    <p>这是一个未设置height的弹窗，内容区域有最小高度300px的限制。</p>
+                    <p>即使内容很少，弹窗也不会小于这个最小高度。</p>
+                    <p>当内容超过最小高度时，弹窗高度会自动扩展以适应内容。</p>
                     <div style={{ padding: '20px', background: '#f5f5f5', borderRadius: '4px', marginTop: '10px' }}>
                         <h4>测试内容</h4>
                         <p>这是一段测试文本，用于演示内容自适应高度的效果。</p>
@@ -349,10 +373,12 @@ const handleOk = () => {
     onCancel={() => setVisible(false)}
     onOk={() => setVisible(false)}
 >
-    <p>内容区域高度会根据内容自动调整。</p>
+    <p>内容区域有最小高度300px的限制。</p>
+    <p>即使内容很少，弹窗也不会小于这个最小高度。</p>
+    <p>当内容超过最小高度时，弹窗高度会自动扩展以适应内容。</p>
 </Modal>
 
-// 固定高度，内容自动计算
+// 固定高度，以设置的height为准
 <Modal
     visible={visible}
     title="内容滚动弹窗"
@@ -363,6 +389,7 @@ const handleOk = () => {
     onCancel={() => setVisible(false)}
     onOk={() => setVisible(false)}
 >
+    <p>设置了height参数，以设置的height为准，取消最小高度限制。</p>
     <p>内容区域高度 = 总高度 - 头部高度 - 底部高度</p>
     <p>这里计算结果为：300 - 50 - 50 = 200px</p>
     <p>当内容超过计算高度时，会自动显示滚动条。</p>
@@ -861,7 +888,7 @@ function App() {
                 <p>头部右侧有关闭按钮，可以点击关闭弹窗</p>
             </Modal>
 
-            {/* 固定高度，内容自动计算 */}
+            {/* 固定高度，以设置的height为准 */}
             <Button onClick={() => setVisible2(true)}>
                 固定高度弹窗
             </Button>
@@ -874,9 +901,26 @@ function App() {
                 onCancel={() => setVisible2(false)}
                 onOk={() => setVisible2(false)}
             >
+                <p>设置了height参数，以设置的height为准，取消最小高度限制。</p>
                 <p>内容区域高度 = 总高度 - 头部高度 - 底部高度</p>
                 <p>这里计算结果为：400 - 60 - 60 = 280px</p>
                 <p>当内容超过计算高度时，会自动显示滚动条</p>
+            </Modal>
+
+            {/* 自适应高度，有最小高度限制 */}
+            <Button onClick={() => setVisible19(true)}>
+                最小高度测试
+            </Button>
+            <Modal
+                visible={visible19}
+                title="最小高度测试（未设置 height）"
+                width={600}
+                onCancel={() => setVisible19(false)}
+                onOk={() => setVisible19(false)}
+            >
+                <p>这个弹窗没有设置 height 参数。</p>
+                <p>根据新的实现，内容区域会有最小高度 300px 的限制。</p>
+                <p>即使内容很少，弹窗也不会小于这个最小高度。</p>
             </Modal>
 
             {/* 自定义动画方向 */}

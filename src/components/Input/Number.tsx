@@ -24,13 +24,16 @@ const NumberInput: React.FC<NumberInputProps> = ({
     ...rest
 }) => {
     // 验证输入值是否符合nType要求
-    const validateValue = (val: string): { isValid: boolean; message: string } => {
+    const validateValue = (val: any): { isValid: boolean; message: string } => {
         if (!val) {
             return { isValid: true, message: '' };
         }
 
+        // 确保val是字符串类型，如果不是则转换为字符串
+        const valStr = typeof val === 'string' ? val : String(val);
+        
         // 移除首尾空格
-        const trimmedVal = val.trim();
+        const trimmedVal = valStr.trim();
         
         // 检查整个字符串是否为有效的数字
         const num = parseFloat(trimmedVal);

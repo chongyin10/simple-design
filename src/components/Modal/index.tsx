@@ -202,32 +202,34 @@ const Modal: React.FC<ModalProps> = ({
                 style={mergedMaskStyle}
             >
                 <div
-                        className={classNames(
-                            'idp-modal-container',
-                            {
-                                // 显示动画 - center + top
-                                'idp-modal-container--center-top': isVisible && !isClosing && effectiveDirection === 'center' && top !== undefined,
-                                // 显示动画 - center（没有top）
-                                'idp-modal-container--center': isVisible && !isClosing && effectiveDirection === 'center' && top === undefined,
-                                // 显示动画 - 其他方向
-                                'idp-modal-container--top-right': isVisible && !isClosing && effectiveDirection === 'top-right',
-                                'idp-modal-container--bottom-right': isVisible && !isClosing && effectiveDirection === 'bottom-right',
-                                'idp-modal-container--normal': isVisible && !isClosing && effectiveDirection === 'normal',
-                                
-                                // 关闭状态 - center + top
-                                'idp-modal-container--closing-center-top': isClosing && effectiveDirection === 'center' && top !== undefined,
-                                // 关闭状态 - center（没有top）
-                                'idp-modal-container--closing-center': isClosing && effectiveDirection === 'center' && top === undefined,
-                                // 关闭状态 - 其他方向
-                                'idp-modal-container--closing-top-right': isClosing && effectiveDirection === 'top-right',
-                                'idp-modal-container--closing-bottom-right': isClosing && effectiveDirection === 'bottom-right',
-                                'idp-modal-container--closing-normal': isClosing && effectiveDirection === 'normal',
-                                'idp-modal-container--bordered': bordered
-                            }
-                        )}
-                        style={containerStyle}
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                    className={classNames(
+                        'idp-modal-container',
+                        {
+                            // 显示动画 - center + top
+                            'idp-modal-container--center-top': isVisible && !isClosing && effectiveDirection === 'center' && top !== undefined,
+                            // 显示动画 - center（没有top）
+                            'idp-modal-container--center': isVisible && !isClosing && effectiveDirection === 'center' && top === undefined,
+                            // 显示动画 - 其他方向
+                            'idp-modal-container--top-right': isVisible && !isClosing && effectiveDirection === 'top-right',
+                            'idp-modal-container--bottom-right': isVisible && !isClosing && effectiveDirection === 'bottom-right',
+                            'idp-modal-container--normal': isVisible && !isClosing && effectiveDirection === 'normal',
+                            
+                            // 关闭状态 - center + top
+                            'idp-modal-container--closing-center-top': isClosing && effectiveDirection === 'center' && top !== undefined,
+                            // 关闭状态 - center（没有top）
+                            'idp-modal-container--closing-center': isClosing && effectiveDirection === 'center' && top === undefined,
+                            // 关闭状态 - 其他方向
+                            'idp-modal-container--closing-top-right': isClosing && effectiveDirection === 'top-right',
+                            'idp-modal-container--closing-bottom-right': isClosing && effectiveDirection === 'bottom-right',
+                            'idp-modal-container--closing-normal': isClosing && effectiveDirection === 'normal',
+                            'idp-modal-container--bordered': bordered,
+                            // 当设置了 height 参数时，添加此类名以取消最小高度限制
+                            'idp-modal-container--has-height': height !== undefined
+                        }
+                    )}
+                    style={containerStyle}
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <div
                         className="idp-modal-header"
                         style={headerStyle}
