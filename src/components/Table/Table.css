@@ -176,6 +176,12 @@
   box-shadow: inset 3px 0px 12px -10px rgb(166 57 57 / 24%) !important;
 }
 
+/* 分页包装器 - 允许下拉菜单溢出 */
+.custom-table-pagination-wrapper {
+  overflow: visible;
+  position: relative;
+}
+
 /* 分页样式 */
 .custom-table-pagination {
   display: flex;

@@ -1,6 +1,6 @@
 {
   "name": "@zjpcy/simple-design",
-  "version": "1.1.5",
+  "version": "1.1.13",
   "description": "IDP Studio Design System - React Component Library",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
@@ -16,8 +16,7 @@
     "build:rollup": "rollup -c",
     "prebuild": "rimraf dist",
     "lint": "eslint src --ext ts,tsx",
-    "preview": "vite preview",
-    "publish": "yarn build && npm publish"
+    "preview": "vite preview"
   },
   "keywords": [
     "react",

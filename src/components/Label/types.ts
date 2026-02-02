@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 export interface LabelProps {
   title?: ReactNode;
@@ -6,4 +6,5 @@ export interface LabelProps {
   indicatorWidth?: string | number;
   indicatorHeight?: string | number;
   paddingRight?: string | number;
+  style?: CSSProperties;
 }

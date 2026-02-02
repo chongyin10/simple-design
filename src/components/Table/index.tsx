@@ -20,7 +20,7 @@ export interface PaginationProps {
     pageSize?: number;
     total?: number;
     current?: number;
-    onChange?: (page: number, pageSize?: number) => void;
+    onChange?: (page: number, pageSize: number) => void;
     [key: string]: any;
 }
 
@@ -118,7 +118,7 @@ const Table = ({
     };
 
     // 分页处理
-    const handlePageChange = (page: number, newPageSize?: number) => {
+    const handlePageChange = (page: number, newPageSize: number) => {
         const newSize = newPageSize || pageSize;
         setCurrentPage(page);
         setPageSize(newSize);
@@ -275,17 +275,19 @@ const Table = ({
 
 
         return (
-            <Pagination
-                total={total}
-                current={current}
-                pageSize={pageSize}
-                onChange={handlePageChange}
-                showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
-                showSizeChanger={true}
-                showQuickJumper={true}
-                align="flex-end"
-                {...pagination}
-            />
+            <div className="custom-table-pagination-wrapper">
+                <Pagination
+                    total={total}
+                    current={current}
+                    pageSize={pageSize}
+                    onChange={handlePageChange}
+                    showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
+                    showSizeChanger={true}
+                    showQuickJumper={true}
+                    align="flex-end"
+                    {...pagination}
+                />
+            </div>
         );
     };
 

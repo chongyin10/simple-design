@@ -1,7 +1,123 @@
-import React, { useState, useEffect } from 'react';
-import Select from '../Select';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Pagination.css';
 import type { PaginationProps } from './types';
+
+// 内联自定义选择器组件
+interface PageSizeSelectProps {
+  value: number;
+  options: string[];
+  onChange: (value: number) => void;
+}
+
+const PageSizeSelect: React.FC<PageSizeSelectProps> = ({ value, options, onChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+
+  // 计算下拉菜单位置
+  const updateDropdownPosition = useCallback(() => {
+    if (!selectRef.current) return;
+    
+    const rect = selectRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const dropdownHeight = dropdownRef.current?.offsetHeight || 200;
+    
+    // 计算下方空间是否足够
+    const spaceBelow = viewportHeight - rect.bottom;
+    const showBelow = spaceBelow >= dropdownHeight || spaceBelow >= rect.top;
+    
+    if (showBelow) {
+      // 显示在下方
+      setDropdownStyle({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    } else {
+      // 显示在上方
+      setDropdownStyle({
+        top: rect.top + window.scrollY - dropdownHeight - 5,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    }
+  }, []);
+
+  // 点击外部关闭
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // 窗口大小改变或滚动时更新位置
+  useEffect(() => {
+    if (isOpen) {
+      updateDropdownPosition();
+      const handleUpdate = () => updateDropdownPosition();
+      window.addEventListener('resize', handleUpdate);
+      window.addEventListener('scroll', handleUpdate, true);
+      return () => {
+        window.removeEventListener('resize', handleUpdate);
+        window.removeEventListener('scroll', handleUpdate, true);
+      };
+    }
+  }, [isOpen, updateDropdownPosition]);
+
+  const handleSelect = (optionValue: number) => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
+      // 打开时更新位置
+      setTimeout(updateDropdownPosition, 0);
+    }
+  };
+
+  return (
+    <div className="idp-page-size-select" ref={selectRef}>
+      <div
+        className={`idp-page-size-select-trigger ${isOpen ? 'is-open' : ''}`}
+        onClick={handleToggle}
+      >
+        <span className="idp-page-size-select-value">{value} 条/页</span>
+        <svg
+          className="idp-page-size-select-arrow"
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+        >
+          <path d="M6 8L1 3h10z" fill="currentColor" />
+        </svg>
+      </div>
+      {isOpen && (
+        <div className={`idp-page-size-select-dropdown is-open`} ref={dropdownRef} style={dropdownStyle}>
+          {options.map((option) => {
+            const numValue = parseInt(option, 10);
+            return (
+              <div
+                key={option}
+                className={`idp-page-size-select-option ${value === numValue ? 'is-selected' : ''}`}
+                onClick={() => handleSelect(numValue)}
+              >
+                {option} 条/页
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Pagination: React.FC<PaginationProps> = ({
   total = 0,
@@ -20,6 +136,8 @@ const Pagination: React.FC<PaginationProps> = ({
   // 内部状态管理
   const [internalCurrent, setInternalCurrent] = useState(1);
   const [internalPageSize, setInternalPageSize] = useState(externalPageSize);
+  // 用于标记是否是初始渲染
+  const isFirstRender = useRef(true);
   
   // 使用外部传入的值或内部状态
   const current = externalCurrent !== undefined ? externalCurrent : internalCurrent;
@@ -28,18 +146,29 @@ const Pagination: React.FC<PaginationProps> = ({
   // 计算总页数
   const totalPages = Math.ceil(total / pageSize);
   
-  // 确保当前页在有效范围内
+  // 使用 ref 存储 onChange，避免依赖变化导致重复触发
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+  
+  // 确保当前页在有效范围内（只在真正的页码超出范围时触发 onChange，初始渲染不触发）
   useEffect(() => {
+    // 跳过初始渲染
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    
     if (current > totalPages && totalPages > 0) {
       const newCurrent = totalPages;
       if (externalCurrent === undefined) {
         setInternalCurrent(newCurrent);
       }
-      if (onChange) {
-        onChange(newCurrent, pageSize);
+      // 使用 ref 中的 onChange，避免依赖变化
+      if (onChangeRef.current) {
+        onChangeRef.current(newCurrent, pageSize);
       }
     }
-  }, [current, totalPages, externalCurrent, pageSize, onChange]);
+  }, [current, totalPages, externalCurrent, pageSize]);
 
   // 生成页码数组
   const generatePages = (): (number | string)[] => {
@@ -188,15 +317,10 @@ const Pagination: React.FC<PaginationProps> = ({
       {(showSizeChanger || showQuickJumper) && (
         <div className="idp-pagination-options">
           {showSizeChanger && (
-            <Select
-              className="idp-pagination-options-size-changer"
+            <PageSizeSelect
               value={pageSize}
-              onChange={handlePageSizeChange}
-              options={pageSizeOptions.map((option: string) => ({
-                value: parseInt(option, 10),
-                label: `${option} 条/页`
-              }))}
-              style={{ width: 120 }}
+              options={pageSizeOptions}
+              onChange={(value) => handlePageSizeChange(value.toString())}
             />
           )}
           

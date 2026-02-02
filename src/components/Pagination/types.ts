@@ -4,10 +4,7 @@ export interface PaginationProps {
   defaultCurrent?: number;
   pageSize?: number;
   defaultPageSize?: number;
-  onChange?: {
-    (current: number): void;
-    (current: number, pageSize?: number): void;
-  };
+  onChange?: (current: number, pageSize: number) => void;
   pageSizeOptions?: string[];
   showSizeChanger?: boolean;
   showQuickJumper?: boolean;

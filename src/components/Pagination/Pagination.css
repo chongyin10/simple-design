@@ -187,9 +187,134 @@
   margin-left: var(--pagination-margin);
 }
 
-.idp-pagination-options-size-changer {
-  min-width: var(--pagination-select-width);
+/* 自定义页码选择器 */
+.idp-page-size-select {
+  position: relative;
+  display: inline-block;
   margin-right: 8px;
+}
+
+.idp-page-size-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100px;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.88);
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  user-select: none;
+}
+
+.idp-page-size-select-trigger:hover {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.15);
+}
+
+.idp-page-size-select-trigger.is-open {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.idp-page-size-select-value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.idp-page-size-select-arrow {
+  margin-left: 8px;
+  color: #666;
+  transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.idp-page-size-select-trigger.is-open .idp-page-size-select-arrow {
+  transform: rotate(180deg);
+}
+
+/* 下拉菜单 - 带打开动画 */
+.idp-page-size-select-dropdown {
+  position: fixed;
+  top: auto;
+  left: auto;
+  right: auto;
+  margin-top: 4px;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  box-sizing: border-box;
+  min-width: 120px;
+  
+  /* 默认隐藏状态 */
+  opacity: 0;
+  visibility: hidden;
+  max-height: 0;
+  overflow: hidden;
+  transform-origin: top center;
+  transform: translateY(-8px) scale(0.95);
+  transition:
+    opacity 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    visibility 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    transform 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    max-height 0s linear 0.2s;
+}
+
+/* 打开状态 */
+.idp-page-size-select-dropdown.is-open {
+  opacity: 1;
+  visibility: visible;
+  max-height: 200px;
+  transform: translateY(0) scale(1);
+  overflow: visible;
+  transition:
+    opacity 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    visibility 0.2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    transform 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* 下拉选项 */
+.idp-page-size-select-option {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.88);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.idp-page-size-select-option:first-child {
+  border-radius: 5px 5px 0 0;
+}
+
+.idp-page-size-select-option:last-child {
+  border-radius: 0 0 5px 5px;
+}
+
+.idp-page-size-select-option:hover {
+  background-color: #f0f7ff;
+  color: #1890ff;
+}
+
+.idp-page-size-select-option.is-selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+/* 兼容旧样式的保留 */
+.idp-pagination-options-size-changer {
+  display: none;
 }
 
 .idp-pagination-options-quick-jumper {

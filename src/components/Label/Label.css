@@ -1,0 +1,13 @@
+/* Label 组件样式层级
+ * 优先级从高到低：
+ * 1. 自定义 style（内联样式，最高优先级）
+ * 2. CSS 变量样式（组件属性传入）
+ * 3. .label-wrapper CSS 类（中间层）
+ * 4. styled-components（基础层，最低优先级）
+ */
+
+.label-wrapper {
+  /* 中间层样式 */
+  font-size: 14px;
+  font-weight: 500;
+}
