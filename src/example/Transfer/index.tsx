@@ -310,6 +310,141 @@ const [selectedKeys, setSelectedKeys] = useState(['5', '7']);
 />`} />
       </Section>
 
+      {/* 自定义渲染（带点击事件查看选中状态） */}
+      <Section title="自定义渲染（带点击事件）">
+        <Transfer
+          dataSource={[
+            { key: '1', title: '选项 1', tag: '热门' },
+            { key: '2', title: '选项 2', tag: '推荐' },
+            { key: '3', title: '选项 3', tag: '新品' },
+            { key: '4', title: '选项 4', tag: '默认' },
+          ]}
+          defaultTargetKeys={['1']}
+          onSelectChange={(sourceSelectedKeys, targetSelectedKeys) => {
+            console.log('【render示例】左侧选中:', sourceSelectedKeys);
+            console.log('【render示例】右侧选中:', targetSelectedKeys);
+          }}
+          render={(item) => (
+            <span
+              onClick={(e) => {
+                // 阻止事件冒泡，避免触发默认的选择逻辑
+                e.stopPropagation();
+                console.log('【render示例】点击了项目:', item.title, 'key:', item.key);
+              }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+            >
+              <span
+                style={{
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontSize: '10px',
+                  background: item.tag === '热门' ? '#ff4d4f' : item.tag === '推荐' ? '#1890ff' : '#52c41a',
+                  color: '#fff',
+                }}
+              >
+                {item.tag}
+              </span>
+              <span>{item.title}</span>
+            </span>
+          )}
+        />
+        <CopyBlock code={`<Transfer
+  dataSource={[
+    { key: '1', title: '选项 1', tag: '热门' },
+    { key: '2', title: '选项 2', tag: '推荐' },
+  ]}
+  onSelectChange={(sourceSelectedKeys, targetSelectedKeys) => {
+    console.log('左侧选中:', sourceSelectedKeys);
+    console.log('右侧选中:', targetSelectedKeys);
+  }}
+  render={(item) => (
+    <span
+      onClick={(e) => {
+        e.stopPropagation();
+        console.log('点击了:', item.title, 'key:', item.key);
+      }}
+    >
+      <span style={{ background: '#1890ff', color: '#fff' }}>
+        {item.tag}
+      </span>
+      {item.title}
+    </span>
+  )}
+/>`} />
+        <p style={{ color: '#666', fontSize: '14px', marginTop: '8px' }}>
+          点击标签时会打印当前点击的项目信息，同时 onSelectChange 会打印两侧选中的 keys
+        </p>
+      </Section>
+
+      {/* render + filterOption 组合测试 */}
+      <Section title="render + filterOption 组合测试">
+        <Transfer
+          dataSource={[
+            { key: '1', title: '张三', dept: '技术部' },
+            { key: '2', title: '李四', dept: '产品部' },
+            { key: '3', title: '王五', dept: '设计部' },
+            { key: '4', title: '赵六', dept: '技术部' },
+            { key: '5', title: '钱七', dept: '运营部' },
+          ]}
+          defaultTargetKeys={['1']}
+          showSearch
+          filterOption={(inputValue, item) => {
+            // 同时搜索 title 和 dept
+            const titleMatch = String(item.title).toLowerCase().includes(inputValue.toLowerCase());
+            const deptMatch = String(item.dept).toLowerCase().includes(inputValue.toLowerCase());
+            return titleMatch || deptMatch;
+          }}
+          onSelectChange={(sourceSelectedKeys, targetSelectedKeys) => {
+            console.log('【render+filterOption】左侧选中:', sourceSelectedKeys);
+            console.log('【render+filterOption】右侧选中:', targetSelectedKeys);
+          }}
+          render={(item) => (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span
+                style={{
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontSize: '10px',
+                  background: item.dept === '技术部' ? '#1890ff' : '#52c41a',
+                  color: '#fff',
+                }}
+              >
+                {item.dept}
+              </span>
+              <span>{item.title}</span>
+            </span>
+          )}
+        />
+        <CopyBlock code={`<Transfer
+  dataSource={[
+    { key: '1', title: '张三', dept: '技术部' },
+    { key: '2', title: '李四', dept: '产品部' },
+  ]}
+  showSearch
+  filterOption={(inputValue, item) => {
+    // 同时搜索 title 和 dept
+    const titleMatch = String(item.title).toLowerCase().includes(inputValue.toLowerCase());
+    const deptMatch = String(item.dept).toLowerCase().includes(inputValue.toLowerCase());
+    return titleMatch || deptMatch;
+  }}
+  onSelectChange={(sourceSelectedKeys, targetSelectedKeys) => {
+    console.log('左侧选中:', sourceSelectedKeys);
+    console.log('右侧选中:', targetSelectedKeys);
+  }}
+  render={(item) => (
+    <span>
+      <span style={{ background: '#1890ff', color: '#fff' }}>
+        {item.dept}
+      </span>
+      {item.title}
+    </span>
+  )}
+/>`} />
+        <p style={{ color: '#666', fontSize: '14px', marginTop: '8px' }}>
+          搜索时同时匹配姓名和部门，选择项后会在控制台打印两侧选中的 keys
+        </p>
+      </Section>
+
       {/* 自定义字段名称 */}
       <Section title="自定义字段名称">
         <Transfer
