@@ -115,7 +115,10 @@ const TransferExample: React.FC = () => {
           leftTitle="请选择项目"
           onChange={(targetKeys) => {
             setSingleSelectedKeys(targetKeys);
-            console.log('选中项:', targetKeys);
+            console.log('【单栏模式】选中项:', targetKeys);
+          }}
+          onSelectChange={(sourceSelectedKeys, targetSelectedKeys) => {
+            console.log('【单栏模式】onSelectChange:', sourceSelectedKeys, targetSelectedKeys);
           }}
         />
         <div style={{ marginTop: '12px', color: '#666' }}>
@@ -129,6 +132,62 @@ const TransferExample: React.FC = () => {
   leftTitle="请选择项目"
   onChange={(targetKeys) => setSelectedKeys(targetKeys)}
 />`} />
+      </Section>
+
+      {/* 单栏选择模式 + render */}
+      <Section title="单栏选择模式 + render">
+        <Transfer
+          mode="single"
+          dataSource={[
+            { key: '1', title: '选项 1', tag: '热门' },
+            { key: '2', title: '选项 2', tag: '推荐' },
+            { key: '3', title: '选项 3', tag: '新品' },
+            { key: '4', title: '选项 4', tag: '默认' },
+          ]}
+          showSearch
+          leftTitle="单栏+render测试"
+          onChange={(targetKeys) => {
+            console.log('【单栏+render】onChange 选中项:', targetKeys);
+          }}
+          onSelectChange={(sourceSelectedKeys, targetSelectedKeys) => {
+            console.log('【单栏+render】onSelectChange 左侧:', sourceSelectedKeys);
+            console.log('【单栏+render】onSelectChange 右侧:', targetSelectedKeys);
+          }}
+          render={(item) => (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span
+                style={{
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontSize: '10px',
+                  background: item.tag === '热门' ? '#ff4d4f' : '#1890ff',
+                  color: '#fff',
+                }}
+              >
+                {item.tag}
+              </span>
+              <span>{item.title}</span>
+            </span>
+          )}
+        />
+        <CopyBlock code={`<Transfer
+  mode="single"
+  dataSource={[...]}
+  showSearch
+  onChange={(targetKeys) => console.log(targetKeys)}
+  onSelectChange={(source, target) => console.log(source, target)}
+  render={(item) => (
+    <span>
+      <span style={{ background: '#1890ff', color: '#fff' }}>
+        {item.tag}
+      </span>
+      {item.title}
+    </span>
+  )}
+/>`} />
+        <p style={{ color: '#666', fontSize: '14px', marginTop: '8px' }}>
+          此示例测试单栏模式下同时使用 render 时 onSelectChange 是否能正确获取值
+        </p>
       </Section>
 
       {/* 基础用法 */}

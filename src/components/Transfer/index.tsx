@@ -545,13 +545,16 @@ const Transfer: React.FC<TransferProps> = ({
   const moveToLeftDisabled = disabled || targetSelectedKeys.length === 0;
 
   // 单栏模式：选中项直接作为 targetKeys
+  // 注意：单栏模式下所有选中项都在左侧列表，selectedKeys 就是 targetKeys
   const handleSingleSelectChange = useCallback(
-    (_sourceKeys: string[], targetKeys: string[]) => {
+    (sourceKeys: string[], _targetKeys: string[]) => {
+      // 单栏模式下 sourceKeys 实际上是当前选中的 keys（因为它们在左侧面板被选中）
+      const selectedTargetKeys = sourceKeys;
       if (!isControlled) {
-        setInternalTargetKeys(targetKeys);
+        setInternalTargetKeys(selectedTargetKeys);
       }
-      onChange?.(targetKeys, 'right', targetKeys);
-      onSelectChange?.([], targetKeys);
+      onChange?.(selectedTargetKeys, 'right', selectedTargetKeys);
+      onSelectChange?.([], selectedTargetKeys);
     },
     [isControlled, onChange, onSelectChange]
   );
