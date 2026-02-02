@@ -252,7 +252,7 @@ const Table = ({
     };
 
     const tableStyle: React.CSSProperties = {
-        width: scroll.x ? (typeof scroll.x === 'number' ? `${scroll.x}px` : scroll.x) : 'auto',
+        width: scroll.x ? (typeof scroll.x === 'number' ? `${scroll.x}px` : scroll.x) : '100%',
     };
 
     const bodyStyle: React.CSSProperties = {

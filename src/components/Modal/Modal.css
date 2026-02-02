@@ -54,6 +54,11 @@
     animation: centerAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
+/* 中心动画（设置了top） - 从指定top位置的垂直中心开始 */
+.idp-modal-container--center-top {
+    animation: centerTopAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
 @keyframes centerAnimateIn {
     from {
         transform: scale(0);
@@ -61,6 +66,17 @@
     }
     to {
         transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes centerTopAnimateIn {
+    from {
+        transform: translate(var(--idp-modal-origin-x, 0), var(--idp-modal-origin-y, 0)) scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0) scale(1);
         opacity: 1;
     }
 }
@@ -118,6 +134,11 @@
     animation: centerAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
+/* 中心消失（设置了top） - 回到指定top位置的垂直中心 */
+.idp-modal-container--closing-center-top {
+    animation: centerTopAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
 @keyframes centerAnimateOut {
     from {
         transform: scale(1);
@@ -125,6 +146,17 @@
     }
     to {
         transform: scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes centerTopAnimateOut {
+    from {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translate(var(--idp-modal-origin-x, 0), var(--idp-modal-origin-y, 0)) scale(0);
         opacity: 0;
     }
 }
@@ -209,6 +241,7 @@
     overflow-y: auto;
     flex: 1;
     min-height: 0;
+    /* 默认自适应高度，不设置最大高度限制 */
 }
 
 .idp-modal-footer {

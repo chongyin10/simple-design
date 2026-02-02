@@ -30,6 +30,8 @@ const Modal: React.FC<ModalProps> = ({
     maskStyle,
     maskClassName,
     zIndex = 1000,
+    contentClassName,
+    contentStyle: externalContentStyle,
 }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
@@ -37,8 +39,10 @@ const Modal: React.FC<ModalProps> = ({
     const lastClickPointRef = useRef<{ x: number; y: number } | null>(null);
     const animationDuration = 550;
 
-    // 当同时设置了top和direction时，direction强制使用normal
-    const effectiveDirection = top !== undefined ? 'normal' : direction;
+    // 当设置了top时，direction参数仍然生效
+    // 如果direction='center'且设置了top，动画会从水平中心、垂直top位置开始
+    // 如果direction='normal'且设置了top，动画会从点击位置到窗口中心
+    const effectiveDirection = direction;
 
     // 计算内容区域高度
     const getHeightValue = (heightValue: number | string): number => {
@@ -55,14 +59,41 @@ const Modal: React.FC<ModalProps> = ({
             return { x: 0, y: 0 };
         }
         const resolvedHeight = height ? getHeightValue(height) : 0;
-        const centerX = window.innerWidth / 2;
-        const centerY = top !== undefined && resolvedHeight > 0
-            ? top + resolvedHeight / 2
-            : window.innerHeight / 2;
-        return {
-            x: point.x - centerX,
-            y: point.y - centerY
-        };
+        
+        // 根据不同的direction和top设置，计算动画原点
+        if (effectiveDirection === 'center' && top !== undefined) {
+            // direction='center' 且设置了 top：水平居中，垂直从 top 位置开始
+            const centerX = window.innerWidth / 2;
+            const centerY = top + (resolvedHeight > 0 ? resolvedHeight / 2 : 0);
+            return {
+                x: point.x - centerX,
+                y: point.y - centerY
+            };
+        } else if (effectiveDirection === 'center') {
+            // direction='center' 但没有设置 top：从窗口中心开始
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            return {
+                x: point.x - centerX,
+                y: point.y - centerY
+            };
+        } else if (top !== undefined && resolvedHeight > 0) {
+            // direction='normal' 且设置了 top：从点击位置到窗口中心
+            const centerX = window.innerWidth / 2;
+            const centerY = top + resolvedHeight / 2;
+            return {
+                x: point.x - centerX,
+                y: point.y - centerY
+            };
+        } else {
+            // direction='normal' 且没有设置 top：从点击位置到窗口中心
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            return {
+                x: point.x - centerX,
+                y: point.y - centerY
+            };
+        }
     };
 
     useEffect(() => {
@@ -125,9 +156,21 @@ const Modal: React.FC<ModalProps> = ({
         ? Math.max(0, containerHeight - headerHeightValue - footerHeightValue)
         : undefined;
 
+    // 合并内容区域样式，优先级：style > width | height > className > 默认样式
     const contentStyle: React.CSSProperties = {
-        maxHeight: calculatedContentHeight ? `${calculatedContentHeight}px` : undefined
+        ...externalContentStyle // 1. 内联 style 优先级最高
     };
+
+    // 2. 如果外部没有设置 maxHeight，则检查 height 属性
+    if (!contentStyle.maxHeight && height) {
+        const resolvedHeight = getHeightValue(height);
+        contentStyle.maxHeight = `${resolvedHeight}px`;
+    }
+
+    // 3. 如果外部没有设置 maxHeight 且没有 height 属性，则使用计算的内容高度
+    if (!contentStyle.maxHeight && calculatedContentHeight) {
+        contentStyle.maxHeight = `${calculatedContentHeight}px`;
+    }
 
     const footerStyle: React.CSSProperties = {
         height: typeof footerHeight === 'number' ? `${footerHeight}px` : footerHeight
@@ -162,14 +205,20 @@ const Modal: React.FC<ModalProps> = ({
                         className={classNames(
                             'idp-modal-container',
                             {
-                                // 显示动画
-                                'idp-modal-container--center': isVisible && !isClosing && effectiveDirection === 'center',
+                                // 显示动画 - center + top
+                                'idp-modal-container--center-top': isVisible && !isClosing && effectiveDirection === 'center' && top !== undefined,
+                                // 显示动画 - center（没有top）
+                                'idp-modal-container--center': isVisible && !isClosing && effectiveDirection === 'center' && top === undefined,
+                                // 显示动画 - 其他方向
                                 'idp-modal-container--top-right': isVisible && !isClosing && effectiveDirection === 'top-right',
                                 'idp-modal-container--bottom-right': isVisible && !isClosing && effectiveDirection === 'bottom-right',
                                 'idp-modal-container--normal': isVisible && !isClosing && effectiveDirection === 'normal',
                                 
-                                // 关闭状态
-                                'idp-modal-container--closing-center': isClosing && effectiveDirection === 'center',
+                                // 关闭状态 - center + top
+                                'idp-modal-container--closing-center-top': isClosing && effectiveDirection === 'center' && top !== undefined,
+                                // 关闭状态 - center（没有top）
+                                'idp-modal-container--closing-center': isClosing && effectiveDirection === 'center' && top === undefined,
+                                // 关闭状态 - 其他方向
                                 'idp-modal-container--closing-top-right': isClosing && effectiveDirection === 'top-right',
                                 'idp-modal-container--closing-bottom-right': isClosing && effectiveDirection === 'bottom-right',
                                 'idp-modal-container--closing-normal': isClosing && effectiveDirection === 'normal',
@@ -198,7 +247,10 @@ const Modal: React.FC<ModalProps> = ({
                     </div>
 
                     <div
-                        className="idp-modal-content"
+                        className={classNames(
+                            'idp-modal-content',
+                            contentClassName
+                        )}
                         style={contentStyle}
                     >
                         {children}

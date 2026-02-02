@@ -13,11 +13,23 @@ export interface TransferItem {
 }
 
 /**
+ * 自定义字段名称接口
+ */
+export interface FieldNames {
+  /** 唯一标识字段名，默认 'key' */
+  key?: string;
+  /** 显示标题字段名，默认 'title' */
+  title?: string;
+}
+
+/**
  * Transfer 组件属性接口
  */
 export interface TransferProps {
   /** 数据源 */
   dataSource: TransferItem[];
+  /** 自定义字段名称 */
+  fieldNames?: FieldNames;
   /** 右侧已选中的 key 集合 */
   targetKeys?: string[];
   /** 默认已选中的 key 集合（非受控模式） */
@@ -90,6 +102,8 @@ export interface TransferProps {
 export interface TransferListProps {
   /** 列表数据 */
   dataSource: TransferItem[];
+  /** 自定义字段名称 */
+  fieldNames?: FieldNames;
   /** 已选中的 key 集合 */
   selectedKeys: string[];
   /** 是否显示搜索框 */

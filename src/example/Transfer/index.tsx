@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Transfer from '../../components/Transfer';
 import { TransferItem } from '../../components/Transfer/types';
+import Table from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -309,6 +310,40 @@ const [selectedKeys, setSelectedKeys] = useState(['5', '7']);
 />`} />
       </Section>
 
+      {/* 自定义字段名称 */}
+      <Section title="自定义字段名称">
+        <Transfer
+          dataSource={[
+            { id: '1', name: '张三', disabled: false },
+            { id: '2', name: '李四', disabled: false },
+            { id: '3', name: '王五', disabled: false },
+            { id: '4', name: '赵六', disabled: true },
+          ] as any}
+          defaultTargetKeys={['1']}
+          fieldNames={{
+            key: 'id',
+            title: 'name'
+          }}
+        />
+        <CopyBlock code={`const customFieldNames = {
+  key: 'id',
+  title: 'name'
+};
+
+const dataSource = [
+  { id: '1', name: '张三', disabled: false },
+  { id: '2', name: '李四', disabled: false },
+  { id: '3', name: '王五', disabled: false },
+  { id: '4', name: '赵六', disabled: true },
+];
+
+<Transfer
+  dataSource={dataSource}
+  fieldNames={customFieldNames}
+  onChange={(targetKeys) => console.log('选中的 keys:', targetKeys)}
+/>`} />
+      </Section>
+
       {/* 自定义 Header */}
       <Section title="自定义 Header">
         <Transfer
@@ -476,196 +511,73 @@ const handleLazyLoad = (direction: 'left' | 'right') => {
       {/* API 文档 */}
       <Section title="API">
         <h3>Transfer Props</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '16px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>默认值</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>dataSource</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>数据源</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>TransferItem[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>[]</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>targetKeys</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>右侧已选中的 key 集合（受控）</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>defaultTargetKeys</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>默认已选中的 key 集合</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>[]</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>selectedKeys</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>当前选中的 key 集合（受控）</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>showSearch</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否显示搜索框</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>disabled</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否禁用整个组件</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>leftTitle</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>左侧标题</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'源列表'</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>rightTitle</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>右侧标题</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'目标列表'</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>leftDescription</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>左侧描述信息</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>rightDescription</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>右侧描述信息</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onChange</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>选项转移时的回调</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(targetKeys, direction, moveKeys) => void`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onSelectChange</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>选中项改变时的回调</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(sourceSelectedKeys, targetSelectedKeys) => void`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onSearch</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>搜索框内容变化时的回调</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(direction, value) => void`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>render</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义渲染每一项</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(item) => ReactNode`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>listHeight</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>列表高度（像素）</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number | string</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>300</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>listWidth</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>列表宽度（像素）</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number | string</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>200</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>header</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义 header，返回 null 则不显示</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(props) => ReactNode | null`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>search</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义搜索区域，传入此函数则替换默认搜索框</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`({ direction, value, onChange, disabled }) => ReactNode`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>body</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义 body 渲染</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(props) => ReactNode`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>mode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>模式，transfer 为双栏穿梭模式，single 为单栏选择模式</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'transfer' | 'single'</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'transfer'</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>lazyLoad</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否开启懒加载，滚动到底部时触发加载</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>lazyLoadThreshold</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>懒加载阈值，距离底部多少像素时触发加载</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>100</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onLazyLoad</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>懒加载回调，滚动到底部时触发</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(direction) => void`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>loading</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否显示加载状态</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>loadingRender</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义 loading 渲染</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`() => ReactNode`}</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-          </tbody>
-        </table>
+        <Table
+          dataSource={[
+            { param: 'dataSource', type: 'TransferItem[]', default: '[]', description: '数据源' },
+            { param: 'targetKeys', type: 'string[]', default: '-', description: '右侧已选中的 key 集合（受控）' },
+            { param: 'defaultTargetKeys', type: 'string[]', default: '[]', description: '默认已选中的 key 集合' },
+            { param: 'selectedKeys', type: 'string[]', default: '-', description: '当前选中的 key 集合（受控）' },
+            { param: 'showSearch', type: 'boolean', default: 'false', description: '是否显示搜索框' },
+            { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用整个组件' },
+            { param: 'leftTitle', type: 'ReactNode', default: "'源列表'", description: '左侧标题' },
+            { param: 'rightTitle', type: 'ReactNode', default: "'目标列表'", description: '右侧标题' },
+            { param: 'leftDescription', type: 'ReactNode', default: '-', description: '左侧描述信息' },
+            { param: 'rightDescription', type: 'ReactNode', default: '-', description: '右侧描述信息' },
+            { param: 'onChange', type: '(targetKeys, direction, moveKeys) => void', default: '-', description: '选项转移时的回调' },
+            { param: 'onSelectChange', type: '(sourceSelectedKeys, targetSelectedKeys) => void', default: '-', description: '选中项改变时的回调' },
+            { param: 'onSearch', type: '(direction, value) => void', default: '-', description: '搜索框内容变化时的回调' },
+            { param: 'render', type: '(item) => ReactNode', default: '-', description: '自定义渲染每一项' },
+            { param: 'listHeight', type: 'number | string', default: '300', description: '列表高度（像素）' },
+            { param: 'listWidth', type: 'number | string', default: '200', description: '列表宽度（像素）' },
+            { param: 'header', type: '(props) => ReactNode | null', default: '-', description: '自定义 header，返回 null 则不显示' },
+            { param: 'search', type: '({ direction, value, onChange, disabled }) => ReactNode', default: '-', description: '自定义搜索区域，传入此函数则替换默认搜索框' },
+            { param: 'body', type: '(props) => ReactNode', default: '-', description: '自定义 body 渲染' },
+            { param: 'mode', type: "'transfer' | 'single'", default: "'transfer'", description: '模式，transfer 为双栏穿梭模式，single 为单栏选择模式' },
+            { param: 'lazyLoad', type: 'boolean', default: 'false', description: '是否开启懒加载，滚动到底部时触发加载' },
+            { param: 'lazyLoadThreshold', type: 'number', default: '100', description: '懒加载阈值，距离底部多少像素时触发加载' },
+            { param: 'onLazyLoad', type: '(direction) => void', default: '-', description: '懒加载回调，滚动到底部时触发' },
+            { param: 'loading', type: 'boolean', default: 'false', description: '是否显示加载状态' },
+            { param: 'loadingRender', type: '() => ReactNode', default: '-', description: '自定义 loading 渲染' },
+            { param: 'fieldNames', type: 'FieldNames', default: '-', description: '自定义字段名称' },
+          ]}
+          columns={[
+            { title: '属性', dataIndex: 'param', width: '150px' },
+            { title: '说明', dataIndex: 'description', width: '300px' },
+            { title: '类型', dataIndex: 'type', width: '200px' },
+            { title: '默认值', dataIndex: 'default', width: '150px' },
+          ]}
+          pagination={false}
+        />
 
         <h3>TransferItem</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '16px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>key</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>唯一标识</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>title</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>显示标题</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>disabled</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否禁用</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-            </tr>
-          </tbody>
-        </table>
+        <Table
+          dataSource={[
+            { param: 'key', type: 'string', description: '唯一标识' },
+            { param: 'title', type: 'ReactNode', description: '显示标题' },
+            { param: 'disabled', type: 'boolean', description: '是否禁用' },
+          ]}
+          columns={[
+            { title: '属性', dataIndex: 'param', width: '150px' },
+            { title: '说明', dataIndex: 'description', width: '300px' },
+            { title: '类型', dataIndex: 'type', width: '200px' },
+          ]}
+          pagination={false}
+        />
+
+        <h3>FieldNames</h3>
+        <Table
+          dataSource={[
+            { param: 'key', type: 'string', default: '-', description: '唯一标识字段名，默认 \'key\'' },
+            { param: 'title', type: 'string', default: '-', description: '显示标题字段名，默认 \'title\'' },
+          ]}
+          columns={[
+            { title: '属性', dataIndex: 'param', width: '150px' },
+            { title: '说明', dataIndex: 'description', width: '300px' },
+            { title: '类型', dataIndex: 'type', width: '200px' },
+            { title: '默认值', dataIndex: 'default', width: '150px' },
+          ]}
+          pagination={false}
+        />
       </Section>
     </div>
   );

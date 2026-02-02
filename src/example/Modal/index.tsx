@@ -1,8 +1,62 @@
 import React, { useState } from 'react';
-import { Button, Modal, Table } from '../../components';
-import type { Column } from '../../components/Table';
+import { Button, Modal, Flex } from '../../components';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+// 复制功能组件
+const CopyBlock: React.FC<{ code: string }> = ({ code }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('复制失败:', err);
+    }
+  };
+
+  return (
+    <div style={{ position: 'relative', marginBottom: '16px' }}>
+      <button
+        onClick={handleCopy}
+        style={{
+          position: 'absolute',
+          top: '8px',
+          right: '8px',
+          padding: '4px 8px',
+          background: copied ? '#52c41a' : '#1890ff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '12px',
+          zIndex: 1,
+        }}
+      >
+        {copied ? '已复制' : '复制'}
+      </button>
+      <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ margin: 0 }}>
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
+};
+
+const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <div style={{ marginBottom: '32px' }}>
+    <h2 style={{ marginTop: 0, marginBottom: '16px', color: '#333' }}>{title}</h2>
+    {children}
+  </div>
+);
+
+const DemoRow: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <Flex align="center" gap="middle" style={{ marginBottom: '16px' }}>
+    <span style={{ minWidth: '120px', fontWeight: 500 }}>{title}:</span>
+    {children}
+  </Flex>
+);
 
 const ModalExample: React.FC = () => {
     const [visible, setVisible] = useState(false);
@@ -34,13 +88,6 @@ const ModalExample: React.FC = () => {
         }, 1000);
     };
 
-    const apiColumns: Column[] = [
-        { dataIndex: 'param', title: '参数名', width: '150px' },
-        { dataIndex: 'type', title: '类型', width: '300px' },
-        { dataIndex: 'default', title: '默认值', width: '150px' },
-        { dataIndex: 'description', title: '描述', width: '300px' }
-    ];
-
     const apiDataSource = [
         { param: 'visible', type: 'boolean', default: '-', description: '控制弹窗显示/隐藏（必填）' },
         { param: 'title', type: 'string', default: "'标题'", description: '弹窗标题' },
@@ -62,23 +109,25 @@ const ModalExample: React.FC = () => {
         { param: 'cancelText', type: 'string', default: "'取消'", description: '取消按钮文本' },
         { param: 'maskStyle', type: 'React.CSSProperties', default: '-', description: '自定义遮罩层样式' },
         { param: 'maskClassName', type: 'string', default: '-', description: '自定义遮罩层类名' },
-        { param: 'zIndex', type: 'number', default: '1000', description: '遮罩层的z-index值' }
+        { param: 'zIndex', type: 'number', default: '1000', description: '遮罩层的z-index值' },
+        { param: 'contentClassName', type: 'string', default: '-', description: '内容区域的自定义className' },
+        { param: 'contentStyle', type: 'React.CSSProperties', default: '-', description: '内容区域的自定义style，优先级高于默认样式' }
     ];
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>Modal 组件</h2>
+            <h1>Modal 对话框</h1>
             <p>模态对话框组件，用于显示重要信息或需要用户确认的操作。</p>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>基本使用</h3>
+            {/* 基本使用 */}
+            <Section title="基本使用">
                 <p>点击按钮打开基本弹窗。</p>
-
-                <div style={{ marginBottom: '20px' }}>
+                
+                <DemoRow title="基本弹窗">
                     <Button variant="primary" onClick={() => setVisible(true)}>
-                        打开基本弹窗
+                        打开弹窗
                     </Button>
-                </div>
+                </DemoRow>
 
                 <Modal
                     visible={visible}
@@ -89,20 +138,46 @@ const ModalExample: React.FC = () => {
                     <p>这是弹窗的内容区域，可以放置任意内容。</p>
                     <p>弹窗会上下左右居中显示。</p>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`import { Modal, Button } from '@zjpcy/simple-design';
+import { useState } from 'react';
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>自定义尺寸</h3>
+function App() {
+    const [visible, setVisible] = useState(false);
+
+    return (
+        <>
+            <Button onClick={() => setVisible(true)}>
+                打开弹窗
+            </Button>
+            <Modal
+                visible={visible}
+                title="基本弹窗"
+                onCancel={() => setVisible(false)}
+                onOk={() => setVisible(false)}
+            >
+                <p>这是弹窗的内容区域，可以放置任意内容。</p>
+                <p>弹窗会上下左右居中显示。</p>
+            </Modal>
+        </>
+    );
+}`} />
+            </Section>
+
+            <Section title="自定义尺寸">
                 <p>可以自定义弹窗的宽度和高度。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+                <DemoRow title="小尺寸">
                     <Button variant="primary" onClick={() => setVisible2(true)}>
                         小尺寸弹窗
                     </Button>
+                </DemoRow>
+                
+                <DemoRow title="大尺寸">
                     <Button variant="primary" onClick={() => setVisible3(true)}>
                         大尺寸弹窗
                     </Button>
-                </div>
+                </DemoRow>
 
                 <Modal
                     visible={visible2}
@@ -130,17 +205,39 @@ const ModalExample: React.FC = () => {
                         <p>示例内容块...</p>
                     </div>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`// 小尺寸弹窗
+<Modal
+    visible={visible}
+    title="小尺寸弹窗"
+    width={400}
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>这是小尺寸弹窗，宽度为 400px。</p>
+</Modal>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>异步确认</h3>
+// 大尺寸弹窗
+<Modal
+    visible={visible}
+    title="大尺寸弹窗"
+    width={800}
+    height={500}
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>这是大尺寸弹窗，宽度为 800px，高度为 500px。</p>
+</Modal>`} />
+            </Section>
+
+            <Section title="异步确认">
                 <p>点击确认按钮后可以进行异步操作，完成后关闭弹窗。</p>
 
-                <div style={{ marginBottom: '20px' }}>
+                <DemoRow title="异步操作">
                     <Button variant="primary" onClick={() => setVisible4(true)}>
                         异步确认弹窗
                     </Button>
-                </div>
+                </DemoRow>
 
                 <Modal
                     visible={visible4}
@@ -152,20 +249,43 @@ const ModalExample: React.FC = () => {
                     <p>点击确认按钮后，会模拟 1 秒的异步操作。</p>
                     <p>操作完成后弹窗会自动关闭。</p>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`const [confirmLoading, setConfirmLoading] = useState(false);
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>内容高度自适应</h3>
+const handleOk = () => {
+    setConfirmLoading(true);
+    setTimeout(() => {
+        setVisible(false);
+        setConfirmLoading(false);
+    }, 1000);
+};
+
+<Modal
+    visible={visible}
+    title="异步确认"
+    confirmLoading={confirmLoading}
+    onCancel={() => !confirmLoading && setVisible(false)}
+    onOk={handleOk}
+>
+    <p>点击确认按钮后，会模拟 1 秒的异步操作。</p>
+    <p>操作完成后弹窗会自动关闭。</p>
+</Modal>`} />
+            </Section>
+
+            <Section title="高度自适应">
                 <p>当未设置height时，内容区域高度自适应；当设置height时，内容区域高度自动计算。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+                <DemoRow title="自适应高度">
                     <Button variant="primary" onClick={() => setVisible5(true)}>
                         自适应高度
                     </Button>
+                </DemoRow>
+                
+                <DemoRow title="固定高度">
                     <Button variant="primary" onClick={() => setVisible6(true)}>
                         内容滚动示例
                     </Button>
-                </div>
+                </DemoRow>
 
                 <Modal
                     visible={visible5}
@@ -220,26 +340,61 @@ const ModalExample: React.FC = () => {
                     </div>
                     <p>滚动到底部可以看到确认和关闭按钮。</p>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`// 自适应高度（不设置 height）
+<Modal
+    visible={visible}
+    title="自适应高度弹窗"
+    width={600}
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>内容区域高度会根据内容自动调整。</p>
+</Modal>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>动画方向演示</h3>
+// 固定高度，内容自动计算
+<Modal
+    visible={visible}
+    title="内容滚动弹窗"
+    width={600}
+    height={300}
+    headerHeight={50}
+    footerHeight={50}
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>内容区域高度 = 总高度 - 头部高度 - 底部高度</p>
+    <p>这里计算结果为：300 - 50 - 50 = 200px</p>
+    <p>当内容超过计算高度时，会自动显示滚动条。</p>
+</Modal>`} />
+            </Section>
+
+            <Section title="动画方向">
                 <p>支持四种动画方向，打开和关闭将使用相同的方向设置。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <DemoRow title="中心动画">
                     <Button variant="primary" onClick={() => setVisible7(true)}>
                         中心动画
                     </Button>
+                </DemoRow>
+                
+                <DemoRow title="右上角动画">
                     <Button variant="primary" onClick={() => setVisible8(true)}>
                         右上角动画
                     </Button>
+                </DemoRow>
+                
+                <DemoRow title="右下角动画">
                     <Button variant="primary" onClick={() => setVisible9(true)}>
                         右下角动画
                     </Button>
+                </DemoRow>
+                
+                <DemoRow title="正常动画">
                     <Button variant="primary" onClick={() => setVisible10(true)}>
                         正常动画
                     </Button>
-                </div>
+                </DemoRow>
 
                 <Modal
                     visible={visible7}
@@ -286,22 +441,72 @@ const ModalExample: React.FC = () => {
                     onOk={() => setVisible10(false)}
                 >
                     <p>打开：轻微放大并淡入</p>
-                <p>关闭：轻微缩小并淡出</p>
+                    <p>关闭：轻微缩小并淡出</p>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`// 中心动画
+<Modal
+    visible={visible}
+    title="中心动画"
+    direction="center"
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>打开：从中心点放大</p>
+    <p>关闭：从中心点缩小消失</p>
+</Modal>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>自定义顶部位置</h3>
+// 右上角动画
+<Modal
+    visible={visible}
+    title="右上角动画"
+    direction="top-right"
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>打开：从右上角移动并放大</p>
+    <p>关闭：向右上角移动并缩小消失</p>
+</Modal>
+
+// 右下角动画
+<Modal
+    visible={visible}
+    title="右下角动画"
+    direction="bottom-right"
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>打开：从右下角移动并放大</p>
+    <p>关闭：向右下角移动并缩小消失</p>
+</Modal>
+
+// 正常动画
+<Modal
+    visible={visible}
+    title="正常动画"
+    direction="normal"
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>打开：轻微放大并淡入</p>
+    <p>关闭：轻微缩小并淡出</p>
+</Modal>`} />
+            </Section>
+
+            <Section title="自定义顶部位置">
                 <p>通过 top 参数可以自定义弹窗距离顶部的位置，当同时设置 direction 时，direction 会强制使用默认值 normal。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <DemoRow title="自定义位置">
                     <Button variant="primary" onClick={() => setVisible11(true)}>
                         自定义顶部位置
                     </Button>
+                </DemoRow>
+                
+                <DemoRow title="top + direction">
                     <Button variant="primary" onClick={() => setVisible12(true)}>
                         top 与 direction 同时使用
                     </Button>
-                </div>
+                </DemoRow>
 
                 <Modal
                     visible={visible11}
@@ -327,17 +532,41 @@ const ModalExample: React.FC = () => {
                     <p>此弹窗距离顶部 200px</p>
                     <p>虽然设置了 direction="top-right"，但由于同时设置了 top 参数，direction 被强制为 normal</p>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`// 自定义顶部位置
+<Modal
+    visible={visible}
+    title="自定义顶部位置"
+    width={500}
+    top={100}
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>此弹窗距离顶部 100px</p>
+</Modal>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>自定义 Footer</h3>
+// top 与 direction 同时使用
+<Modal
+    visible={visible}
+    title="top 与 direction 同时使用"
+    width={500}
+    top={200}
+    direction="top-right"
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>虽然设置了 direction，但由于同时设置了 top 参数，direction 被强制为 normal</p>
+</Modal>`} />
+            </Section>
+
+            <Section title="自定义 Footer">
                 <p>可以通过 footer 参数自定义底部按钮，footer 为 null 时显示默认按钮，提供值时显示自定义按钮。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <DemoRow title="自定义按钮">
                     <Button variant="primary" onClick={() => setVisible13(true)}>
                         自定义 Footer
                     </Button>
-                </div>
+                </DemoRow>
 
                 <Modal
                     visible={visible13}
@@ -359,20 +588,44 @@ const ModalExample: React.FC = () => {
                     <p>这是一个自定义 Footer 的弹窗，底部显示了三个按钮：取消、保存和删除。</p>
                     <p>您可以根据需要自定义 footer 的内容和样式。</p>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`// 自定义 Footer
+<Modal
+    visible={visible}
+    title="自定义 Footer 弹窗"
+    width={500}
+    onCancel={() => setVisible(false)}
+    footer={[
+        <Button key="cancel" variant="secondary" onClick={() => setVisible(false)}>
+            取消
+        </Button>,
+        <Button key="save" variant="primary" onClick={() => setVisible(false)}>
+            保存
+        </Button>,
+        <Button key="delete" variant="danger" onClick={() => setVisible(false)}>
+            删除
+        </Button>
+    ]}
+>
+    <p>这是一个自定义 Footer 的弹窗，底部显示了三个按钮：取消、保存和删除。</p>
+    <p>您可以根据需要自定义 footer 的内容和样式。</p>
+</Modal>`} />
+            </Section>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>自定义挂载容器</h3>
+            <Section title="自定义挂载容器">
                 <p>可以通过 getContainer 参数指定 Modal 挂载的 HTML 节点，false 为挂载在当前 DOM。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <DemoRow title="当前 DOM">
                     <Button variant="primary" onClick={() => setVisible14(true)}>
                         挂载在当前 DOM
                     </Button>
+                </DemoRow>
+                
+                <DemoRow title="自定义容器">
                     <Button variant="primary" onClick={() => setVisible15(true)}>
                         挂载在自定义容器
                     </Button>
-                </div>
+                </DemoRow>
 
                 {/* 自定义挂载容器 */}
                 <div 
@@ -417,17 +670,46 @@ const ModalExample: React.FC = () => {
                     <p>这个 Modal 被挂载在页面中的自定义容器里。</p>
                     <p>可以通过 getContainer 属性指定挂载的 HTML 节点。</p>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`// 挂载在当前 DOM
+<Modal
+    visible={visible}
+    title="挂载在当前 DOM"
+    width={500}
+    getContainer={false}
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>这个 Modal 被挂载在当前 DOM 中，而不是 document.body。</p>
+</Modal>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>自定义遮罩背景色</h3>
+// 挂载在自定义容器
+const customContainerRef = useRef<HTMLDivElement>(null);
+
+<div ref={customContainerRef} style={{ width: '100%', height: '200px' }}>
+    这是一个自定义的挂载容器
+</div>
+
+<Modal
+    visible={visible}
+    title="挂载在自定义容器"
+    width={400}
+    getContainer={() => customContainerRef.current || document.body}
+    onCancel={() => setVisible(false)}
+    onOk={() => setVisible(false)}
+>
+    <p>这个 Modal 被挂载在页面中的自定义容器里。</p>
+</Modal>`} />
+            </Section>
+
+            <Section title="自定义遮罩层">
                 <p>可以通过 maskStyle 属性自定义遮罩层的背景色和其他样式。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <DemoRow title="自定义颜色">
                     <Button variant="primary" onClick={() => setVisible16(true)}>
                         自定义遮罩背景色
                     </Button>
-                </div>
+                </DemoRow>
 
                 {/* 自定义遮罩背景色 */}
                 <Modal
@@ -440,30 +722,29 @@ const ModalExample: React.FC = () => {
                 >
                     <p>这个 Modal 的遮罩层使用了自定义的背景色（半透明的红色）。</p>
                     <p>可以通过 maskStyle 属性设置遮罩层的各种样式，如背景色、透明度等。</p>
-                    <p>示例代码：</p>
-                    <pre style={{ backgroundColor: '#f5f7fa', padding: '10px', borderRadius: '4px', overflow: 'auto' }}>
-                        {`<Modal
+                </Modal>
+                
+                <CopyBlock code={`// 自定义遮罩背景色
+<Modal
     visible={visible}
     title="自定义遮罩背景色"
+    width={500}
     maskStyle={{ backgroundColor: 'rgba(255, 100, 100, 0.7)' }}
     onCancel={() => setVisible(false)}
     onOk={() => setVisible(false)}
 >
-    {/* 内容 */}
-</Modal>`}
-                    </pre>
-                </Modal>
-            </div>
+    <p>这个 Modal 的遮罩层使用了自定义的背景色（半透明的红色）。</p>
+</Modal>`} />
+            </Section>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>自定义zIndex</h3>
+            <Section title="自定义 zIndex">
                 <p>可以通过zIndex属性设置遮罩层的层级，默认值为1000。在嵌套Modal的情况下，需要设置不同的zIndex值来确保正确的显示层级。</p>
 
-                <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <DemoRow title="嵌套弹窗">
                     <Button variant="primary" onClick={() => setVisible17(true)}>
                         打开第一个Modal
                     </Button>
-                </div>
+                </DemoRow>
 
                 {/* 第一个Modal，使用默认zIndex(1000) */}
                 <Modal
@@ -495,30 +776,63 @@ const ModalExample: React.FC = () => {
                 >
                     <p>这是第二个Modal，使用了更高的zIndex值(1010)。</p>
                     <p>由于设置了更高的zIndex，它会显示在第一个Modal的上方。</p>
-                    <p>示例代码：</p>
-                    <pre style={{ backgroundColor: '#f5f7fa', padding: '10px', borderRadius: '4px', overflow: 'auto' }}>
-                        {`<Modal
-    visible={visible}
-    title="第二个Modal"
-    zIndex={1010}
-    onCancel={() => setVisible(false)}
-    onOk={() => setVisible(false)}
->
-    {/* 内容 */}
-</Modal>`}
-                    </pre>
                 </Modal>
-            </div>
+                
+                <CopyBlock code={`// 第一个Modal，使用默认zIndex(1000)
+<Modal
+    visible={visible1}
+    title="第一个Modal (zIndex: 1000)"
+    width={600}
+    onCancel={() => setVisible1(false)}
+    footer={[
+        <Button key="open" onClick={() => setVisible2(true)}>
+            打开第二个Modal
+        </Button>
+    ]}
+>
+    <p>这是第一个Modal，使用默认的zIndex值(1000)。</p>
+</Modal>
 
-            <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-                <h3>API 参数</h3>
-                <Table pagination={false} columns={apiColumns} dataSource={apiDataSource} />
-            </div>
+// 第二个Modal，使用更高的zIndex(1010)
+<Modal
+    visible={visible2}
+    title="第二个Modal (zIndex: 1010)"
+    width={500}
+    zIndex={1010}
+    onCancel={() => setVisible2(false)}
+    onOk={() => setVisible2(false)}
+>
+    <p>这是第二个Modal，使用了更高的zIndex值(1010)。</p>
+    <p>由于设置了更高的zIndex，它会显示在第一个Modal的上方。</p>
+</Modal>`} />
+            </Section>
 
-            <div style={{ marginBottom: '40px' }}>
-                <h3>代码示例</h3>
-                <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-{`import { Modal } from '@zjpcy/simple-design';
+            <Section title="API">
+                <h3>Props</h3>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '16px' }}>
+                    <thead>
+                        <tr style={{ backgroundColor: '#f5f5f5' }}>
+                            <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
+                            <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
+                            <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
+                            <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {apiDataSource.map((item, index) => (
+                            <tr key={index}>
+                                <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{item.param}</td>
+                                <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{item.description}</td>
+                                <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{item.type}</td>
+                                <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{item.default}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </Section>
+
+            <Section title="代码示例">
+                <CopyBlock code={`import { Modal, Button } from '@zjpcy/simple-design';
 import { useState } from 'react';
 
 function App() {
@@ -526,6 +840,7 @@ function App() {
     const [visible2, setVisible2] = useState(false);
     const [visible3, setVisible3] = useState(false);
     const [visible4, setVisible4] = useState(false);
+    const [visible5, setVisible5] = useState(false);
 
     return (
         <>
@@ -622,31 +937,22 @@ function App() {
             </Modal>
         </>
     );
-}`}
-                </SyntaxHighlighter>
-            </div>
+}`} />
+            </Section>
 
-            <div>
-                <h3>在其他项目中引用</h3>
-                <div style={{ margin: '15px 0' }}>
-                    <h4>1. 安装</h4>
-                    <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-                        {`npm i @zjpcy/simple-design`}
-                    </SyntaxHighlighter>
-                </div>
-                <div>
-                    <h4>2. 引用组件</h4>
-                    <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-{`// 方式一：单独引入
+            <Section title="安装和使用">
+                <h3>1. 安装依赖</h3>
+                <CopyBlock code="npm i @zjpcy/simple-design" />
+                
+                <h3>2. 引用组件</h3>
+                <CopyBlock code={`// 方式一：单独引入
 import Modal from '@zjpcy/simple-design/lib/Modal';
 import '@zjpcy/simple-design/lib/Modal/Modal.css';
 
 // 方式二：批量引入
 import { Modal } from '@zjpcy/simple-design';
-import '@zjpcy/simple-design/lib/index.css';`}
-                    </SyntaxHighlighter>
-                </div>
-            </div>
+import '@zjpcy/simple-design/lib/index.css';`} />
+            </Section>
         </div>
     );
 };

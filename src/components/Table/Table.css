@@ -10,6 +10,7 @@
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  position: relative;
 }
 
 .custom-table-container.bordered {
@@ -50,12 +51,14 @@
 .custom-table-body table {
   width: 100%;
   table-layout: fixed;
+  min-width: 0;
 }
 
 .custom-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  min-width: 0;
 }
 
 .custom-table.bordered th,
@@ -87,6 +90,10 @@
   border-bottom: 1px solid #f0f0f0;
   overflow-wrap: break-word;
   background-color: #fafafa !important;
+  max-width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .custom-table:not(.bordered) thead th {
@@ -123,6 +130,10 @@
   padding: 12px 8px;
   border-bottom: 1px solid #f0f0f0;
   overflow-wrap: break-word;
+  max-width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .custom-table tbody tr:hover {
@@ -276,9 +287,32 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* 含有省略内容的单元格样式 */
 .idp-table-cell-has-ellipsis {
   overflow: hidden;
+  max-width: 100%;
+}
+
+/* 响应式设计 - 确保表格在容器缩小时也能正常工作 */
+@media (max-width: 768px) {
+  .custom-table-container {
+    padding: 8px;
+  }
+  
+  .custom-table th,
+  .custom-table td {
+    padding: 8px 4px;
+    font-size: 13px;
+  }
+}
+
+/* 确保表格在极端情况下也不会撑破容器 */
+.custom-table th *,
+.custom-table td * {
+  max-width: 100%;
+  box-sizing: border-box;
 }

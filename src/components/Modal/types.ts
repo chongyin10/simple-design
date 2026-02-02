@@ -21,4 +21,8 @@ export interface ModalProps {
     maskStyle?: React.CSSProperties;
     maskClassName?: string;
     zIndex?: number;
+    /** 内容区域的自定义className */
+    contentClassName?: string;
+    /** 内容区域的自定义style，优先级高于默认样式 */
+    contentStyle?: React.CSSProperties;
 }

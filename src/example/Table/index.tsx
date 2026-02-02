@@ -52,6 +52,13 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
   </div>
 );
 
+const DemoRow: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <Flex align="center" gap="middle" style={{ marginBottom: '16px' }}>
+    <span style={{ minWidth: '120px', fontWeight: 500 }}>{title}:</span>
+    {children}
+  </Flex>
+);
+
 const TableExample: React.FC = () => {
   const basicColumns: Column[] = [
     { dataIndex: 'id', title: 'ID', width: '60px', align: 'center' },
@@ -74,9 +81,9 @@ const TableExample: React.FC = () => {
 
       {/* 基础用法 */}
       <Section title="基础用法">
-        <div style={{ marginBottom: '16px' }}>
+        <DemoRow title="基础表格">
           <Table columns={basicColumns} dataSource={basicDataSource} />
-        </div>
+        </DemoRow>
         <CopyBlock code={`import { Table } from '@zjpcy/simple-design';
 
 const columns = [
@@ -98,15 +105,15 @@ const dataSource = [
 
       {/* 带边框表格 */}
       <Section title="带边框表格">
-        <div style={{ marginBottom: '16px' }}>
+        <DemoRow title="边框样式">
           <Table columns={basicColumns} dataSource={basicDataSource} bordered />
-        </div>
+        </DemoRow>
         <CopyBlock code={`<Table columns={columns} dataSource={dataSource} bordered />`} />
       </Section>
 
       {/* 固定列 */}
       <Section title="固定列">
-        <div style={{ marginBottom: '16px' }}>
+        <DemoRow title="固定首尾列">
           <Table
             columns={[
               { dataIndex: 'id', title: 'ID', width: '60px', align: 'center', fixed: 'start' },
@@ -138,7 +145,7 @@ const dataSource = [
             ]}
             scroll={{ x: '100%' }}
           />
-        </div>
+        </DemoRow>
         <CopyBlock code={`import { Table, Button, Flex } from '@zjpcy/simple-design';
 
 const columns = [
@@ -170,7 +177,7 @@ const columns = [
 
       {/* 纵向滚动 */}
       <Section title="纵向滚动">
-        <div style={{ marginBottom: '16px' }}>
+        <DemoRow title="固定高度">
           <Table
             columns={basicColumns}
             dataSource={Array.from({ length: 12 }, (_, i) => ({
@@ -182,13 +189,13 @@ const columns = [
             }))}
             scroll={{ y: 300 }}
           />
-        </div>
+        </DemoRow>
         <CopyBlock code={`<Table columns={columns} dataSource={dataSource} scroll={{ y: 300 }} />`} />
       </Section>
 
       {/* 限制内容行数 */}
-      <Section title="限制内容行数 (maxLines)">
-        <div style={{ marginBottom: '16px' }}>
+      <Section title="限制内容行数">
+        <DemoRow title="maxLines=2">
           <Table
             columns={[
               { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
@@ -202,7 +209,7 @@ const columns = [
             ]}
             bordered
           />
-        </div>
+        </DemoRow>
         <CopyBlock code={`<Table
   columns={[
     { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
@@ -216,7 +223,7 @@ const columns = [
 
       {/* 分页功能 */}
       <Section title="分页功能">
-        <div style={{ marginBottom: '16px' }}>
+        <DemoRow title="基础分页">
           <Table
             columns={basicColumns}
             dataSource={Array.from({ length: 100 }, (_, i) => ({
@@ -235,7 +242,7 @@ const columns = [
               }
             }}
           />
-        </div>
+        </DemoRow>
         <CopyBlock code={`<Table
   columns={columns}
   dataSource={dataSource}
@@ -252,7 +259,7 @@ const columns = [
 
       {/* 分页增强功能 */}
       <Section title="分页增强功能">
-        <div style={{ marginBottom: '16px' }}>
+        <DemoRow title="增强分页">
           <Table
             columns={basicColumns}
             dataSource={Array.from({ length: 200 }, (_, i) => ({
@@ -274,7 +281,7 @@ const columns = [
               }
             }}
           />
-        </div>
+        </DemoRow>
         <CopyBlock code={`<Table
   columns={columns}
   dataSource={dataSource}
@@ -292,9 +299,154 @@ const columns = [
 />`} />
       </Section>
 
+      {/* 表格宽度设置 */}
+      <Section title="表格宽度设置">
+        <p>当不设置 <code>scroll.x</code> 时，表格宽度默认为 <code>100%</code>，会自动占满父容器宽度。</p>
+        
+        <h3>1. 不设置 scroll.x（默认 100%）</h3>
+        <DemoRow title="默认宽度">
+          <div style={{ border: '2px solid #1890ff', width: '100%' }}>
+            <Table
+              columns={basicColumns}
+              dataSource={basicDataSource}
+              bordered
+            />
+          </div>
+        </DemoRow>
+        <CopyBlock code={`// 不设置 scroll.x，宽度默认为 100%
+<Table
+  columns={columns}
+  dataSource={dataSource}
+  bordered
+/>`} />
+
+        <h3>2. 设置 scroll.x = 600（固定宽度）</h3>
+        <DemoRow title="固定宽度 600px">
+          <div style={{ border: '2px solid #52c41a', width: '100%' }}>
+            <Table
+              columns={basicColumns}
+              dataSource={basicDataSource}
+              scroll={{ x: 600 }}
+              bordered
+            />
+          </div>
+        </DemoRow>
+        <CopyBlock code={`// 设置固定宽度 600px
+<Table
+  columns={columns}
+  dataSource={dataSource}
+  scroll={{ x: 600 }}
+  bordered
+/>`} />
+
+        <h3>3. 设置 scroll.x = '100%'（显式设置）</h3>
+        <DemoRow title="显式 100%">
+          <div style={{ border: '2px solid #faad14', width: '100%' }}>
+            <Table
+              columns={basicColumns}
+              dataSource={basicDataSource}
+              scroll={{ x: '100%' }}
+              bordered
+            />
+          </div>
+        </DemoRow>
+        <CopyBlock code={`// 显式设置宽度为 100%
+<Table
+  columns={columns}
+  dataSource={dataSource}
+  scroll={{ x: '100%' }}
+  bordered
+/>`} />
+      </Section>
+
+      {/* 响应式行为测试 */}
+      <Section title="响应式行为测试">
+        <p>测试表格在窗口挤压时的行为。调整浏览器窗口大小，观察表格如何自动调整。</p>
+        
+        <h3>1. 不设置 scroll（响应式表格）</h3>
+        <DemoRow title="响应式">
+          <div style={{ border: '2px solid #1890ff', resize: 'horizontal', overflow: 'auto', minWidth: '300px', padding: '10px' }}>
+            <Table
+              columns={basicColumns}
+              dataSource={basicDataSource}
+              bordered
+            />
+          </div>
+        </DemoRow>
+        <CopyBlock code={`// 响应式表格，会随着容器大小自动调整
+<Table
+  columns={columns}
+  dataSource={dataSource}
+  bordered
+/>`} />
+        <p style={{ color: '#666', fontSize: '14px' }}>💡 提示：拖动右侧边框调整容器宽度，观察表格如何自动缩小</p>
+
+        <h3>2. 长文本内容测试</h3>
+        <DemoRow title="长文本">
+          <div style={{ border: '2px solid #52c41a', resize: 'horizontal', overflow: 'auto', minWidth: '300px', padding: '10px' }}>
+            <Table
+              columns={[
+                { dataIndex: 'id', title: 'ID', width: '60px', align: 'center' },
+                { dataIndex: 'name', title: '姓名', width: '100px' },
+                { dataIndex: 'description', title: '描述' },
+                { dataIndex: 'action', title: '操作', width: '80px' }
+              ]}
+              dataSource={[
+                { id: 1, name: '张三', description: '这是一个非常长的描述文本，用于测试在窗口挤压时表格单元格如何自动调整并处理长文本内容。', action: '编辑' },
+                { id: 2, name: '李四', description: '另一个长文本测试案例，包含更多的文字内容以确保测试效果更加明显和可靠。', action: '编辑' },
+                { id: 3, name: '王五', description: '短描述', action: '编辑' }
+              ]}
+              bordered
+            />
+          </div>
+        </DemoRow>
+        <CopyBlock code={`// 长文本内容测试，观察文本如何换行或隐藏
+<Table
+  columns={[
+    { dataIndex: 'id', title: 'ID', width: '60px' },
+    { dataIndex: 'name', title: '姓名', width: '100px' },
+    { dataIndex: 'description', title: '描述' },
+    { dataIndex: 'action', title: '操作', width: '80px' }
+  ]}
+  dataSource={dataSource}
+  bordered
+/>`} />
+        <p style={{ color: '#666', fontSize: '14px' }}>💡 提示：长文本会自动换行，防止表格撑破容器</p>
+
+        <h3>3. 设置 maxLines 限制行数</h3>
+        <DemoRow title="限制行数">
+          <div style={{ border: '2px solid #ff4d4f', resize: 'horizontal', overflow: 'auto', minWidth: '300px', padding: '10px' }}>
+            <Table
+              columns={[
+                { dataIndex: 'id', title: 'ID', width: '60px', align: 'center' },
+                { dataIndex: 'title', title: '标题', width: '120px' },
+                { dataIndex: 'content', title: '内容（限制2行）', maxLines: 2 }
+              ]}
+              dataSource={[
+                { id: 1, title: '项目简介', content: '这是一个非常长的项目简介，包含了项目的详细背景、目标、范围和预期成果。项目将在未来六个月内完成，涉及多个团队和部门的协作。' },
+                { id: 2, title: '技术方案', content: '采用前后端分离架构，前端使用React + TypeScript，后端使用Node.js + MySQL。整个系统将部署在云服务器上，并使用Docker容器化。' },
+                { id: 3, title: '团队介绍', content: '我们的团队由资深工程师、产品经理、UI设计师和测试工程师组成。团队成员平均工作经验超过5年，具备丰富的项目经验。' }
+              ]}
+              bordered
+            />
+          </div>
+        </DemoRow>
+        <CopyBlock code={`// 使用 maxLines 限制单元格显示的最大行数
+<Table
+  columns={[
+    { dataIndex: 'id', title: 'ID', width: '60px' },
+    { dataIndex: 'title', title: '标题', width: '120px' },
+    { dataIndex: 'content', title: '内容（限制2行）', maxLines: 2 }
+  ]}
+  dataSource={dataSource}
+  bordered
+/>`} />
+        <p style={{ color: '#666', fontSize: '14px' }}>💡 提示：内容超过2行时会显示省略号</p>
+      </Section>
+
       {/* 自定义空状态 */}
       <Section title="自定义空状态">
-        <div style={{ marginBottom: '16px' }}>
+        <DemoRow title="自定义空状态">
           <Table
             columns={basicColumns}
             dataSource={[]}
@@ -309,7 +461,7 @@ const columns = [
               </div>
             }
           />
-        </div>
+        </DemoRow>
         <CopyBlock code={`import { Table, Empty, Icon, Button } from '@zjpcy/simple-design';
 
 <Table
