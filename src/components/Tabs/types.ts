@@ -3,7 +3,9 @@ import React from 'react';
 export interface TabItem {
   key: string;
   label: React.ReactNode;
-  content: React.ReactNode;
+  content?: React.ReactNode;
+  /** 渲染内容的函数，在渲染时调用，避免闭包问题 */
+  renderContent?: () => React.ReactNode;
   disabled?: boolean;
   closable?: boolean;
   icon?: React.ReactNode;

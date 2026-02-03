@@ -630,11 +630,19 @@ const Tabs: React.FC<TabsProps> = ({
     return navContent;
   };
 
-  const renderContent = () => (
-    <div className={`idp-tabs-content idp-tabs-content--${tabPlacement}`} style={contentStyle}>
-      {activeItem?.content}
-    </div>
-  );
+  const renderContent = () => {
+    // 支持 content 或 renderContent 两种方式
+    // renderContent 是函数，在渲染时调用，避免闭包问题
+    const content = activeItem?.renderContent
+      ? activeItem.renderContent()
+      : activeItem?.content;
+
+    return (
+      <div className={`idp-tabs-content idp-tabs-content--${tabPlacement}`} style={contentStyle}>
+        {content}
+      </div>
+    );
+  };
 
   return (
     <div

@@ -94,7 +94,24 @@ const TransferList: React.FC<TransferListProps> = ({
       // 将 title 转换为字符串进行搜索
       const titleStr = getItemTitle(item, fieldNames);
       const titleString = titleStr != null ? String(titleStr) : '';
-      return titleString.toLowerCase().includes(searchValue.toLowerCase());
+      
+      // 如果 title 字段存在且有内容，优先搜索 title 字段
+      if (titleString) {
+        return titleString.toLowerCase().includes(searchValue.toLowerCase());
+      }
+      
+      // 如果没有 title 字段或 title 为空，搜索所有字符串类型的字段
+      const searchLower = searchValue.toLowerCase();
+      return Object.keys(item).some(key => {
+        const value = item[key];
+        // 排除 key 字段（通常是 ID）和特殊字段
+        if (key === 'key' || key === 'disabled') return false;
+        // 搜索字符串、数字等可转换为字符串的值
+        if (value !== null && value !== undefined) {
+          return String(value).toLowerCase().includes(searchLower);
+        }
+        return false;
+      });
     });
   }, [dataSource, searchValue, filterOption, fieldNames]);
 

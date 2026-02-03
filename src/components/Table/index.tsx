@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, ReactNode } from 'react';
+import { useState, useEffect, useRef, useMemo, ReactNode } from 'react';
 import Empty from '../Empty';
 import Pagination from '../Pagination';
 import './Table.css';
@@ -61,10 +61,10 @@ const Table = ({
 
     useEffect(() => {
         if (pagination && typeof pagination === 'object') {
-            if (pagination.current) setCurrentPage(pagination.current);
-            if (pagination.pageSize) setPageSize(pagination.pageSize);
+            if (pagination.current !== undefined) setCurrentPage(pagination.current);
+            if (pagination.pageSize !== undefined) setPageSize(pagination.pageSize);
         }
-    }, [pagination]);
+    }, [pagination && typeof pagination === 'object' ? pagination.current : undefined, pagination && typeof pagination === 'object' ? pagination.pageSize : undefined]);
 
     const getColumnWidth = (width: number | string | undefined): number => {
         if (!width) return 0;
@@ -132,13 +132,25 @@ const Table = ({
         if (pagination === false) {
             return null;
         }
-        const total = pagination?.total || dataSource.length;
+        const total = pagination?.total !== undefined ? pagination.total : dataSource.length;
         const ps = pageSize;
         const cp = currentPage;
-        const start = (cp - 1) * ps;
-        const end = start + ps;
-        const pagedData = dataSource.slice(start, end);
         const totalPages = Math.ceil(total / ps);
+
+        // 判断是否为后端分页模式
+        // 如果提供了 pagination.total 且 dataSource.length <= pageSize，认为是后端分页
+        const isBackendPagination = pagination?.total !== undefined && dataSource.length <= ps;
+
+        let pagedData: any[];
+        if (isBackendPagination) {
+            // 后端分页：直接使用 dataSource（后端已分页）
+            pagedData = dataSource;
+        } else {
+            // 前端分页：对 dataSource 进行切片
+            const start = (cp - 1) * ps;
+            const end = start + ps;
+            pagedData = dataSource.slice(start, end);
+        }
 
         return {
             data: pagedData,
@@ -262,7 +274,14 @@ const Table = ({
     };
 
     const allColumns = [...fixedLeftColumns, ...normalColumns, ...fixedRightColumns];
-    const paginationData = getPaginationData();
+    
+    // 使用 useMemo 缓存 paginationData，避免每次渲染重新计算
+    const paginationData = useMemo(() => getPaginationData(), [
+        dataSource,
+        pagination,
+        pageSize,
+        currentPage
+    ]);
     const displayData = paginationData ? paginationData.data : dataSource;
 
     const renderPagination = () => {
@@ -302,7 +321,7 @@ const Table = ({
                 <table className={`custom-table ${bordered ? 'bordered' : ''}`}>
                     <colgroup>
                         {allColumns.map((col, index) => (
-                            <col key={index} style={{ width: col.width || 'auto' }} />
+                            <col key={`header-col-${col.dataIndex || col.key || index}`} style={{ width: col.width || 'auto' }} />
                         ))}
                     </colgroup>
                     <thead>
@@ -323,7 +342,7 @@ const Table = ({
                 <table className={`custom-table ${bordered ? 'bordered' : ''}`}>
                     <colgroup>
                         {allColumns.map((col, index) => (
-                            <col key={index} style={{ width: col.width || 'auto' }} />
+                            <col key={`body-col-${col.dataIndex || col.key || index}`} style={{ width: col.width || 'auto' }} />
                         ))}
                     </colgroup>
                     <tbody>
