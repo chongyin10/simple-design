@@ -112,6 +112,7 @@ const Tabs: React.FC<TabsProps> = ({
   onAdd,
   className,
   style,
+  contentClassName,
   contentStyle,
   draggable = false,
   onDragEnd
@@ -637,8 +638,21 @@ const Tabs: React.FC<TabsProps> = ({
       ? activeItem.renderContent()
       : activeItem?.content;
 
+    // 优先级：外部 className > 内部 className
+    // 优先级：外部 style > 内部 style
+    const finalClassName = classNames(
+      'idp-tabs-content',
+      `idp-tabs-content--${tabPlacement}`,
+      contentClassName // 外部传入的 className 优先级最高
+    );
+
+    // 合并样式：外部 style 优先级最高
+    const finalStyle = {
+      ...contentStyle // 外部传入的 style 优先级最高
+    };
+
     return (
-      <div className={`idp-tabs-content idp-tabs-content--${tabPlacement}`} style={contentStyle}>
+      <div className={finalClassName} style={finalStyle}>
         {content}
       </div>
     );

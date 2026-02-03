@@ -1,57 +1,79 @@
 import React, { useState } from 'react';
 import { Select, Table, Flex } from '../../components';
-import type { Column } from '../../components/Table';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+// 复制功能组件
+const CopyBlock: React.FC<{ code: string }> = ({ code }) => {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('复制失败:', err);
+    }
+  };
+  
+  return (
+    <div style={{ position: 'relative', marginBottom: '16px' }}>
+      <button
+        onClick={handleCopy}
+        style={{
+          position: 'absolute',
+          top: '8px',
+          right: '8px',
+          padding: '4px 8px',
+          background: copied ? '#52c41a' : '#1890ff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '12px',
+          zIndex: 1,
+        }}
+      >
+        {copied ? '已复制' : '复制'}
+      </button>
+      <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ margin: 0 }}>
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
+};
+
+const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <div style={{ marginBottom: '32px' }}>
+    <h2 style={{ marginTop: 0, marginBottom: '16px', color: '#333' }}>{title}</h2>
+    {children}
+  </div>
+);
+
+const DemoRow: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <Flex align="center" gap="middle" style={{ marginBottom: '16px' }}>
+    <span style={{ minWidth: '120px', fontWeight: 500 }}>{title}:</span>
+    {children}
+  </Flex>
+);
+
 const SelectExample: React.FC = () => {
-  // API参数列配置
-  const apiColumns: Column[] = [
-    { dataIndex: 'param', title: '参数名', width: '150px' },
-    { dataIndex: 'type', title: '类型', width: '300px' },
-    { dataIndex: 'default', title: '默认值', width: '150px' },
-    { dataIndex: 'description', title: '描述', width: '300px' }
-  ];
-
-  // Select API参数数据源
-  const selectApiDataSource = [
-    { param: 'value', type: 'any', default: '-', description: '当前选中的值' },
-    { param: 'defaultValue', type: 'any', default: '-', description: '默认选中的值' },
-    { param: 'onChange', type: '(value: any) => void', default: '-', description: '值变化时的回调函数' },
-    { param: 'placeholder', type: 'string', default: '请选择', description: '占位符文本' },
-    { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用选择器' },
-    { param: 'size', type: "'large' | 'middle' | 'small'", default: 'middle', description: '选择器尺寸，当设置了height时，此参数失效' },
-    { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' },
-    { param: 'className', type: 'string', default: '-', description: '自定义CSS类名' },
-    { param: 'options', type: 'SelectOption[]', default: '-', description: '选项列表' },
-    { param: 'children', type: 'React.ReactNode', default: '-', description: '子节点' },
-    { param: 'open', type: 'boolean', default: '-', description: '控制下拉菜单是否打开（受控）' },
-    { param: 'onOpenChange', type: '(open: boolean) => void', default: '-', description: '下拉菜单开关状态变化时的回调函数' },
-    { param: 'width', type: 'number | string', default: '-', description: '选择器宽度，下拉菜单宽度将跟随此值' },
-    { param: 'height', type: 'number | string', default: '-', description: '选择器高度，设置后将覆盖size参数' },
-    { param: 'dropdownHeight', type: 'number | string', default: '200px', description: '下拉菜单的最大高度' }
-  ];
-
-  // Select.Option API参数数据源
-  const optionApiDataSource = [
-    { param: 'value', type: 'any', default: '-', description: '选项的值' },
-    { param: 'children', type: 'React.ReactNode', default: '-', description: '选项的标签文本' },
-    { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用该选项' },
-    { param: 'icon', type: 'string', default: '-', description: '选项的图标类型' }
-  ];
-
-  // Select.OptGroup API参数数据源
-  const optGroupApiDataSource = [
-    { param: 'label', type: 'React.ReactNode', default: '-', description: '分组的标签' },
-    { param: 'children', type: 'React.ReactNode', default: '-', description: '分组内的选项' }
-  ];
-
   // 示例状态
   const [value1, setValue1] = useState<string>();
   const [value2, setValue2] = useState<string>();
   const [value3, setValue3] = useState<string>('apple');
+  const [value4, setValue4] = useState<string>('banana');
+  const [value5, setValue5] = useState<string>();
+  const [value6, setValue6] = useState<string>();
+  const [value7, setValue7] = useState<string>();
+  const [value8, setValue8] = useState<string>();
+  const [value9, setValue9] = useState<string>();
+  const [value10, setValue10] = useState<string>();
+  const [value11, setValue11] = useState<string>();
+  const [value12, setValue12] = useState<string>();
   const [open, setOpen] = useState(false);
-
+  
   // 选项数据
   const options = [
     { value: 'apple', label: '苹果', icon: 'user' },
@@ -66,514 +88,490 @@ const SelectExample: React.FC = () => {
     { value: 'watermelon1', label: '西瓜', icon: 'close' }
   ];
 
+  const simpleOptions = [
+    { value: 'apple', label: '苹果' },
+    { value: 'banana', label: '香蕉' },
+    { value: 'orange', label: '橙子' }
+  ];
+  
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Select 组件</h2>
-      <p>选择器组件，支持下拉选择、分组选择等功能。</p>
+      <h1>Select 选择器</h1>
+      <p>下拉选择器，支持单选、分组、自定义选项等功能。</p>
       
-      {/* 基本使用示例 */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3>基本使用</h3>
-        <p>展示选择器的基本使用方式。</p>
-        
-        <Flex direction="column" gap={20} style={{ marginBottom: '20px' }}>
-          <div>
-            <h4>使用 options 属性</h4>
-            <Select
-              value={value1}
-              onChange={setValue1}
-              options={options}
-              placeholder="请选择水果"
-              style={{ maxWidth: '400px' }}
-            />
-          </div>
-          
-          <div>
-            <h4>使用 children 方式</h4>
-            <Select
-              value={value2}
-              onChange={setValue2}
-              placeholder="请选择水果"
-              style={{ maxWidth: '400px' }}
-            >
-              <Select.Option value="apple">苹果</Select.Option>
-              <Select.Option value="banana">香蕉</Select.Option>
-              <Select.Option value="orange">橙子</Select.Option>
-              <Select.Option value="grape">葡萄</Select.Option>
-              <Select.Option value="watermelon">西瓜</Select.Option>
-            </Select>
-          </div>
-        </Flex>
-        
-        <h4>不同尺寸</h4>
-        <Flex direction="column" gap={10} style={{ marginBottom: '20px', maxWidth: '400px' }}>
+      {/* 基础用法 */}
+      <Section title="基础用法">
+        <DemoRow title="使用 options 属性">
           <Select
-            size="large"
+            value={value1}
+            onChange={setValue1}
             options={options}
-            placeholder="大尺寸"
-          />
-          <Select
-            size="middle"
-            options={options}
-            placeholder="中尺寸（默认）"
-          />
-          <Select
-            size="small"
-            options={options}
-            placeholder="小尺寸"
-          />
-        </Flex>
-        
-        <h4>禁用状态</h4>
-        <Flex direction="column" gap={10} style={{ marginBottom: '20px' }}>
-          <Select
-            disabled
-            options={options}
-            placeholder="禁用整个选择器"
+            placeholder="请选择水果"
             style={{ maxWidth: '400px' }}
           />
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
+import { useState } from 'react';
+
+const Demo = () => {
+  const [value, setValue] = useState<string>();
+  
+  return (
+    <Select
+      value={value}
+      onChange={setValue}
+      options={options}
+      placeholder="请选择水果"
+    />
+  );
+};`} />
+      </Section>
+
+      {/* 默认值 */}
+      <Section title="默认值">
+        <DemoRow title="默认选中">
           <Select
+            defaultValue="apple"
+            options={simpleOptions}
+            placeholder="请选择水果"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
+
+// 默认选中
+<Select
+  defaultValue="apple"
+  options={options}
+  placeholder="请选择水果"
+/>`} />
+      </Section>
+
+      {/* 禁用状态 */}
+      <Section title="禁用状态">
+        <DemoRow title="禁用选择器">
+          <Select
+            disabled={true}
+            options={simpleOptions}
+            placeholder="禁用状态"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <DemoRow title="禁用选项">
+          <Select
+            value={value2}
+            onChange={setValue2}
             options={[
               { value: 'apple', label: '苹果' },
               { value: 'banana', label: '香蕉', disabled: true },
-              { value: 'orange', label: '橙子' },
-              { value: 'grape', label: '葡萄', disabled: true },
-              { value: 'watermelon', label: '西瓜' }
+              { value: 'orange', label: '橙子' }
             ]}
-            placeholder="禁用部分选项"
+            placeholder="请选择水果"
             style={{ maxWidth: '400px' }}
           />
-        </Flex>
-        
-        <h4>分组选项</h4>
-        <div style={{ marginBottom: '20px', maxWidth: '400px' }}>
-          <Select placeholder="请选择水果或蔬菜">
-            <Select.OptGroup label="水果">
-              <Select.Option value="apple">苹果</Select.Option>
-              <Select.Option value="banana">香蕉</Select.Option>
-              <Select.Option value="orange">橙子</Select.Option>
-            </Select.OptGroup>
-            <Select.OptGroup label="蔬菜">
-              <Select.Option value="carrot">胡萝卜</Select.Option>
-              <Select.Option value="cabbage">白菜</Select.Option>
-              <Select.Option value="tomato">西红柿</Select.Option>
-            </Select.OptGroup>
-          </Select>
-        </div>
-        
-        <h4>带有图标的选项</h4>
-        <Flex direction="column" gap={15} style={{ marginBottom: '20px', maxWidth: '400px' }}>
-          <div>
-            <h5>通过options属性</h5>
-            <Select options={options} placeholder="选择带有图标的水果" />
-          </div>
-          <div>
-            <h5>通过children方式</h5>
-            <Select placeholder="选择带有图标的水果">
-              <Select.Option value="apple" icon="user">苹果</Select.Option>
-              <Select.Option value="banana" icon="search">香蕉</Select.Option>
-              <Select.Option value="orange" icon="plus">橙子</Select.Option>
-              <Select.Option value="grape" icon="minus">葡萄</Select.Option>
-            </Select>
-          </div>
-        </Flex>
-        
-        <h4>默认值</h4>
-        <div style={{ marginBottom: '20px', maxWidth: '400px' }}>
-          <Select
-            value={value3}
-            onChange={setValue3}
-            options={options}
-            placeholder="请选择水果"
-          />
-        </div>
-        
-        <h4>受控open参数</h4>
-        <Flex direction="column" gap={10} style={{ marginBottom: '20px', maxWidth: '400px' }}>
-          <Flex align="center" gap={10}>
-            <button
-              onClick={() => setOpen(!open)}
-              style={{ padding: '4px 12px' }}
-            >
-              {open ? '关闭下拉菜单' : '打开下拉菜单'}
-            </button>
-            <span>当前状态: {open ? '打开' : '关闭'}</span>
-          </Flex>
-          <Select
-            open={open}
-            onOpenChange={setOpen}
-            options={options}
-            placeholder="使用open参数控制"
-          />
-        </Flex>
-        
-        <h4>自定义宽高</h4>
-        <Flex direction="column" gap={10} style={{ marginBottom: '20px', maxWidth: '500px' }}>
-          <div>
-            <h5>自定义宽度</h5>
-            <Select
-              width="300px"
-              options={options}
-              placeholder="宽度300px"
-            />
-          </div>
-          <div>
-            <h5>自定义高度</h5>
-            <Select
-              height="40px"
-              options={options}
-              placeholder="高度40px"
-            />
-          </div>
-          <div>
-            <h5>同时自定义宽高</h5>
-            <Select
-              width="250px"
-              height="50px"
-              options={options}
-              placeholder="宽度250px，高度50px"
-            />
-          </div>
-        </Flex>
-        
-        <h4>自定义下拉菜单高度</h4>
-        <Flex direction="column" gap={10} style={{ marginBottom: '20px', maxWidth: '500px' }}>
-          <div>
-            <h5>下拉菜单高度150px</h5>
-            <Select
-              options={options}
-              placeholder="下拉菜单高度150px"
-              dropdownHeight="150px"
-              style={{ maxWidth: '400px' }}
-            />
-          </div>
-          <div>
-            <h5>下拉菜单高度80px</h5>
-            <Select
-              options={options}
-              placeholder="下拉菜单高度80px"
-              dropdownHeight="80px"
-              style={{ maxWidth: '400px' }}
-            />
-          </div>
-        </Flex>
-        
-        <h4>空状态</h4>
-        <Flex direction="column" gap={10} style={{ marginBottom: '20px', maxWidth: '500px' }}>
-          <div>
-            <h5>空options数组</h5>
-            <Select
-              options={[]}
-              placeholder="暂无选项"
-              style={{ maxWidth: '400px' }}
-            />
-          </div>
-          <div>
-            <h5>无children</h5>
-            <Select
-              placeholder="暂无选项"
-              style={{ maxWidth: '400px' }}
-            />
-          </div>
-        </Flex>
-      </div>
-      
-      {/* API 文档 */}
-      <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>API 参数</h3>
-        
-        <h4>Select 组件</h4>
-        <Table pagination={false} columns={apiColumns} dataSource={selectApiDataSource} />
-        
-        <h4 style={{ marginTop: '30px' }}>Select.Option 组件</h4>
-        <Table pagination={false} columns={apiColumns} dataSource={optionApiDataSource} />
-        
-        <h4 style={{ marginTop: '30px' }}>Select.OptGroup 组件</h4>
-        <Table pagination={false} columns={apiColumns} dataSource={optGroupApiDataSource} />
-      </div>
-      
-      {/* 代码示例 */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3>代码示例</h3>
-        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-{`import { Select } from '@zjpcy/simple-design';
-import React, { useState } from 'react';
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
 
-// 使用 options 属性
-const OptionsExample = () => {
-  const [value, setValue] = useState<string>();
-  
-  const options = [
-    { value: 'apple', label: '苹果', icon: 'user' },
-    { value: 'banana', label: '香蕉', icon: 'search' },
-    { value: 'orange', label: '橙子', icon: 'plus' }
-  ];
-  
-  return (
-    <Select
-      value={value}
-      onChange={setValue}
-      options={options}
-      placeholder="请选择水果"
-    />
-  );
-};
+// 禁用选择器
+<Select disabled options={options} placeholder="禁用状态" />
 
-// 使用 children 方式
-const ChildrenExample = () => {
-  const [value, setValue] = useState<string>();
-  
-  return (
-    <Select
-      value={value}
-      onChange={setValue}
-      placeholder="请选择水果"
-    >
-      <Select.Option value="apple">苹果</Select.Option>
-      <Select.Option value="banana">香蕉</Select.Option>
-      <Select.Option value="orange">橙子</Select.Option>
-    </Select>
-  );
-};
-
-// 不同尺寸
-const SizeExample = () => {
-  return (
-    <>
-      <div style={{ marginBottom: '10px' }}>
-        <Select
-          size="large"
-          options={options}
-          placeholder="大尺寸"
-        />
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <Select
-          size="middle"
-          options={options}
-          placeholder="中尺寸（默认）"
-        />
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <Select
-          size="small"
-          options={options}
-          placeholder="小尺寸"
-        />
-      </div>
-    </>
-  );
-};
-
-// 禁用状态
-const DisabledExample = () => {
-  const optionsWithDisabled = [
+// 禁用选项
+<Select
+  options={[
     { value: 'apple', label: '苹果' },
     { value: 'banana', label: '香蕉', disabled: true },
-    { value: 'orange', label: '橙子' },
-    { value: 'grape', label: '葡萄', disabled: true },
-    { value: 'watermelon', label: '西瓜' }
-  ];
-  
-  return (
-    <>
-      <div style={{ marginBottom: '10px' }}>
-        <Select
-          disabled
-          options={options}
-          placeholder="禁用整个选择器"
-        />
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <Select
-          options={optionsWithDisabled}
-          placeholder="禁用部分选项"
-        />
-      </div>
-    </>
-  );
-};
+    { value: 'orange', label: '橙子' }
+  ]}
+/>`} />
+      </Section>
 
-// 分组选项
-const GroupExample = () => {
-  return (
-    <Select placeholder="请选择水果或蔬菜">
-      <Select.OptGroup label="水果">
-        <Select.Option value="apple">苹果</Select.Option>
-        <Select.Option value="banana">香蕉</Select.Option>
-        <Select.Option value="orange">橙子</Select.Option>
-      </Select.OptGroup>
-      <Select.OptGroup label="蔬菜">
-        <Select.Option value="carrot">胡萝卜</Select.Option>
-        <Select.Option value="cabbage">白菜</Select.Option>
-        <Select.Option value="tomato">西红柿</Select.Option>
-      </Select.OptGroup>
-    </Select>
-  );
-};
+      {/* 不同尺寸 */}
+      <Section title="不同尺寸">
+        <DemoRow title="Large">
+          <Select
+            size="large"
+            value={value5}
+            onChange={setValue5}
+            options={simpleOptions}
+            placeholder="大尺寸"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <DemoRow title="Middle">
+          <Select
+            size="middle"
+            value={value6}
+            onChange={setValue6}
+            options={simpleOptions}
+            placeholder="中尺寸"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <DemoRow title="Small">
+          <Select
+            size="small"
+            value={value7}
+            onChange={setValue7}
+            options={simpleOptions}
+            placeholder="小尺寸"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
 
-// 带有图标的选项
-const IconExample = () => {
-  return (
-    <>
-      {/* 通过options属性 */}
-      <Select options={options} placeholder="选择带有图标的水果" />
-      
-      {/* 通过children方式 */}
-      <Select placeholder="选择带有图标的水果">
-        <Select.Option value="apple" icon="user">苹果</Select.Option>
-        <Select.Option value="banana" icon="search">香蕉</Select.Option>
-        <Select.Option value="orange" icon="plus">橙子</Select.Option>
-      </Select>
-    </>
-  );
-};
+// 大尺寸
+<Select size="large" options={options} placeholder="大尺寸" />
 
-// 默认值
-const DefaultValueExample = () => {
-  const [value, setValue] = useState<string>('apple');
-  
-  return (
-    <Select
-      value={value}
-      onChange={setValue}
-      options={options}
-      placeholder="请选择水果"
-    />
-  );
-};
+// 中尺寸
+<Select size="middle" options={options} placeholder="中尺寸" />
 
-// 受控open参数
-const ControlledOpenExample = () => {
+// 小尺寸
+<Select size="small" options={options} placeholder="小尺寸" />`} />
+      </Section>
+
+      {/* 自定义宽度和高度 */}
+      <Section title="自定义宽度和高度">
+        <DemoRow title="自定义宽度">
+          <Select
+            value={value8}
+            onChange={setValue8}
+            options={simpleOptions}
+            placeholder="宽度 300px"
+            width={300}
+          />
+        </DemoRow>
+        <DemoRow title="自定义高度">
+          <Select
+            value={value9}
+            onChange={setValue9}
+            options={simpleOptions}
+            placeholder="高度 48px"
+            height={48}
+          />
+        </DemoRow>
+        <DemoRow title="自定义下拉高度">
+          <Select
+            value={value10}
+            onChange={setValue10}
+            options={options}
+            placeholder="下拉高度 150px"
+            dropdownHeight={150}
+          />
+        </DemoRow>
+        <DemoRow title="宽度 + Label">
+          <Select
+            label="水果"
+            labelGap={12}
+            width={300}
+            value={value11}
+            onChange={setValue11}
+            options={simpleOptions}
+            placeholder="请选择水果"
+          />
+        </DemoRow>
+        <DemoRow title="宽度 + 长文本Label">
+          <Select
+            label="选择你喜欢的水果"
+            labelGap={16}
+            width={400}
+            value={value12}
+            onChange={setValue12}
+            options={simpleOptions}
+            placeholder="请选择水果"
+          />
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
+
+// 自定义宽度
+<Select width={300} options={options} placeholder="宽度 300px" />
+
+// 自定义高度
+<Select height={48} options={options} placeholder="高度 48px" />
+
+// 自定义下拉高度
+<Select dropdownHeight={150} options={options} placeholder="下拉高度 150px" />
+
+// 宽度 + Label（总宽度300px，触发器自动填充剩余空间）
+<Select
+  label="水果"
+  labelGap={12}
+  width={300}
+  value={value}
+  onChange={setValue}
+  options={options}
+  placeholder="请选择水果"
+/>
+
+// 宽度 + 长文本Label（总宽度400px）
+<Select
+  label="选择你喜欢的水果"
+  labelGap={16}
+  width={400}
+  value={value}
+  onChange={setValue}
+  options={options}
+  placeholder="请选择水果"
+/>`} />
+      </Section>
+
+      {/* 受控模式 */}
+      <Section title="受控模式">
+        <DemoRow title="控制下拉状态">
+          <Select
+            value={value1}
+            onChange={setValue1}
+            options={simpleOptions}
+            placeholder="请选择水果"
+            open={open}
+            onOpenChange={setOpen}
+            style={{ maxWidth: '400px' }}
+          />
+          <button onClick={() => setOpen(!open)} style={{ marginLeft: '10px' }}>
+            {open ? '关闭' : '打开'}下拉
+          </button>
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
+import { useState } from 'react';
+
+const Demo = () => {
+  const [value, setValue] = useState<string>();
   const [open, setOpen] = useState(false);
   
   return (
     <>
-      <button onClick={() => setOpen(!open)}>
-        {open ? '关闭下拉菜单' : '打开下拉菜单'}
-      </button>
       <Select
+        value={value}
+        onChange={setValue}
+        options={options}
         open={open}
         onOpenChange={setOpen}
-        options={options}
-        placeholder="使用open参数控制"
       />
+      <button onClick={() => setOpen(!open)}>
+        {open ? '关闭' : '打开'}下拉
+      </button>
     </>
   );
-};
+};`} />
+      </Section>
 
-// 自定义宽高
-const CustomSizeExample = () => {
-  return (
-    <>
-      {/* 自定义宽度 */}
-      <Select
-        width="300px"
-        options={options}
-        placeholder="宽度300px"
-      />
-      
-      {/* 自定义高度 */}
-      <Select
-        height="40px"
-        options={options}
-        placeholder="高度40px"
-      />
-      
-      {/* 同时自定义宽高 */}
-      <Select
-        width="250px"
-        height="50px"
-        options={options}
-        placeholder="宽度250px，高度50px"
-      />
-    </>
-  );
-};
+      {/* 分组选项 */}
+      <Section title="分组选项">
+        <DemoRow title="使用 OptGroup">
+          <Select
+            value={value3}
+            onChange={setValue3}
+            placeholder="请选择水果"
+            style={{ maxWidth: '400px' }}
+          >
+            <Select.OptGroup label="热带水果">
+              <Select.Option value="banana">香蕉</Select.Option>
+              <Select.Option value="mango">芒果</Select.Option>
+            </Select.OptGroup>
+            <Select.OptGroup label="温带水果">
+              <Select.Option value="apple">苹果</Select.Option>
+              <Select.Option value="orange">橙子</Select.Option>
+            </Select.OptGroup>
+          </Select>
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
 
-// 自定义下拉菜单高度
-const CustomDropdownHeightExample = () => {
-  return (
-    <>
-      {/* 下拉菜单高度150px */}
-      <Select
-        options={options}
-        placeholder="下拉菜单高度150px"
-        dropdownHeight="150px"
-      />
-      
-      {/* 下拉菜单高度80px */}
-      <Select
-        options={options}
-        placeholder="下拉菜单高度80px"
-        dropdownHeight="80px"
-      />
-    </>
-  );
-};
+<Select value={value} onChange={setValue}>
+  <Select.OptGroup label="热带水果">
+    <Select.Option value="banana">香蕉</Select.Option>
+    <Select.Option value="mango">芒果</Select.Option>
+  </Select.OptGroup>
+  <Select.OptGroup label="温带水果">
+    <Select.Option value="apple">苹果</Select.Option>
+    <Select.Option value="orange">橙子</Select.Option>
+  </Select.OptGroup>
+</Select>`} />
+      </Section>
 
-// 空状态
-const EmptyStateExample = () => {
-  return (
-    <>
-      {/* 空options数组 */}
-      <Select
-        options={[]}
-        placeholder="暂无选项"
-      />
-      
-      {/* 无children */}
-      <Select
-        placeholder="暂无选项"
-      />
-    </>
-  );
-};
-`}
-        </SyntaxHighlighter>
-      </div>
-      
-      {/* 在其他项目中引用示例 */}
-      <div>
-        <h3>在其他项目中引用</h3>
-        <div style={{ margin: '15px 0' }}>
-          <h4>1. 安装</h4>
-          <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-            {`npm i @zjpcy/simple-design`}
-          </SyntaxHighlighter>
-        </div>
-        <div>
-          <h4>2. 引用组件</h4>
-          <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-{`// 方式一：单独引入
-import Select from '@zjpcy/simple-design/lib/Select';
-import '@zjpcy/simple-design/lib/Select/Select.css';
+      {/* 标签 */}
+      <Section title="标签">
+        <DemoRow title="基本用法">
+          <Select
+            label="水果"
+            value={value1}
+            onChange={setValue1}
+            options={simpleOptions}
+            placeholder="请选择水果"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <DemoRow title="自定义间距">
+          <Select
+            label="状态"
+            labelGap={20}
+            value={value2}
+            onChange={setValue2}
+            options={simpleOptions}
+            placeholder="请选择状态"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <DemoRow title="自定义样式">
+          <Select
+            label="优先级"
+            labelGap={12}
+            labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+            value={value3}
+            onChange={setValue3}
+            options={simpleOptions}
+            placeholder="请选择优先级"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <DemoRow title="自定义类名">
+          <Select
+            label="分类"
+            labelGap={8}
+            labelClassName="custom-label"
+            value={value4}
+            onChange={setValue4}
+            options={simpleOptions}
+            placeholder="请选择分类"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
 
-// 方式二：批量引入
-import { Select } from '@zjpcy/simple-design';
-import '@zjpcy/simple-design/lib/index.css';
+// 基本用法
+<Select label="水果" value={value} onChange={setValue} options={options} />
 
-// 使用示例
-const App = () => {
+// 自定义间距
+<Select label="状态" labelGap={20} value={value} onChange={setValue} options={options} />
+
+// 自定义样式
+<Select
+  label="优先级"
+  labelGap={12}
+  labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+  value={value}
+  onChange={setValue}
+  options={options}
+/>
+
+// 自定义类名
+<Select
+  label="分类"
+  labelGap={8}
+  labelClassName="custom-label"
+  value={value}
+  onChange={setValue}
+  options={options}
+/>`} />
+      </Section>
+
+      {/* 事件回调 */}
+      <Section title="事件回调">
+        <DemoRow title="值变化回调">
+          <Select
+            value={value1}
+            onChange={(val) => console.log('选中值:', val)}
+            options={simpleOptions}
+            placeholder="请选择水果"
+            style={{ maxWidth: '400px' }}
+          />
+          <span style={{ marginLeft: '8px' }}>选中: {value1}</span>
+        </DemoRow>
+        <DemoRow title="下拉状态变化">
+          <Select
+            value={value1}
+            onChange={setValue1}
+            onOpenChange={(open) => console.log('下拉状态:', open)}
+            options={simpleOptions}
+            placeholder="请选择水果"
+            style={{ maxWidth: '400px' }}
+          />
+        </DemoRow>
+        <CopyBlock code={`import { Select } from '@idp/design';
+import { useState } from 'react';
+
+const Demo = () => {
   const [value, setValue] = useState<string>();
   
   return (
-    <Select
-      value={value}
-      onChange={setValue}
-      options={[
-        { value: 'apple', label: '苹果' },
-        { value: 'banana', label: '香蕉' },
-        { value: 'orange', label: '橙子' }
-      ]}
-      placeholder="请选择水果"
-    />
+    <>
+      <Select
+        value={value}
+        onChange={(val) => {
+          console.log('选中值:', val);
+          setValue(val);
+        }}
+        onOpenChange={(open) => {
+          console.log('下拉状态:', open);
+        }}
+        options={options}
+      />
+    </>
   );
-};
-`}
-          </SyntaxHighlighter>
-        </div>
-      </div>
+};`} />
+      </Section>
+
+      {/* API 文档 */}
+      <Section title="API">
+        <h3>Select Props</h3>
+        <Table
+          columns={[
+            { dataIndex: 'property', title: '属性', width: '150px', align: 'left' },
+            { dataIndex: 'description', title: '说明', width: '300px', align: 'left' },
+            { dataIndex: 'type', title: '类型', width: '200px', align: 'left' },
+            { dataIndex: 'default', title: '默认值', align: 'left' }
+          ]}
+          dataSource={[
+            { key: '1', property: 'value', description: '当前选中的值（受控模式）', type: 'any', default: '-' },
+            { key: '2', property: 'defaultValue', description: '默认选中的值（非受控模式）', type: 'any', default: '-' },
+            { key: '3', property: 'onChange', description: '值变化时的回调函数', type: '(value: any) => void', default: '-' },
+            { key: '4', property: 'placeholder', description: '占位符文本', type: 'string', default: '请选择' },
+            { key: '5', property: 'disabled', description: '是否禁用选择器', type: 'boolean', default: 'false' },
+            { key: '6', property: 'size', description: '选择器尺寸，当设置了height时，此参数失效', type: "'large' | 'middle' | 'small'", default: 'middle' },
+            { key: '7', property: 'style', description: '自定义内联样式', type: 'React.CSSProperties', default: '-' },
+            { key: '8', property: 'className', description: '自定义CSS类名', type: 'string', default: '-' },
+            { key: '9', property: 'options', description: '选项列表', type: 'SelectOption[]', default: '-' },
+            { key: '10', property: 'children', description: '子节点', type: 'React.ReactNode', default: '-' },
+            { key: '11', property: 'open', description: '控制下拉菜单是否打开（受控）', type: 'boolean', default: '-' },
+            { key: '12', property: 'onOpenChange', description: '下拉菜单开关状态变化时的回调函数', type: '(open: boolean) => void', default: '-' },
+            { key: '13', property: 'width', description: '选择器宽度，下拉菜单宽度将跟随此值', type: 'number | string', default: '-' },
+            { key: '14', property: 'height', description: '选择器高度，设置后将覆盖size参数', type: 'number | string', default: '-' },
+            { key: '15', property: 'dropdownHeight', description: '下拉菜单的最大高度', type: 'number | string', default: '200px' },
+            { key: '16', property: 'label', description: '标签文案，显示在选择器前面', type: 'string | React.ReactNode', default: '-' },
+            { key: '17', property: 'labelGap', description: '标签到选择器的距离', type: 'string | number', default: '8' },
+            { key: '18', property: 'labelClassName', description: '标签的CSS类名', type: 'string', default: '-' },
+            { key: '19', property: 'labelStyle', description: '标签的样式', type: 'React.CSSProperties', default: '-' }
+          ]}
+        />
+
+        <h3>Select.Option Props</h3>
+        <Table
+          columns={[
+            { dataIndex: 'property', title: '属性', width: '150px', align: 'left' },
+            { dataIndex: 'description', title: '说明', width: '300px', align: 'left' },
+            { dataIndex: 'type', title: '类型', width: '200px', align: 'left' },
+            { dataIndex: 'default', title: '默认值', align: 'left' }
+          ]}
+          dataSource={[
+            { key: '1', property: 'value', description: '选项的值', type: 'any', default: '-' },
+            { key: '2', property: 'children', description: '选项的标签文本', type: 'React.ReactNode', default: '-' },
+            { key: '3', property: 'disabled', description: '是否禁用该选项', type: 'boolean', default: 'false' },
+            { key: '4', property: 'icon', description: '选项的图标类型', type: 'string', default: '-' }
+          ]}
+        />
+
+        <h3>Select.OptGroup Props</h3>
+        <Table
+          columns={[
+            { dataIndex: 'property', title: '属性', width: '150px', align: 'left' },
+            { dataIndex: 'description', title: '说明', width: '300px', align: 'left' },
+            { dataIndex: 'type', title: '类型', width: '200px', align: 'left' },
+            { dataIndex: 'default', title: '默认值', align: 'left' }
+          ]}
+          dataSource={[
+            { key: '1', property: 'label', description: '分组的标签', type: 'React.ReactNode', default: '-' },
+            { key: '2', property: 'children', description: '分组内的选项', type: 'React.ReactNode', default: '-' }
+          ]}
+        />
+      </Section>
     </div>
   );
 };

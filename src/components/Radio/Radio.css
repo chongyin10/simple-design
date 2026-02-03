@@ -10,6 +10,14 @@
   transition: all var(--idp-transition-duration) var(--idp-transition-timing-function);
 }
 
+/* Radio标签样式 */
+.idp-radio-label {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* 按钮样式的Radio - 支持自定义宽度高度 */
 .idp-radio-group--button .idp-radio {
   border: 1px solid var(--idp-border-color-extra-light);

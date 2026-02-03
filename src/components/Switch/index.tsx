@@ -23,7 +23,11 @@ const Switch: React.FC<SwitchProps> = ({
     checkedChildren,
     unCheckedChildren,
     styles,
-    onChange
+    onChange,
+    label,
+    labelGap = 8,
+    labelClassName = '',
+    labelStyle
 }) => {
     // 判断是否为受控模式
     const isControlled = checkedProp !== undefined;
@@ -55,7 +59,19 @@ const Switch: React.FC<SwitchProps> = ({
 
     return (
       <Wrapper className="switch-wrapper" $styles={styles?.wrapper}>
-        <Track
+        <div className="switch-label-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+          {label && (
+            <div
+              className={`switch-label ${labelClassName}`}
+              style={{
+                marginRight: typeof labelGap === 'number' ? `${labelGap}px` : labelGap,
+                ...labelStyle
+              }}
+            >
+              {label}
+            </div>
+          )}
+          <Track
           className={`switch-track${checked ? ' switch-track-checked' : ''}${disabled ? ' switch-track-disabled' : ''}${loading ? ' switch-track-loading' : ''}`}
           $checked={checked}
           $disabled={disabled}
@@ -104,6 +120,7 @@ const Switch: React.FC<SwitchProps> = ({
             $styles={styles?.thumb}
           />
         </Track>
+        </div>
       </Wrapper>
     );
 };

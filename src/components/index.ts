@@ -9,7 +9,7 @@ export { default as Flex } from './Flex';
 export { default as Icon } from './Icon';
 export { default as Input } from './Input';
 export { default as Marquee } from './Marquee';
-export { default as Message, MessageProvider, useMessage } from './Message';
+export { default as Message, MessageProvider, useMessage, message } from './Message';
 export { default as Modal } from './Modal';
 export { default as Notice } from './Notice/Notice';
 export { default as Notification } from './Notification/Notification';

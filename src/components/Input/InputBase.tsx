@@ -21,6 +21,14 @@ export interface InputProps {
     clear?: boolean;
     /** 默认提示信息，与错误信息互斥 */
     extra?: string | React.ReactNode;
+    /** 标签文案，显示在输入框前面 */
+    label?: string | React.ReactNode;
+    /** 标签到输入框的距离 */
+    labelGap?: string | number;
+    /** 标签的CSS类名 */
+    labelClassName?: string;
+    /** 标签的样式 */
+    labelStyle?: React.CSSProperties;
 }
 
 const InputBase: React.FC<InputProps> = ({
@@ -40,6 +48,10 @@ const InputBase: React.FC<InputProps> = ({
     suffix,
     clear = false,
     extra,
+    label,
+    labelGap = 8,
+    labelClassName = '',
+    labelStyle,
     ...rest
 }) => {
     const [isFocused, setIsFocused] = React.useState(false);
@@ -85,13 +97,25 @@ const InputBase: React.FC<InputProps> = ({
 
     return (
         <div className="input-base-container">
-            <div 
-                className={`input-wrapper ${className} ${disabled ? 'input-disabled' : ''} ${readOnly ? 'input-readonly' : ''}`}
-                style={{
-                    width,
-                    ...style
-                }}
-            >
+            <div className="input-label-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                {label && (
+                    <div
+                        className={`input-label ${labelClassName}`}
+                        style={{
+                            marginRight: typeof labelGap === 'number' ? `${labelGap}px` : labelGap,
+                            ...labelStyle
+                        }}
+                    >
+                        {label}
+                    </div>
+                )}
+                <div
+                    className={`input-wrapper ${className} ${disabled ? 'input-disabled' : ''} ${readOnly ? 'input-readonly' : ''}`}
+                    style={{
+                        width,
+                        ...style
+                    }}
+                >
                 {prefix && <div className="input-prefix">{renderIcon(prefix)}</div>}
                 <input
                     type={type}
@@ -107,13 +131,14 @@ const InputBase: React.FC<InputProps> = ({
                     {...rest}
                 />
                 <div className="input-suffix-group">
-                    <div 
-                        className={`input-suffix-clear ${showClearButton ? 'visible' : ''}`} 
+                    <div
+                        className={`input-suffix-clear ${showClearButton ? 'visible' : ''}`}
                         onClick={handleClear}
                     >
                         <Icon type="close" size="medium" color="#1890ff" />
                     </div>
                     {suffix && <div className="input-suffix-content">{renderIcon(suffix)}</div>}
+                </div>
                 </div>
             </div>
             {extra && (

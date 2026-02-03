@@ -21,6 +21,14 @@ export interface SelectProps {
     width?: number | string;
     height?: number | string;
     dropdownHeight?: number | string;
+    /** 标签文案，显示在选择器前面 */
+    label?: string | React.ReactNode;
+    /** 标签到选择器的距离 */
+    labelGap?: string | number;
+    /** 标签的CSS类名 */
+    labelClassName?: string;
+    /** 标签的样式 */
+    labelStyle?: React.CSSProperties;
 }
 
 export interface SelectOptionProps {

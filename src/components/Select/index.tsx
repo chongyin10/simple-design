@@ -32,7 +32,11 @@ const Select: React.FC<SelectProps> & {
     onOpenChange,
     width,
     height,
-    dropdownHeight
+    dropdownHeight,
+    label,
+    labelGap = 8,
+    labelClassName = '',
+    labelStyle
 }) => {
     const [value, setValue] = useState(defaultValue);
     const [internalOpen, setInternalOpen] = useState(false);
@@ -44,24 +48,104 @@ const Select: React.FC<SelectProps> & {
     // 确定最终的open状态，优先使用外部传入的open参数
     const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
 
-    // 当外部value变化时更新内部状态
+    // 从children中查找对应value的label
+    const findLabelFromChildren = (targetValue: any, childrenNodes: ReactNode): ReactNode | undefined => {
+        if (!childrenNodes) return undefined;
+
+        // 处理 Fragment
+        const childrenArray = React.Children.toArray(childrenNodes);
+
+        for (const child of childrenArray) {
+            if (React.isValidElement(child)) {
+                // 处理 Fragment (type 是 Symbol 或 REACT_FRAGMENT_TYPE)
+                if (child.type === React.Fragment) {
+                    const fragmentLabel = findLabelFromChildren(targetValue, (child.props as any).children);
+                    if (fragmentLabel !== undefined) {
+                        return fragmentLabel;
+                    }
+                    continue;
+                }
+                // 处理OptGroup
+                if (child.type === Select.OptGroup) {
+                    const groupLabel = findLabelFromChildren(targetValue, (child.props as any).children);
+                    if (groupLabel !== undefined) {
+                        return groupLabel;
+                    }
+                    continue;
+                }
+                // 处理Option
+                if (child.type === Select.Option) {
+                    if ((child.props as any).value === targetValue) {
+                        return (child.props as any).children;
+                    }
+                }
+            }
+        }
+
+        return undefined;
+    };
+
+    // 当外部value变化时更新内部状态和显示的label
     useEffect(() => {
         if (externalValue !== undefined) {
             setValue(externalValue);
+            
+            // 同步更新selectedLabel
+            let label: ReactNode | undefined;
+            
+            // 先从options中查找
+            if (options && options.length > 0) {
+                const selected = options.find(option => option.value === externalValue);
+                if (selected) {
+                    label = selected.label;
+                }
+            }
+            
+            // 如果options中没有找到，从children中查找
+            if (label === undefined && children) {
+                label = findLabelFromChildren(externalValue, children);
+            }
+            
+            // 如果都没有找到，且value是undefined或null，显示placeholder
+            if (label === undefined && (externalValue === undefined || externalValue === null)) {
+                label = placeholder;
+            }
+            
+            if (label !== undefined) {
+                setSelectedLabel(label);
+            }
         }
-    }, [externalValue]);
+    }, [externalValue, options, children, placeholder]);
 
-    // 根据value更新显示的label
+    // 根据value更新显示的label（用于非受控模式或内部value变化）
     useEffect(() => {
+        // 跳过受控模式，因为externalValue的useEffect已经处理了
+        if (externalValue !== undefined) return;
+        
+        let label: ReactNode | undefined;
+        
+        // 先从options中查找
         if (options && options.length > 0) {
             const selected = options.find(option => option.value === value);
             if (selected) {
-                setSelectedLabel(selected.label);
-            } else if (value === undefined || value === null) {
-                setSelectedLabel(placeholder);
+                label = selected.label;
             }
         }
-    }, [value, options, placeholder]);
+        
+        // 如果options中没有找到，从children中查找
+        if (label === undefined && children) {
+            label = findLabelFromChildren(value, children);
+        }
+        
+        // 如果都没有找到，且value是undefined或null，显示placeholder
+        if (label === undefined && (value === undefined || value === null)) {
+            label = placeholder;
+        }
+        
+        if (label !== undefined) {
+            setSelectedLabel(label);
+        }
+    }, [value, options, children, placeholder, externalValue]);
 
     // 点击外部关闭下拉菜单
     useEffect(() => {
@@ -154,21 +238,22 @@ const Select: React.FC<SelectProps> & {
     // 计算实际应用的尺寸
     const actualSize = height ? undefined : size;
     
-    // 构建选择器的样式
+    // 构建选择器的样式 - 当设置了width时，整个组件宽度为width
     const selectStyle: React.CSSProperties = {
         ...style,
         width: width
     };
     
     // 构建触发器的样式
+    // 当设置了width且有label时，触发器宽度应该是总width减去label和gap的宽度
+    // 但由于label宽度是动态的，我们使用flex: 1让触发器自动填充剩余空间
     const triggerStyle: React.CSSProperties = {
-        height: height
+        height: height,
+        flex: width !== undefined ? 1 : undefined
     };
     
-    // 构建下拉菜单的样式
-    const dropdownStyle: React.CSSProperties = {
-        width: width
-    };
+    // 构建下拉菜单的样式 - 不设置固定宽度，让下拉菜单自适应trigger宽度
+    const dropdownStyle: React.CSSProperties = {};
     
     // 构建下拉菜单内容的样式
     const dropdownContentStyle: React.CSSProperties = {
@@ -184,50 +269,62 @@ const Select: React.FC<SelectProps> & {
     return (
         <SelectContext.Provider value={{ value, onOptionSelect: handleOptionSelect, disabled }}>
             <div className={classes} style={selectStyle} ref={selectRef}>
-                <div
-                    className="idp-select__trigger"
-                    onClick={handleTriggerClick}
-                    ref={triggerRef}
-                    aria-expanded={isOpen}
-                    aria-haspopup="listbox"
-                    style={triggerStyle}
-                >
-                    <span className={classNames('idp-select__value', {
-                        'idp-select__value--placeholder': value === undefined || value === null
-                    })}>
-                        {selectedLabel}
-                    </span>
-                    <span className="idp-select__arrow">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                    </span>
-                </div>
-
-                {isOpen && (
-                    <div className="idp-select-dropdown" ref={menuRef} role="listbox" style={dropdownStyle}>
-                        <div className="idp-select-dropdown__content" style={dropdownContentStyle}>
-                            {(() => {
-                                // 检查是否有选项
-                                const hasOptions = options && options.length > 0;
-                                const hasChildren = React.Children.count(children) > 0;
-                                
-                                if (hasOptions) {
-                                    return renderOptions();
-                                } else if (hasChildren) {
-                                    return children;
-                                } else {
-                                    // 没有选项时显示空状态
-                                    return (
-                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80px', padding: '20px' }}>
-                                            <Empty size="small" description="暂无选项" />
-                                        </div>
-                                    );
-                                }
-                            })()}
+                <div className="idp-select-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                    {label && (
+                        <div
+                            className={`idp-select-label ${labelClassName}`}
+                            style={{
+                                marginRight: typeof labelGap === 'number' ? `${labelGap}px` : labelGap,
+                                ...labelStyle
+                            }}
+                        >
+                            {label}
                         </div>
+                    )}
+                    <div
+                        className="idp-select__trigger"
+                        onClick={handleTriggerClick}
+                        ref={triggerRef}
+                        aria-expanded={isOpen}
+                        aria-haspopup="listbox"
+                        style={triggerStyle}
+                    >
+                        <span className={classNames('idp-select__value', {
+                            'idp-select__value--placeholder': value === undefined || value === null
+                        })}>
+                            {selectedLabel}
+                        </span>
+                        <span className="idp-select__arrow">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </span>
+                        {isOpen && (
+                            <div className="idp-select-dropdown" ref={menuRef} role="listbox" style={dropdownStyle}>
+                                <div className="idp-select-dropdown__content" style={dropdownContentStyle}>
+                                    {(() => {
+                                        // 检查是否有选项
+                                        const hasOptions = options && options.length > 0;
+                                        const hasChildren = React.Children.count(children) > 0;
+                                        
+                                        if (hasOptions) {
+                                            return renderOptions();
+                                        } else if (hasChildren) {
+                                            return children;
+                                        } else {
+                                            // 没有选项时显示空状态
+                                            return (
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80px', padding: '20px' }}>
+                                                    <Empty size="small" description="暂无选项" />
+                                                </div>
+                                            );
+                                        }
+                                    })()}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                )}
+                </div>
             </div>
         </SelectContext.Provider>
     );

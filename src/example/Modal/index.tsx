@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Flex } from '../../components';
+import { Button, Modal, Flex, Input } from '../../components';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -78,6 +78,7 @@ const ModalExample: React.FC = () => {
     const [visible17, setVisible17] = useState(false);
     const [visible18, setVisible18] = useState(false);
     const [visible19, setVisible19] = useState(false);
+    const [visible20, setVisible20] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const customContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -832,6 +833,62 @@ const customContainerRef = useRef<HTMLDivElement>(null);
     <p>这是第二个Modal，使用了更高的zIndex值(1010)。</p>
     <p>由于设置了更高的zIndex，它会显示在第一个Modal的上方。</p>
 </Modal>`} />
+            </Section>
+
+            <Section title="状态重置演示">
+                <p>Modal 关闭后会销毁内容区域的 DOM 节点，再次打开时会重新挂载子组件，表单状态会自动重置。</p>
+                
+                <DemoRow title="表单状态重置">
+                    <Button variant="primary" onClick={() => setVisible20(true)}>
+                        打开表单弹窗
+                    </Button>
+                </DemoRow>
+
+                <Modal
+                    visible={visible20}
+                    title="表单状态重置演示"
+                    width={500}
+                    onCancel={() => setVisible20(false)}
+                    onOk={() => setVisible20(false)}
+                >
+                    <p style={{ marginBottom: '16px', color: '#666' }}>
+                        在输入框中输入内容，然后关闭弹窗，再次打开时输入框会恢复默认值。
+                    </p>
+                    <div style={{ marginBottom: '16px' }}>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>用户名：</label>
+                        <Input value="默认用户名" placeholder="请输入用户名" readOnly />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>备注：</label>
+                        <Input placeholder="请输入备注" />
+                    </div>
+                </Modal>
+                
+                <CopyBlock code={`import { Modal, Button, Input } from '@zjpcy/simple-design';
+import { useState } from 'react';
+
+function App() {
+    const [visible, setVisible] = useState(false);
+
+    return (
+        <>
+            <Button onClick={() => setVisible(true)}>
+                打开表单弹窗
+            </Button>
+            <Modal
+                visible={visible}
+                title="表单状态重置演示"
+                onCancel={() => setVisible(false)}
+                onOk={() => setVisible(false)}
+            >
+                <Input value="默认用户名" readOnly />
+                <Input placeholder="请输入备注" />
+            </Modal>
+        </>
+    );
+}
+// 注意：Modal 关闭后会销毁内容区域的 DOM 节点
+// 再次打开时会重新挂载子组件，表单状态会自动重置`} />
             </Section>
 
             <Section title="API">

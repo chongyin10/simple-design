@@ -91,6 +91,8 @@ export interface TransferProps {
   loading?: boolean;
   /** 自定义 loading 渲染 */
   loadingRender?: () => ReactNode;
+  /** 加载延迟时间（毫秒），设置后loading状态会在指定时间后自动取消 */
+  loadingDelay?: number;
   /** 是否开启懒加载，默认 false */
   lazyLoad?: boolean;
   /** 懒加载阈值，距离底部多少像素时触发加载，默认 100 */
@@ -153,6 +155,8 @@ export interface TransferListProps {
   loading?: boolean;
   /** 自定义 loading 渲染 */
   loadingRender?: () => ReactNode;
+  /** 加载延迟时间（毫秒），设置后loading状态会在指定时间后自动取消 */
+  loadingDelay?: number;
   /** 是否开启懒加载，默认 false */
   lazyLoad?: boolean;
   /** 懒加载阈值，距离底部多少像素时触发加载，默认 100 */

@@ -150,6 +150,20 @@ const Pagination: React.FC<PaginationProps> = ({
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
   
+  // 当 externalPageSize 变化时，同步更新 internalPageSize
+  useEffect(() => {
+    if (externalPageSize !== undefined) {
+      setInternalPageSize(externalPageSize);
+    }
+  }, [externalPageSize]);
+  
+  // 当 externalCurrent 变化时，同步更新 internalCurrent
+  useEffect(() => {
+    if (externalCurrent !== undefined) {
+      setInternalCurrent(externalCurrent);
+    }
+  }, [externalCurrent]);
+  
   // 确保当前页在有效范围内（只在真正的页码超出范围时触发 onChange，初始渲染不触发）
   useEffect(() => {
     // 跳过初始渲染

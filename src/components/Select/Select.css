@@ -1,3 +1,17 @@
+/* Select标签样式 */
+.idp-select-label {
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.idp-select-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
 .idp-select {
     position: relative;
     display: inline-block;
@@ -8,6 +22,7 @@
 }
 
 .idp-select__trigger {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -65,10 +80,10 @@
 
 .idp-select-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
-    right: 0;
-    margin-top: 4px;
+    min-width: 100%;
+    width: max-content;
     background-color: #fff;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
@@ -81,7 +96,7 @@
     overflow: hidden;
     transform-origin: top center;
     transform: translateY(-8px) scale(0.95);
-    transition: 
+    transition:
         opacity 0.35s cubic-bezier(0.23, 1, 0.32, 1),
         max-height 0.4s cubic-bezier(0.23, 1, 0.32, 1),
         visibility 0.35s cubic-bezier(0.23, 1, 0.32, 1),
@@ -222,7 +237,7 @@
 }
 
 .idp-select--middle .idp-select__trigger {
-    height: 32px;
+    height: 36px;
     font-size: 14px;
 }
 

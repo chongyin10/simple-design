@@ -752,6 +752,26 @@ const handleLazyLoad = (direction: 'left' | 'right') => {
 />`} />
       </Section>
 
+      {/* 延迟加载示例 */}
+      <Section title="延迟加载">
+        <p style={{ color: '#666', marginBottom: '12px' }}>
+          设置 loadingDelay 属性，loading 状态会在指定时间后自动取消（示例为 3 秒）
+        </p>
+        <Transfer
+          dataSource={mockData}
+          defaultTargetKeys={['1', '2']}
+          loading={true}
+          loadingDelay={3000}
+          leftTitle="源列表"
+          rightTitle="目标列表"
+        />
+        <CopyBlock code={`<Transfer
+  dataSource={dataSource}
+  loading={true}
+  loadingDelay={3000}
+/>`} />
+      </Section>
+
       {/* API 文档 */}
       <Section title="API">
         <h3>Transfer Props</h3>
@@ -782,6 +802,7 @@ const handleLazyLoad = (direction: 'left' | 'right') => {
             { param: 'onLazyLoad', type: '(direction) => void', default: '-', description: '懒加载回调，滚动到底部时触发' },
             { param: 'loading', type: 'boolean', default: 'false', description: '是否显示加载状态' },
             { param: 'loadingRender', type: '() => ReactNode', default: '-', description: '自定义 loading 渲染' },
+            { param: 'loadingDelay', type: 'number', default: '-', description: '加载延迟时间（毫秒），设置后loading会在指定时间后自动取消' },
             { param: 'fieldNames', type: 'FieldNames', default: '-', description: '自定义字段名称' },
           ]}
           columns={[

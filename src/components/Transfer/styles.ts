@@ -45,14 +45,6 @@ export const TransferListContainer = styled.div<{
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 
-  &:hover {
-    box-shadow:
-      0 4px 8px rgba(0, 0, 0, 0.06),
-      0 8px 16px rgba(0, 0, 0, 0.08),
-      0 16px 32px rgba(0, 0, 0, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  }
-
   &.transfer-list {
     /* 外部可通过 .transfer-list 选择器覆盖样式 */
   }

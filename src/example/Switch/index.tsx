@@ -282,7 +282,69 @@ const Demo = () => {
   }}
 />`} />
       </Section>
+      
+      {/* 标签 */}
+      <Section title="标签">
+        <DemoRow title="基本用法">
+          <Switch
+            label="启用"
+            checked={basicChecked}
+            onChange={setBasicChecked}
+          />
+        </DemoRow>
+        <DemoRow title="自定义间距">
+          <Switch
+            label="通知"
+            labelGap={20}
+            checked={loadingChecked}
+            onChange={setLoadingChecked}
+          />
+        </DemoRow>
+        <DemoRow title="自定义样式">
+          <Switch
+            label="自动保存"
+            labelGap={12}
+            labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+            checked={smallChecked}
+            onChange={setSmallChecked}
+          />
+        </DemoRow>
+        <DemoRow title="自定义类名">
+          <Switch
+            label="同步"
+            labelGap={8}
+            labelClassName="custom-label"
+            checked={textChecked}
+            onChange={setTextChecked}
+          />
+        </DemoRow>
+        <CopyBlock code={`import { Switch } from '@idp/design';
 
+// 基本用法
+<Switch label="启用" checked={checked} onChange={setChecked} />
+
+// 自定义间距
+<Switch label="通知" labelGap={20} checked={checked} onChange={setChecked} />
+
+// 自定义样式
+<Switch
+  label="自动保存"
+  labelGap={12}
+  labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+  checked={checked}
+  onChange={setChecked}
+/>
+
+// 自定义类名
+<Switch
+  label="同步"
+  labelGap={8}
+  labelClassName="custom-label"
+  checked={checked}
+  onChange={setChecked}
+/>`} />
+      </Section>
+      
       {/* 事件回调 */}
       <Section title="事件回调">
         <DemoRow title="监听变化">
@@ -380,6 +442,30 @@ const Demo = () => {
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onChange</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>变化时的回调函数</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>(checked: boolean) =&gt; void</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>label</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签文案，显示在开关前面</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | ReactNode</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>labelGap</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签到开关的距离</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | number</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>8</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>labelClassName</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签的CSS类名</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>labelStyle</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签的样式</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>CSSProperties</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
             </tr>
           </tbody>

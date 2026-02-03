@@ -480,6 +480,52 @@ const columns = [
 />`} />
       </Section>
 
+      {/* 加载状态 */}
+      <Section title="加载状态">
+        <DemoRow title="基础加载">
+          <Table
+            columns={basicColumns}
+            dataSource={basicDataSource}
+            loading={true}
+          />
+        </DemoRow>
+        <CopyBlock code={`<Table
+  columns={columns}
+  dataSource={dataSource}
+  loading={true}
+/>`} />
+
+        <DemoRow title="自定义加载文案">
+          <Table
+            columns={basicColumns}
+            dataSource={basicDataSource}
+            loading={true}
+            loadingText="数据加载中，请稍候..."
+          />
+        </DemoRow>
+        <CopyBlock code={`<Table
+  columns={columns}
+  dataSource={dataSource}
+  loading={true}
+  loadingText="数据加载中，请稍候..."
+/>`} />
+
+        <DemoRow title="延迟加载（3秒后自动取消）">
+          <Table
+            columns={basicColumns}
+            dataSource={basicDataSource}
+            loading={true}
+            loadingDelay={3000}
+          />
+        </DemoRow>
+        <CopyBlock code={`<Table
+  columns={columns}
+  dataSource={dataSource}
+  loading={true}
+  loadingDelay={3000}
+/>`} />
+      </Section>
+
       {/* API 文档 */}
       <Section title="API">
         <h3>Table Props</h3>
@@ -533,6 +579,24 @@ const columns = [
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>empty</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义空状态组件</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>loading</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否显示加载状态</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>loadingText</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义加载提示文案</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'加载中...'</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>loadingDelay</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>加载延迟时间（毫秒），设置后loading会在指定时间后自动取消</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
             </tr>
           </tbody>

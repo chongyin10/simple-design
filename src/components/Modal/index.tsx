@@ -248,15 +248,18 @@ const Modal: React.FC<ModalProps> = ({
                         </div>
                     </div>
 
-                    <div
-                        className={classNames(
-                            'idp-modal-content',
-                            contentClassName
-                        )}
-                        style={contentStyle}
-                    >
-                        {children}
-                    </div>
+                    {/* 只在Modal可见时渲染内容，关闭后销毁DOM节点 */}
+                    {isVisible && (
+                        <div
+                            className={classNames(
+                                'idp-modal-content',
+                                contentClassName
+                            )}
+                            style={contentStyle}
+                        >
+                            {children}
+                        </div>
+                    )}
 
                     <Flex
                         className="idp-modal-footer"

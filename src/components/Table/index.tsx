@@ -37,6 +37,12 @@ interface TableProps {
     pagination?: PaginationProps | false;
     /** 自定义空状态组件 */
     empty?: ReactNode;
+    /** 加载状态 */
+    loading?: boolean;
+    /** 自定义加载提示文案 */
+    loadingText?: ReactNode;
+    /** 加载延迟时间（毫秒），设置后loading状态会在指定时间后自动取消 */
+    loadingDelay?: number;
 }
 
 const Table = ({
@@ -47,7 +53,10 @@ const Table = ({
     rowKey = 'key',
     className = '',
     pagination,
-    empty
+    empty,
+    loading = false,
+    loadingText = '加载中...',
+    loadingDelay
 }: TableProps) => {
     const [fixedLeftColumns, setFixedLeftColumns] = useState<Column[]>([]);
     const [fixedRightColumns, setFixedRightColumns] = useState<Column[]>([]);
@@ -55,9 +64,35 @@ const Table = ({
     const [columnWidths, setColumnWidths] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const [internalLoading, setInternalLoading] = useState(loading);
+    const loadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const tableRef = useRef<HTMLDivElement>(null);
     const headerInnerRef = useRef<HTMLDivElement>(null);
     const bodyRef = useRef<HTMLDivElement>(null);
+
+    // 处理 loading 延迟
+    useEffect(() => {
+        // 清除之前的定时器
+        if (loadingTimerRef.current) {
+            clearTimeout(loadingTimerRef.current);
+            loadingTimerRef.current = null;
+        }
+
+        if (loading && loadingDelay && loadingDelay > 0) {
+            setInternalLoading(true);
+            loadingTimerRef.current = setTimeout(() => {
+                setInternalLoading(false);
+            }, loadingDelay);
+        } else {
+            setInternalLoading(loading);
+        }
+
+        return () => {
+            if (loadingTimerRef.current) {
+                clearTimeout(loadingTimerRef.current);
+            }
+        };
+    }, [loading, loadingDelay]);
 
     useEffect(() => {
         if (pagination && typeof pagination === 'object') {
@@ -120,26 +155,28 @@ const Table = ({
     // 分页处理
     const handlePageChange = (page: number, newPageSize: number) => {
         const newSize = newPageSize || pageSize;
-        setCurrentPage(page);
+        // 如果 pageSize 改变了，重置到第 1 页
+        const newPage = newSize !== pageSize ? 1 : page;
+        setCurrentPage(newPage);
         setPageSize(newSize);
         if (pagination && typeof pagination.onChange === 'function') {
             // 确保调用与Pagination组件的onChange签名兼容
-            (pagination.onChange as (current: number, pageSize?: number) => void)(page, newPageSize);
+            (pagination.onChange as (current: number, pageSize?: number) => void)(newPage, newPageSize);
         }
     };
 
-    const getPaginationData = () => {
+    const getPaginationData = (cp: number = currentPage, ps: number = pageSize) => {
         if (pagination === false) {
             return null;
         }
         const total = pagination?.total !== undefined ? pagination.total : dataSource.length;
-        const ps = pageSize;
-        const cp = currentPage;
-        const totalPages = Math.ceil(total / ps);
-
+        // 确保当前页码不超过总页数
+        const totalPages = Math.ceil(total / ps) || 1;
+        const validCurrent = Math.min(cp, totalPages);
+        
         // 判断是否为后端分页模式
-        // 如果提供了 pagination.total 且 dataSource.length <= pageSize，认为是后端分页
-        const isBackendPagination = pagination?.total !== undefined && dataSource.length <= ps;
+        // 只有当提供了 pagination.total 时才认为是后端分页
+        const isBackendPagination = pagination?.total !== undefined;
 
         let pagedData: any[];
         if (isBackendPagination) {
@@ -147,7 +184,7 @@ const Table = ({
             pagedData = dataSource;
         } else {
             // 前端分页：对 dataSource 进行切片
-            const start = (cp - 1) * ps;
+            const start = (validCurrent - 1) * ps;
             const end = start + ps;
             pagedData = dataSource.slice(start, end);
         }
@@ -156,7 +193,7 @@ const Table = ({
             data: pagedData,
             total,
             pageSize: ps,
-            current: cp,
+            current: validCurrent,
             totalPages
         };
     };
@@ -289,22 +326,23 @@ const Table = ({
             return null;
         }
 
-        const { total, current, pageSize } = paginationData;
+        const { total, current: paginationCurrent, pageSize: paginationPageSize } = paginationData;
 
-
+        // 从 pagination 中解构出会与内部状态冲突的属性
+        const { onChange: _, pageSize: __, current: ___, ...restPagination } = pagination || {};
 
         return (
             <div className="custom-table-pagination-wrapper">
                 <Pagination
                     total={total}
-                    current={current}
-                    pageSize={pageSize}
+                    current={paginationCurrent}
+                    pageSize={paginationPageSize}
                     onChange={handlePageChange}
-                    showTotal={(total: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`}
+                    showTotal={(totalValue: number, range: [number, number]) => `第 ${range[0]}-${range[1]} 条，共 ${totalValue} 条`}
                     showSizeChanger={true}
                     showQuickJumper={true}
                     align="flex-end"
-                    {...pagination}
+                    {...restPagination}
                 />
             </div>
         );
@@ -316,6 +354,35 @@ const Table = ({
             className={`custom-table-container ${bordered ? 'bordered' : ''} ${className}`}
             style={tableStyle}
         >
+            {/* 加载遮罩层 */}
+            {internalLoading && (
+                <div className="custom-table-loading-mask">
+                    <div className="custom-table-loading-content">
+                        <div className="custom-table-loading-spinner">
+                            <svg viewBox="0 0 24 24" className="custom-table-loading-icon">
+                                <circle
+                                    className="custom-table-loading-track"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    fill="none"
+                                    strokeWidth="2"
+                                />
+                                <circle
+                                    className="custom-table-loading-indicator"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    fill="none"
+                                    strokeWidth="2"
+                                />
+                            </svg>
+                        </div>
+                        {loadingText && <div className="custom-table-loading-text">{loadingText}</div>}
+                    </div>
+                </div>
+            )}
+
             {/* 表头 */}
             <div className="custom-table-header" ref={headerInnerRef} onScroll={handleHeaderScroll}>
                 <table className={`custom-table ${bordered ? 'bordered' : ''}`}>

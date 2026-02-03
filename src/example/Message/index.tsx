@@ -1,11 +1,9 @@
 import React from 'react';
-import { useMessage } from '../../components/Message';
+import { message } from '../../components/Message';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const MessageExample: React.FC = () => {
-  const message = useMessage();
-
   const handleSuccessClick = () => {
     message.success('操作成功！', 3000);
   };
@@ -18,101 +16,159 @@ const MessageExample: React.FC = () => {
     message.error('操作失败，请重试！', 5000);
   };
 
+  const handleMultipleClick = () => {
+    message.success('第一条消息');
+    setTimeout(() => message.warning('第二条消息'), 500);
+    setTimeout(() => message.error('第三条消息'), 1000);
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h2>Message 组件</h2>
-      <p>轻量级消息提示框，用于显示成功、警告和错误信息。</p>
+      <p>轻量级消息提示框，用于显示成功、警告和错误信息。无需 MessageProvider，直接导入即可使用。</p>
 
-      {/* 基本使用示例 */}
+      {/* 推荐用法：直接使用全局 message */}
       <div style={{ marginBottom: '40px', display: 'block' }}>
-        <h3>基本使用</h3>
-        <p>点击按钮显示不同类型的消息提示。</p>
+        <h3>推荐用法：直接使用全局 message</h3>
+        <p>无需 Provider，无需 useMessage hook，直接导入使用。</p>
 
         <div style={{ marginBottom: '20px', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <button 
-            onClick={handleSuccessClick} 
-            style={{ 
-              padding: '8px 16px', 
-              backgroundColor: '#52c41a', 
-              color: '#fff', 
-              border: 'none', 
-              borderRadius: '4px', 
-              cursor: 'pointer' 
+          <button
+            onClick={handleSuccessClick}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#52c41a',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
             }}
           >
             显示成功消息
           </button>
           
-          <button 
-            onClick={handleWarningClick} 
-            style={{ 
-              padding: '8px 16px', 
-              backgroundColor: '#faad14', 
-              color: '#fff', 
-              border: 'none', 
-              borderRadius: '4px', 
-              cursor: 'pointer' 
+          <button
+            onClick={handleWarningClick}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#faad14',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
             }}
           >
             显示警告消息
           </button>
           
-          <button 
-            onClick={handleErrorClick} 
-            style={{ 
-              padding: '8px 16px', 
-              backgroundColor: '#f5222d', 
-              color: '#fff', 
-              border: 'none', 
-              borderRadius: '4px', 
-              cursor: 'pointer' 
+          <button
+            onClick={handleErrorClick}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#f5222d',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
             }}
           >
             显示错误消息
+          </button>
+
+          <button
+            onClick={handleMultipleClick}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#1890ff',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            显示多条消息
           </button>
         </div>
       </div>
 
       {/* 代码示例 */}
       <div style={{ marginBottom: '40px', display: 'block' }}>
-        <h3>代码示例</h3>
+        <h3>代码示例（推荐）</h3>
         <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-          {`import { useMessage } from '@zjpcy/simple-design';
+          {`// 推荐：直接使用全局 message，无需 Provider
+import { message } from '@zjpcy/simple-design';
 
-const Component = () => {
-  const message = useMessage();
+// 在任何地方直接使用
+message.success('操作成功！', 3000);
+message.warning('警告信息', 4000);
+message.error('错误提示', 5000);
+message.close(); // 关闭所有消息
 
-  const handleSuccess = () => {
-    message.success('操作成功！', 3000);
+// 类组件中使用
+class MyComponent extends React.Component {
+  handleClick = () => {
+    message.success('操作成功！');
   };
-
-  const handleWarning = () => {
-    message.warning('警告：请检查输入！', 4000);
-  };
-
-  const handleError = () => {
-    message.error('操作失败，请重试！', 5000);
-  };
-
-  return (
-    <div>
-      <button onClick={handleSuccess}>显示成功消息</button>
-      <button onClick={handleWarning}>显示警告消息</button>
-      <button onClick={handleError}>显示错误消息</button>
-    </div>
-  );
-};
-
-// 直接使用组件（不推荐，推荐使用 useMessage hook）
-import { Message } from '@zjpcy/simple-design';
-
-<Message type="success" content="操作成功！" duration={3000} />`}
+}`}
         </SyntaxHighlighter>
       </div>
 
-      {/* API 文档 */}
+      {/* 向后兼容：useMessage */}
+      <div style={{ marginBottom: '40px', display: 'block' }}>
+        <h3>向后兼容：useMessage（可选）</h3>
+        <p>如果之前使用了 useMessage，仍然可以继续使用，会自动返回全局 message 实例。</p>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
+          {`// 向后兼容：useMessage 仍然可用
+import { useMessage } from '@zjpcy/simple-design';
+
+const Component = () => {
+  const message = useMessage(); // 现在不会报错，返回全局 message
+  
+  const handleClick = () => {
+    message.success('操作成功！');
+  };
+  
+  return <button onClick={handleClick}>点击</button>;
+};`}
+        </SyntaxHighlighter>
+      </div>
+
+      {/* API 文档 - message 实例 */}
       <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>API 参数</h3>
+        <h3>message 实例 API</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', marginBottom: '20px' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f0f0f0' }}>
+              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0', width: '150px' }}>方法名</th>
+              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>说明</th>
+              <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid #e0e0e0' }}>参数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>message.success(content, duration)</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>显示成功消息</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>content: ReactNode, duration?: number (默认 3000ms)</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>message.warning(content, duration)</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>显示警告消息</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>content: ReactNode, duration?: number (默认 3000ms)</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>message.error(content, duration)</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>显示错误消息</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>content: ReactNode, duration?: number (默认 3000ms)</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>message.close()</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>关闭所有消息</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>无</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Message 组件 Props（高级用法）</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
           <thead>
             <tr style={{ backgroundColor: '#f0f0f0' }}>
@@ -140,24 +196,6 @@ import { Message } from '@zjpcy/simple-design';
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>number</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>3000</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>消息自动关闭时长（毫秒）</td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>className</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>string</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>自定义类名</td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>style</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>React.CSSProperties</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>自定义样式</td>
-            </tr>
-            <tr>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>onClose</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>\(() `${"=>"}` void\)</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>-</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0' }}>消息关闭回调</td>
             </tr>
           </tbody>
         </table>

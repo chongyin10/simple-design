@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   TransferProps,
   TransferItem,
@@ -79,10 +79,37 @@ const TransferList: React.FC<TransferListProps> = ({
   rowClassName,
   loading,
   loadingRender,
+  loadingDelay,
   sourceSelectedKeys,
   targetSelectedKeys,
 }) => {
   const [searchValue, setSearchValue] = useState('');
+  const [internalLoading, setInternalLoading] = useState(loading);
+  const loadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 处理 loading 延迟
+  useEffect(() => {
+    // 清除之前的定时器
+    if (loadingTimerRef.current) {
+      clearTimeout(loadingTimerRef.current);
+      loadingTimerRef.current = null;
+    }
+
+    if (loading && loadingDelay && loadingDelay > 0) {
+      setInternalLoading(true);
+      loadingTimerRef.current = setTimeout(() => {
+        setInternalLoading(false);
+      }, loadingDelay);
+    } else {
+      setInternalLoading(loading);
+    }
+
+    return () => {
+      if (loadingTimerRef.current) {
+        clearTimeout(loadingTimerRef.current);
+      }
+    };
+  }, [loading, loadingDelay]);
 
   // 过滤后的数据
   const filteredDataSource = useMemo(() => {
@@ -266,7 +293,7 @@ const TransferList: React.FC<TransferListProps> = ({
     }
 
     // 加载状态
-    if (loading) {
+    if (internalLoading) {
       return (
         <TransferLoading className="transfer-loading">
           {loadingRender ? loadingRender() : <TransferLoadingSpinner className="transfer-loading-spinner" />}
@@ -443,6 +470,7 @@ const Transfer: React.FC<TransferProps> = ({
   mode = 'transfer',
   loading = false,
   loadingRender,
+  loadingDelay,
 }) => {
   // 判断是否为受控模式
   const isControlled = targetKeysProp !== undefined;
@@ -615,6 +643,7 @@ const Transfer: React.FC<TransferProps> = ({
           rowClassName={rowClassName}
           loading={loading}
           loadingRender={loadingRender}
+          loadingDelay={loadingDelay}
           sourceSelectedKeys={[]}
           targetSelectedKeys={singleSelectedKeys}
         />
@@ -644,6 +673,7 @@ const Transfer: React.FC<TransferProps> = ({
             rowClassName={rowClassName}
             loading={loading}
             loadingRender={loadingRender}
+            loadingDelay={loadingDelay}
             sourceSelectedKeys={sourceSelectedKeys}
             targetSelectedKeys={targetSelectedKeys}
           />
@@ -681,6 +711,7 @@ const Transfer: React.FC<TransferProps> = ({
             rowClassName={rowClassName}
             loading={loading}
             loadingRender={loadingRender}
+            loadingDelay={loadingDelay}
             sourceSelectedKeys={sourceSelectedKeys}
             targetSelectedKeys={targetSelectedKeys}
           />

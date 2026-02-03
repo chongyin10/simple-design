@@ -316,3 +316,63 @@
   max-width: 100%;
   box-sizing: border-box;
 }
+
+/* Loading 遮罩层 */
+.custom-table-loading-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 8px;
+}
+
+.custom-table-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.custom-table-loading-spinner {
+  width: 32px;
+  height: 32px;
+}
+
+.custom-table-loading-icon {
+  width: 100%;
+  height: 100%;
+  animation: custom-table-loading-rotate 1s linear infinite;
+}
+
+.custom-table-loading-track {
+  stroke: rgba(0, 0, 0, 0.1);
+}
+
+.custom-table-loading-indicator {
+  stroke: #1a2980;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 40;
+  stroke-linecap: round;
+  transform-origin: center;
+}
+
+.custom-table-loading-text {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  text-align: center;
+}
+
+@keyframes custom-table-loading-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

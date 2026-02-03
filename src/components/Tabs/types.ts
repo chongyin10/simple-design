@@ -27,6 +27,9 @@ export interface TabsProps {
   onAdd?: () => void;
   className?: string;
   style?: React.CSSProperties;
+  /** 内容区域自定义类名，优先级高于内部 className */
+  contentClassName?: string;
+  /** 内容区域自定义样式，优先级低于外部 className 和 style */
   contentStyle?: React.CSSProperties;
   draggable?: boolean;
   onDragEnd?: (items: TabItem[]) => void;

@@ -1,725 +1,574 @@
 import React, { useState } from 'react';
-import { Input, Table } from '../../components';
-import type { Column } from '../../components/Table';
+import { Input, Flex } from '../../components';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+// 复制功能组件
+const CopyBlock: React.FC<{ code: string }> = ({ code }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('复制失败:', err);
+    }
+  };
+
+  return (
+    <div style={{ position: 'relative', marginBottom: '16px' }}>
+      <button
+        onClick={handleCopy}
+        style={{
+          position: 'absolute',
+          top: '8px',
+          right: '8px',
+          padding: '4px 8px',
+          background: copied ? '#52c41a' : '#1890ff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '12px',
+          zIndex: 1,
+        }}
+      >
+        {copied ? '已复制' : '复制'}
+      </button>
+      <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ margin: 0 }}>
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
+};
+
+const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <div style={{ marginBottom: '32px' }}>
+    <h2 style={{ marginTop: 0, marginBottom: '16px', color: '#333' }}>{title}</h2>
+    {children}
+  </div>
+);
+
+const DemoRow: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <Flex align="center" gap="middle" style={{ marginBottom: '16px' }}>
+    <span style={{ minWidth: '120px', fontWeight: 500 }}>{title}:</span>
+    {children}
+  </Flex>
+);
 
 const InputExample: React.FC = () => {
   const [textValue, setTextValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
 
-  // API参数列配置
-  const apiColumns: Column[] = [
-    { dataIndex: 'param', title: '参数名', width: '150px' },
-    { dataIndex: 'type', title: '类型', width: '300px' },
-    { dataIndex: 'default', title: '默认值', width: '150px' },
-    { dataIndex: 'description', title: '描述', width: '300px' }
-  ];
-
-  // 通用API参数数据源
-  const commonApiDataSource = [
-    { param: 'type', type: "'text'", default: 'text', description: '输入框类型' },
-    { param: 'placeholder', type: 'string', default: '-', description: '占位符文本' },
-    { param: 'width', type: 'string | number', default: '-', description: '自定义宽度' },
-    { param: 'value', type: 'string', default: '-', description: '输入值' },
-    { param: 'onChange', type: '(e: React.ChangeEvent<HTMLInputElement>) => void', default: '-', description: '输入变化事件' },
-    { param: 'onBlur', type: '(e: React.FocusEvent<HTMLInputElement>) => void', default: '-', description: '失去焦点事件' },
-    { param: 'onFocus', type: '(e: React.FocusEvent<HTMLInputElement>) => void', default: '-', description: '获取焦点事件' },
-    { param: 'onKeyDown', type: '(e: React.KeyboardEvent<HTMLInputElement>) => void', default: '-', description: '键盘按下事件' },
-    { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用' },
-    { param: 'readOnly', type: 'boolean', default: 'false', description: '是否只读' },
-    { param: 'className', type: 'string', default: '-', description: '自定义 CSS 类名' },
-    { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' },
-    { param: 'prefix', type: 'string | React.ReactNode', default: '-', description: '输入框前缀' },
-    { param: 'suffix', type: 'string | React.ReactNode', default: '-', description: '输入框后缀' },
-    { param: 'clear', type: 'boolean', default: 'false', description: '是否显示清除按钮，当输入框有值且获得焦点时显示' },
-    { param: 'extra', type: 'string | React.ReactNode', default: '-', description: '默认提示信息，与错误信息互斥，字体颜色为#00000073' }
-  ];
-
-  // Number组件API参数数据源
-  const numberApiDataSource = [
-    { param: 'nType', type: 'NumberType', default: '-', description: '数字类型验证，可选值：positive-float, negative-float, positive-integer, negative-integer, integer, negative, positive' },
-    { param: 'errorMessage', type: 'string', default: '-', description: '自定义错误消息' },
-    { param: 'extra', type: 'string | React.ReactNode', default: '-', description: '默认提示信息，与错误信息互斥' }
-  ];
-
-  // Search组件API参数数据源
-  const searchApiDataSource = [
-    { param: 'onSearch', type: '() => void', default: '-', description: '搜索事件，点击搜索图标或按下回车触发' },
-    { param: 'onClear', type: '() => void', default: '-', description: '清除事件，点击清除图标触发' }
-  ];
-
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Input 组件</h2>
-      <p>用于接收用户输入的组件，支持文本和数字类型，以及自定义宽度和占位符。</p>
-      
-      {/* 基本使用示例 */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3>基本使用</h3>
-        <p>展示不同类型和配置的输入框。</p>
-        
-        <h4>文本输入框</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Input 
-            placeholder="请输入文本" 
-            value={textValue} 
-            onChange={(e) => setTextValue(e.target.value)} 
-            style={{ marginRight: '10px' }}
-          />
-          <span>当前值: {textValue}</span>
-        </div>
-        
-        <h4>自定义宽度</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Input 
-            placeholder="宽度200px" 
-            width="200px" 
-            style={{ marginRight: '20px' }}
-          />
-          <Input 
-            placeholder="宽度50%" 
-            width="50%" 
-          />
-        </div>
-        
-        <h4>禁用和只读</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Input 
-            placeholder="禁用状态" 
-            disabled 
-            style={{ marginRight: '20px' }}
-          />
-          <Input 
-            placeholder="只读状态" 
-            readOnly 
-            value="只读内容"
-          />
-        </div>
+      <h1>Input 输入框</h1>
+      <p>用于接收用户输入的基础表单组件，支持文本、数字和搜索等多种类型。</p>
 
-        <h4>键盘事件</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Input 
-            placeholder="按下Enter键触发事件" 
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                alert('Enter键被按下');
-              }
-            }} 
+      {/* 基础用法 */}
+      <Section title="基础用法">
+        <DemoRow title="文本输入">
+          <Input
+            placeholder="请输入文本"
+            value={textValue}
+            onChange={(e) => setTextValue(e.target.value)}
             width="300px"
-            style={{ marginRight: '10px' }}
           />
-          <span>尝试在输入框中按下Enter键</span>
-        </div>
+          <span>值: {textValue}</span>
+        </DemoRow>
+        <CopyBlock code={`import { Input } from '@idp/design';
+import { useState } from 'react';
 
-        <h4>带前缀后缀输入框</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <p>所有输入框的前缀后缀间距保持一致，无论使用图标还是自定义React节点</p>
-          
-          <h5>前缀图标与自定义前缀对比</h5>
-          <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Input 
-              placeholder="用户名" 
-              prefix="user" 
-              width="300px"
-            />
-            <Input 
-              placeholder="金额" 
-              prefix={<span style={{ color: '#f5222d' }}>¥</span>} 
-              width="300px"
-            />
-          </div>
-          
-          <h5>后缀图标与自定义后缀对比</h5>
-          <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Input 
-              placeholder="密码" 
-              suffix="close" 
-              width="300px"
-            />
-            <Input 
-              placeholder="百分比" 
-              suffix={<span style={{ color: '#52c41a' }}>%</span>} 
-              width="300px"
-            />
-          </div>
-          
-          <h5>前后缀组合</h5>
-          <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Input 
-              placeholder="搜索" 
-              prefix="search" 
-              suffix="close" 
-              width="300px"
-            />
-            <Input 
-              placeholder="折扣" 
-              prefix={<span style={{ color: '#f5222d' }}>¥</span>} 
-              suffix={<span style={{ color: '#52c41a' }}>%</span>} 
-              width="300px"
-            />
-          </div>
-        </div>
+const Demo = () => {
+  const [value, setValue] = useState('');
 
-        <h4>带清除按钮输入框</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <p>当输入框有值且获得焦点时，显示清除按钮</p>
-          
-          <h5>基本用法</h5>
-          <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Input 
-              placeholder="请输入内容" 
-              value={textValue} 
-              onChange={(e) => setTextValue(e.target.value)} 
-              clear 
-              width="300px"
-            />
-            <span>当前值: {textValue}</span>
-          </div>
-          
-          <h5>带前后缀的清除按钮</h5>
-          <div style={{ marginBottom: '10px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            <Input 
-              placeholder="带前缀" 
-              prefix="user" 
-              value={textValue} 
-              onChange={(e) => setTextValue(e.target.value)} 
-              clear 
-              width="300px"
-            />
-            <Input 
-              placeholder="带后缀图标" 
-              suffix="close" 
-              value={textValue} 
-              onChange={(e) => setTextValue(e.target.value)} 
-              clear 
-              width="300px"
-            />
-            <Input 
-              placeholder="带前后缀" 
-              prefix="search" 
-              suffix="close" 
-              value={textValue} 
-              onChange={(e) => setTextValue(e.target.value)} 
-              clear 
-              width="300px"
-            />
-          </div>
-          
-          <h5>自定义后缀节点</h5>
-          <div style={{ marginBottom: '10px' }}>
-            <Input 
-              placeholder="金额" 
-              suffix={<span style={{ color: '#52c41a' }}>元</span>} 
-              value={textValue} 
-              onChange={(e) => setTextValue(e.target.value)} 
-              clear 
-              width="300px"
-            />
-          </div>
-          
-          <h5>禁用和只读状态</h5>
-          <div style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
-            <Input 
-              placeholder="禁用状态" 
-              value="禁用内容" 
-              disabled 
-              clear 
-              width="300px"
-            />
-            <Input 
-              placeholder="只读状态" 
-              value="只读内容" 
-              readOnly 
-              clear 
-              width="300px"
-            />
-          </div>
-        </div>
+  return (
+    <Input
+      placeholder="请输入文本"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      width="300px"
+    />
+  );
+};`} />
+      </Section>
 
-        <h4>搜索输入框</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ marginBottom: '10px' }}>
-            <h5>默认搜索输入框</h5>
-            <Input.Search
-              placeholder="请输入搜索内容"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onSearch={() => alert(`搜索: ${searchValue}`)}
-              onClear={() => setSearchValue('')}
-              width="300px"
-              style={{ marginRight: '10px' }}
-            />
-            <span>当前搜索值: {searchValue}</span>
-          </div>
-          
-          <div style={{ marginBottom: '10px' }}>
-            <h5>使用clear属性的搜索输入框</h5>
-            <Input.Search
-              placeholder="使用统一清除按钮"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onSearch={() => alert(`搜索: ${searchValue}`)}
-              clear
-              width="300px"
-            />
-          </div>
-        </div>
-        
-        <h4>数字输入框（NumberInput）</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <p>带类型验证的数字输入框，支持多种数字类型验证</p>
-          
-          <h5>不同类型验证</h5>
-          <div style={{ marginBottom: '20px', display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
-            <div style={{ width: '300px' }}>
-              <Input.Number
-                placeholder="正浮点数"
-                nType="positive-float"
-                width="100%"
-                style={{ marginBottom: '5px' }}
-              />
-              <span style={{ fontSize: '12px', color: '#909399' }}>nType="positive-float"</span>
-            </div>
-            
-            <div style={{ width: '300px' }}>
-              <Input.Number
-                placeholder="负浮点数"
-                nType="negative-float"
-                width="100%"
-                style={{ marginBottom: '5px' }}
-              />
-              <span style={{ fontSize: '12px', color: '#909399' }}>nType="negative-float"</span>
-            </div>
-            
-            <div style={{ width: '300px' }}>
-              <Input.Number
-                placeholder="正整数"
-                nType="positive-integer"
-                width="100%"
-                style={{ marginBottom: '5px' }}
-              />
-              <span style={{ fontSize: '12px', color: '#909399' }}>nType="positive-integer"</span>
-            </div>
-            
-            <div style={{ width: '300px' }}>
-              <Input.Number
-                placeholder="负整数"
-                nType="negative-integer"
-                width="100%"
-                style={{ marginBottom: '5px' }}
-              />
-              <span style={{ fontSize: '12px', color: '#909399' }}>nType="negative-integer"</span>
-            </div>
-            
-            <div style={{ width: '300px' }}>
-              <Input.Number
-                placeholder="整数"
-                nType="integer"
-                width="100%"
-                style={{ marginBottom: '5px' }}
-              />
-              <span style={{ fontSize: '12px', color: '#909399' }}>nType="integer"</span>
-            </div>
-            
-            <div style={{ width: '300px' }}>
-              <Input.Number
-                placeholder="负数"
-                nType="negative"
-                width="100%"
-                style={{ marginBottom: '5px' }}
-              />
-              <span style={{ fontSize: '12px', color: '#909399' }}>nType="negative"</span>
-            </div>
-            
-            <div style={{ width: '300px' }}>
-              <Input.Number
-                placeholder="正数"
-                nType="positive"
-                width="100%"
-                style={{ marginBottom: '5px' }}
-              />
-              <span style={{ fontSize: '12px', color: '#909399' }}>nType="positive"</span>
-            </div>
-          </div>
-          
-          <h5>带默认值</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input.Number
-              placeholder="负整数"
-              nType="negative-integer"
-              value="-5"
-              width="100%"
-            />
-          </div>
-          
-          <h5>带前后缀</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input.Number
-              placeholder="金额"
-              nType="positive-float"
-              prefix="¥"
-              suffix="元"
-              width="100%"
-            />
-          </div>
-          
-          <h5>带清除按钮</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input.Number
-              placeholder="带清除按钮"
-              nType="positive-float"
-              clear
-              width="100%"
-            />
-          </div>
-          
-          <h5>自定义错误消息</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input.Number
-              placeholder="正整数"
-              nType="positive-integer"
-              errorMessage="请输入有效的正整数"
-              width="100%"
-            />
-          </div>
-          
-          <h5>带提示信息（extra）</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input.Number
-              placeholder="正整数"
-              nType="positive-integer"
-              extra="请输入大于0的整数"
-              width="100%"
-            />
-          </div>
-          
-          <h5>提示信息与错误消息互斥</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <p style={{ fontSize: '12px', color: '#909399', marginBottom: '8px' }}>
-              输入负数会触发验证错误，此时extra会隐藏，显示errorMessage
-            </p>
-            <Input.Number
-              placeholder="正整数"
-              nType="positive-integer"
-              extra="请输入大于0的整数"
-              width="100%"
-            />
-          </div>
-        </div>
+      {/* 尺寸 */}
+      <Section title="尺寸">
+        <DemoRow title="默认宽度">
+          <Input placeholder="默认宽度" />
+        </DemoRow>
+        <DemoRow title="固定宽度">
+          <Input placeholder="宽度 200px" width="200px" />
+        </DemoRow>
+        <DemoRow title="百分比宽度">
+          <Input placeholder="宽度 50%" width="50%" />
+        </DemoRow>
+        <CopyBlock code={`<Input placeholder="默认宽度" />
+<Input placeholder="宽度 200px" width="200px" />
+<Input placeholder="宽度 50%" width="50%" />`} />
+      </Section>
 
-        <h4>带提示信息（extra）</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <p>extra属性用于显示默认提示信息，与错误信息互斥</p>
-          
-          <h5>基本用法</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input
-              placeholder="请输入用户名"
-              extra="用户名长度6-20个字符"
-              width="100%"
-            />
-          </div>
-          
-          <h5>带前后缀的提示信息</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input
-              placeholder="请输入金额"
-              prefix="¥"
-              suffix="元"
-              extra="支持小数点后两位"
-              width="100%"
-            />
-          </div>
-          
-          <h5>带清除按钮的提示信息</h5>
-          <div style={{ marginBottom: '10px', width: '300px' }}>
-            <Input
-              placeholder="请输入内容"
-              clear
-              extra="输入内容后显示清除按钮"
-              width="100%"
-            />
-          </div>
-        </div>
-      </div>
-      
-      {/* API 文档 */}
-      <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>通用 API 参数</h3>
-        <Table pagination={false} columns={apiColumns} dataSource={commonApiDataSource} />
-      </div>
-      
-      <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>Number 组件 API 参数</h3>
-        <Table pagination={false} columns={apiColumns} dataSource={numberApiDataSource} />
-      </div>
-      
-      <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>Search 组件 API 参数</h3>
-        <Table pagination={false} columns={apiColumns} dataSource={searchApiDataSource} />
-      </div>
-      
-      {/* 代码示例 */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3>代码示例</h3>
-        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-{`import { Input } from '@zjpcy/simple-design';
+      {/* 状态 */}
+      <Section title="状态">
+        <DemoRow title="禁用状态">
+          <Input placeholder="禁用状态" disabled width="200px" />
+        </DemoRow>
+        <DemoRow title="只读状态">
+          <Input placeholder="只读状态" readOnly value="只读内容" width="200px" />
+        </DemoRow>
+        <CopyBlock code={`<Input placeholder="禁用状态" disabled />
+<Input placeholder="只读状态" readOnly value="只读内容" />`} />
+      </Section>
 
-// 基本用法
-<Input 
-  placeholder="请输入文本" 
-  value={textValue} 
-  onChange={(e) => setTextValue(e.target.value)} 
-/>
+      {/* 前缀后缀 */}
+      <Section title="前缀后缀">
+        <DemoRow title="图标前缀">
+          <Input placeholder="用户名" prefix="user" width="300px" />
+        </DemoRow>
+        <DemoRow title="图标后缀">
+          <Input placeholder="密码" suffix="close" width="300px" />
+        </DemoRow>
+        <DemoRow title="前后缀组合">
+          <Input placeholder="搜索" prefix="search" suffix="close" width="300px" />
+        </DemoRow>
+        <DemoRow title="自定义前缀">
+          <Input placeholder="金额" prefix={<span style={{ color: '#f5222d' }}>¥</span>} width="300px" />
+        </DemoRow>
+        <DemoRow title="自定义后缀">
+          <Input placeholder="百分比" suffix={<span style={{ color: '#52c41a' }}>%</span>} width="300px" />
+        </DemoRow>
+        <CopyBlock code={`// 图标前缀
+<Input placeholder="用户名" prefix="user" />
 
-// 自定义宽度
-<Input 
-  placeholder="宽度200px" 
-  width="200px" 
-/>
+// 图标后缀
+<Input placeholder="密码" suffix="close" />
 
-// 禁用状态
-<Input 
-  placeholder="禁用状态" 
-  disabled 
-/>
+// 前后缀组合
+<Input placeholder="搜索" prefix="search" suffix="close" />
 
-// 只读状态
-<Input 
-  placeholder="只读状态" 
-  readOnly 
-  value="只读内容"
-/>
+// 自定义前缀
+<Input placeholder="金额" prefix={<span style={{ color: '#f5222d' }}>¥</span>} />
 
-// 键盘事件
-<Input 
-  placeholder="按下Enter键触发事件" 
-  onKeyDown={(e) => {
-    if (e.key === 'Enter') {
-      alert('Enter键被按下');
-    }
-  }} 
-  width="300px"
+// 自定义后缀
+<Input placeholder="百分比" suffix={<span style={{ color: '#52c41a' }}>%</span>} />`} />
+      </Section>
+
+      {/* 清除按钮 */}
+      <Section title="清除按钮">
+        <DemoRow title="基本用法">
+          <Input
+            placeholder="请输入内容"
+            value={textValue}
+            onChange={(e) => setTextValue(e.target.value)}
+            clear
+            width="300px"
+          />
+        </DemoRow>
+        <DemoRow title="带前缀">
+          <Input
+            placeholder="带前缀的清除按钮"
+            prefix="user"
+            value={textValue}
+            onChange={(e) => setTextValue(e.target.value)}
+            clear
+            width="300px"
+          />
+        </DemoRow>
+        <DemoRow title="禁用状态">
+          <Input placeholder="禁用状态" value="禁用内容" disabled clear width="300px" />
+        </DemoRow>
+        <CopyBlock code={`// 基本用法
+<Input
+  placeholder="请输入内容"
+  value={value}
+  onChange={(e) => setValue(e.target.value)}
+  clear
 />
 
 // 带前缀
-<Input 
-  placeholder="用户名" 
-  prefix="user" 
-  width="300px"
+<Input placeholder="带前缀" prefix="user" clear />
+
+// 禁用状态
+<Input placeholder="禁用状态" value="禁用内容" disabled clear />`} />
+      </Section>
+
+      {/* 提示信息 */}
+      <Section title="提示信息">
+        <DemoRow title="基本用法">
+          <Input placeholder="请输入用户名" extra="用户名长度6-20个字符" width="300px" />
+        </DemoRow>
+        <DemoRow title="带前后缀">
+          <Input placeholder="请输入金额" prefix="¥" suffix="元" extra="支持小数点后两位" width="300px" />
+        </DemoRow>
+        <CopyBlock code={`<Input placeholder="请输入用户名" extra="用户名长度6-20个字符" />
+
+<Input placeholder="请输入金额" prefix="¥" suffix="元" extra="支持小数点后两位" />`} />
+      </Section>
+
+      {/* 标签 */}
+      <Section title="标签">
+        <DemoRow title="基本用法">
+          <Input label="用户名" placeholder="请输入用户名" width="300px" />
+        </DemoRow>
+        <DemoRow title="自定义间距">
+          <Input label="邮箱" labelGap={20} placeholder="请输入邮箱" width="300px" />
+        </DemoRow>
+        <DemoRow title="自定义样式">
+          <Input
+            label="手机号"
+            labelGap={12}
+            labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+            placeholder="请输入手机号"
+            width="300px"
+          />
+        </DemoRow>
+        <DemoRow title="自定义类名">
+          <Input
+            label="地址"
+            labelGap={8}
+            labelClassName="custom-label"
+            placeholder="请输入地址"
+            width="300px"
+          />
+        </DemoRow>
+        <DemoRow title="带前后缀">
+          <Input label="金额" prefix="¥" suffix="元" placeholder="请输入金额" width="300px" />
+        </DemoRow>
+        <DemoRow title="带清除按钮">
+          <Input
+            label="备注"
+            labelGap={10}
+            placeholder="请输入备注"
+            clear
+            width="300px"
+            value={textValue}
+            onChange={(e) => setTextValue(e.target.value)}
+          />
+        </DemoRow>
+        <CopyBlock code={`// 基本用法
+<Input label="用户名" placeholder="请输入用户名" />
+
+// 自定义间距
+<Input label="邮箱" labelGap={20} placeholder="请输入邮箱" />
+
+// 自定义样式
+<Input
+  label="手机号"
+  labelGap={12}
+  labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+  placeholder="请输入手机号"
 />
 
-// 带后缀
-<Input 
-  placeholder="密码" 
-  suffix="close" 
-  width="300px"
+// 自定义类名
+<Input
+  label="地址"
+  labelGap={8}
+  labelClassName="custom-label"
+  placeholder="请输入地址"
 />
 
 // 带前后缀
-<Input 
-  placeholder="搜索" 
-  prefix="search" 
-  suffix="close" 
-  width="300px"
-/>
+<Input label="金额" prefix="¥" suffix="元" placeholder="请输入金额" />
 
-// 自定义前缀（React节点）
-<Input 
-  placeholder="金额" 
-  prefix={<span style={{ color: '#f5222d' }}>¥</span>} 
-  width="300px"
-/>
+// 带清除按钮
+<Input
+  label="备注"
+  labelGap={10}
+  placeholder="请输入备注"
+  clear
+  value={value}
+  onChange={(e) => setValue(e.target.value)}
+/>`} />
+      </Section>
 
-// 自定义后缀（React节点）
-<Input 
-  placeholder="百分比" 
-  suffix={<span style={{ color: '#52c41a' }}>%</span>} 
-  width="300px"
-/>
+      {/* 键盘事件 */}
+      <Section title="键盘事件">
+        <DemoRow title="回车事件">
+          <Input
+            placeholder="按下 Enter 键"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                alert('Enter 键被按下');
+              }
+            }}
+            width="300px"
+          />
+        </DemoRow>
+        <CopyBlock code={`<Input
+  placeholder="按下 Enter 键"
+  onKeyDown={(e) => {
+    if (e.key === 'Enter') {
+      alert('Enter 键被按下');
+    }
+  }}
+/>`} />
+      </Section>
 
-// 带清除按钮输入框
-<Input 
-  placeholder="请输入内容" 
-  value={textValue} 
-  onChange={(e) => setTextValue(e.target.value)} 
-  clear 
-  width="300px"
-/>
+      {/* 搜索输入框 */}
+      <Section title="搜索输入框">
+        <DemoRow title="基础搜索">
+          <Input.Search
+            placeholder="请输入搜索内容"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onSearch={() => alert(`搜索: ${searchValue}`)}
+            width="300px"
+          />
+        </DemoRow>
+        <DemoRow title="带清除按钮">
+          <Input.Search
+            placeholder="使用统一清除按钮"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onSearch={() => alert(`搜索: ${searchValue}`)}
+            clear
+            width="300px"
+          />
+        </DemoRow>
+        <CopyBlock code={`import { Input } from '@idp/design';
 
-// 带前缀的清除按钮
-<Input 
-  placeholder="带前缀的清除按钮" 
-  prefix="user" 
-  value={textValue} 
-  onChange={(e) => setTextValue(e.target.value)} 
-  clear 
-  width="300px"
-/>
-
-// 带后缀的清除按钮（清除按钮在后缀左边）
-<Input 
-  placeholder="带后缀的清除按钮" 
-  suffix="close" 
-  value={textValue} 
-  onChange={(e) => setTextValue(e.target.value)} 
-  clear 
-  width="300px"
-/>
-
-// 搜索输入框
+// 基础搜索
 <Input.Search
   placeholder="请输入搜索内容"
   value={searchValue}
   onChange={(e) => setSearchValue(e.target.value)}
   onSearch={() => console.log('搜索:', searchValue)}
-  onClear={() => setSearchValue('')}
-  width="300px"
 />
 
-// 使用clear属性的搜索输入框
+// 带清除按钮
 <Input.Search
   placeholder="使用统一清除按钮"
   value={searchValue}
   onChange={(e) => setSearchValue(e.target.value)}
   onSearch={() => console.log('搜索:', searchValue)}
   clear
-  width="300px"
-/>
+/>`} />
+      </Section>
 
-// 数字输入框（NumberInput）
-// 正浮点数
-<Input.Number
-  placeholder="正浮点数"
-  nType="positive-float"
-  width="300px"
-/>
-
-// 负浮点数
-<Input.Number
-  placeholder="负浮点数"
-  nType="negative-float"
-  width="300px"
-/>
+      {/* 数字输入框 */}
+      <Section title="数字输入框">
+        <DemoRow title="正浮点数">
+          <Input.Number placeholder="正浮点数" nType="positive-float" width="200px" />
+        </DemoRow>
+        <DemoRow title="正整数">
+          <Input.Number placeholder="正整数" nType="positive-integer" width="200px" />
+        </DemoRow>
+        <DemoRow title="整数">
+          <Input.Number placeholder="整数" nType="integer" width="200px" />
+        </DemoRow>
+        <DemoRow title="带前后缀">
+          <Input.Number placeholder="金额" nType="positive-float" prefix="¥" suffix="元" width="200px" />
+        </DemoRow>
+        <DemoRow title="带清除按钮">
+          <Input.Number placeholder="带清除按钮" nType="positive-float" clear width="200px" />
+        </DemoRow>
+        <DemoRow title="自定义错误消息">
+          <Input.Number placeholder="正整数" nType="positive-integer" errorMessage="请输入有效的正整数" width="200px" />
+        </DemoRow>
+        <DemoRow title="带提示信息">
+          <Input.Number placeholder="正整数" nType="positive-integer" extra="请输入大于0的整数" width="200px" />
+        </DemoRow>
+        <CopyBlock code={`// 正浮点数
+<Input.Number placeholder="正浮点数" nType="positive-float" />
 
 // 正整数
-<Input.Number
-  placeholder="正整数"
-  nType="positive-integer"
-  width="300px"
-/>
-
-// 负整数
-<Input.Number
-  placeholder="负整数"
-  nType="negative-integer"
-  width="300px"
-/>
+<Input.Number placeholder="正整数" nType="positive-integer" />
 
 // 整数
-<Input.Number
-  placeholder="整数"
-  nType="integer"
-  width="300px"
-/>
+<Input.Number placeholder="整数" nType="integer" />
 
-// 负数
-<Input.Number
-  placeholder="负数"
-  nType="negative"
-  width="300px"
-/>
-
-// 正数
-<Input.Number
-  placeholder="正数"
-  nType="positive"
-  width="300px"
-/>
-
-// 带前后缀的数字输入框
-<Input.Number
-  placeholder="金额"
-  nType="positive-float"
-  prefix="¥"
-  suffix="元"
-  width="300px"
-/>
+// 带前后缀
+<Input.Number placeholder="金额" nType="positive-float" prefix="¥" suffix="元" />
 
 // 带清除按钮
-<Input.Number
-  placeholder="带清除按钮"
-  nType="positive-float"
-  clear
-  width="300px"
-/>
+<Input.Number placeholder="带清除按钮" nType="positive-float" clear />
 
 // 自定义错误消息
-<Input.Number
-  placeholder="正整数"
-  nType="positive-integer"
-  errorMessage="请输入有效的正整数"
-  width="300px"
-/>
+<Input.Number placeholder="正整数" nType="positive-integer" errorMessage="请输入有效的正整数" />
 
-// 带提示信息（extra）
-<Input
-  placeholder="请输入用户名"
-  extra="用户名长度6-20个字符"
-  width="300px"
-/>
+// 带提示信息
+<Input.Number placeholder="正整数" nType="positive-integer" extra="请输入大于0的整数" />`} />
+      </Section>
 
-// 带前后缀的提示信息
-<Input
-  placeholder="请输入金额"
-  prefix="¥"
-  suffix="元"
-  extra="支持小数点后两位"
-  width="300px"
-/>
+      {/* API 文档 */}
+      <Section title="API">
+        <h3>Input Props</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '24px' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f5f5f5' }}>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>type</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>输入框类型</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'text'</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'text'</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>placeholder</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>占位符文本</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>value</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>输入值</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>width</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义宽度</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | number</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>disabled</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否禁用</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>readOnly</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否只读</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>prefix</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>输入框前缀</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | React.ReactNode</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>suffix</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>输入框后缀</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | React.ReactNode</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>clear</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否显示清除按钮</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>extra</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>提示信息</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | React.ReactNode</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>label</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签文案，显示在输入框前面</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | React.ReactNode</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>labelGap</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签到输入框的距离</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string | number</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>8</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>labelClassName</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签的CSS类名</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>labelStyle</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>标签的样式</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>React.CSSProperties</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onChange</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>输入变化事件</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(e: React.ChangeEvent) => void`}</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onBlur</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>失去焦点事件</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(e: React.FocusEvent) => void`}</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onFocus</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>获取焦点事件</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(e: React.FocusEvent) => void`}</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onKeyDown</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>键盘按下事件</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(e: React.KeyboardEvent) => void`}</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+          </tbody>
+        </table>
 
-// 带提示信息的数字输入框
-<Input.Number
-  placeholder="正整数"
-  nType="positive-integer"
-  extra="请输入大于0的整数"
-  width="300px"
-/>
+        <h3>Input.Search Props</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '24px' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f5f5f5' }}>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onSearch</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>搜索事件</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`() => void`}</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onClear</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>清除事件</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`() => void`}</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+          </tbody>
+        </table>
 
-// 提示信息与错误消息互斥
-// 当验证出错时，extra会自动隐藏，显示errorMessage
-<Input.Number
-  placeholder="正整数"
-  nType="positive-integer"
-  extra="请输入大于0的整数"
-  width="300px"
-/>`}
-        </SyntaxHighlighter>
-      </div>
-      
-      {/* 在其他项目中引用示例 */}
-      <div>
-        <h3>在其他项目中引用</h3>
-        <div style={{ margin: '15px 0' }}>
-          <h4>1. 安装</h4>
-          <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-              {`npm i @zjpcy/simple-design`}
-          </SyntaxHighlighter>
-        </div>
-        <div>
-          <h4>2. 引用组件</h4>
-          <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-{`// 方式一：单独引入
-import Input from '@zjpcy/simple-design/lib/Input';
-import '@zjpcy/simple-design/lib/Input/Input.css';
-
-// 方式二：批量引入
-import { Input } from '@zjpcy/simple-design';
-import '@zjpcy/simple-design/lib/index.css';`}
-          </SyntaxHighlighter>
-        </div>
-      </div>
+        <h3>Input.Number Props</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f5f5f5' }}>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
+              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>nType</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>数字类型验证</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'positive-float' | 'negative-float' | 'positive-integer' | 'negative-integer' | 'integer' | 'negative' | 'positive'</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>errorMessage</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义错误消息</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+          </tbody>
+        </table>
+      </Section>
     </div>
   );
 };

@@ -6,8 +6,8 @@
   transform: translateX(-50%) translateY(-100%);
   width: auto;
   max-width: 800px;
-  min-width: 100px;
-  height: 30px;
+  min-width: auto;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,8 +41,9 @@
   font-size: 13px;
   line-height: 1.5;
   color: #333;
-  flex: 1;
+  white-space: nowrap;
   text-align: left;
+  padding: 5px 0px
 }
 
 /* 成功类型样式 */

@@ -30,6 +30,14 @@ export interface SwitchProps {
   };
   /** 变化时的回调函数 */
   onChange?: (checked: boolean) => void;
+  /** 标签文案，显示在开关前面 */
+  label?: string | ReactNode;
+  /** 标签到开关的距离 */
+  labelGap?: string | number;
+  /** 标签的CSS类名 */
+  labelClassName?: string;
+  /** 标签的样式 */
+  labelStyle?: CSSProperties;
 }
 
 /**

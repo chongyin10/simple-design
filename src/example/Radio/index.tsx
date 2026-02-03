@@ -1,374 +1,423 @@
 import React, { useState } from 'react';
-import { Radio, Table } from '../../components';
-import type { Column } from '../../components/Table';
+import { Flex, Table } from '../../components';
+import Radio from '../../components/Radio';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+// 复制功能组件
+const CopyBlock: React.FC<{ code: string }> = ({ code }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('复制失败:', err);
+    }
+  };
+
+  return (
+    <div style={{ position: 'relative', marginBottom: '16px' }}>
+      <button
+        onClick={handleCopy}
+        style={{
+          position: 'absolute',
+          top: '8px',
+          right: '8px',
+          padding: '4px 8px',
+          background: copied ? '#52c41a' : '#1890ff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '12px',
+          zIndex: 1,
+        }}
+      >
+        {copied ? '已复制' : '复制'}
+      </button>
+      <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ margin: 0 }}>
+        {code}
+      </SyntaxHighlighter>
+    </div>
+  );
+};
+
+const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <div style={{ marginBottom: '32px' }}>
+    <h2 style={{ marginTop: 0, marginBottom: '16px', color: '#333' }}>{title}</h2>
+    {children}
+  </div>
+);
+
+const DemoRow: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <Flex align="center" gap="middle" style={{ marginBottom: '16px' }}>
+    <span style={{ minWidth: '120px', fontWeight: 500 }}>{title}:</span>
+    {children}
+  </Flex>
+);
+
 const RadioExample: React.FC = () => {
-  // API参数列配置
-  const apiColumns: Column[] = [
-    { dataIndex: 'param', title: '参数名', width: '150px' },
-    { dataIndex: 'type', title: '类型', width: '300px' },
-    { dataIndex: 'default', title: '默认值', width: '150px' },
-    { dataIndex: 'description', title: '描述', width: '300px' }
-  ];
-
-  // Radio API参数数据源
-  const radioApiDataSource = [
-    { param: 'value', type: 'any', default: '-', description: 'Radio的值，用于Group模式下的选中判断' },
-    { param: 'checked', type: 'boolean', default: '-', description: '是否选中（受控模式）' },
-    { param: 'defaultChecked', type: 'boolean', default: 'false', description: '默认是否选中（非受控模式）' },
-    { param: 'onChange', type: '(checked: boolean, value: any) => void', default: '-', description: '变化时的回调函数' },
-    { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用' },
-    { param: 'size', type: '\'large\' | \'middle\' | \'small\'', default: '-', description: 'Radio的尺寸，优先使用Group传递的size' },
-    { param: 'children', type: 'React.ReactNode', default: '-', description: 'Radio的文本内容' },
-    { param: 'className', type: 'string', default: '-', description: '自定义CSS类名' },
-    { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' }
-  ];
-
-  // Radio.Group API参数数据源
-  const radioGroupApiDataSource = [
-    { param: 'value', type: 'any', default: '-', description: '当前选中的值（受控模式）' },
-    { param: 'defaultValue', type: 'any', default: '-', description: '默认选中的值（非受控模式）' },
-    { param: 'onChange', type: '(value: any) => void', default: '-', description: '选中值变化时的回调函数' },
-    { param: 'disabled', type: 'boolean', default: 'false', description: '是否禁用所有子Radio' },
-    { param: 'type', type: '\'button\' | \'radio\'', default: 'radio', description: 'Radio组的类型，\'button\'为按钮样式，\'radio\'为默认样式' },
-    { param: 'size', type: '\'large\' | \'middle\' | \'small\'', default: 'middle', description: 'Radio组的尺寸，仅对按钮样式生效' },
-    { param: 'children', type: 'React.ReactNode', default: '-', description: '子Radio元素' },
-    { param: 'className', type: 'string', default: '-', description: '自定义CSS类名' },
-    { param: 'style', type: 'React.CSSProperties', default: '-', description: '自定义内联样式' }
-  ];
-
-  // 受控模式示例状态
-  const [controlledValue, setControlledValue] = useState<string>('option1');
-  const [singleChecked, setSingleChecked] = useState<boolean>(false);
+  const [basicChecked, setBasicChecked] = useState(false);
+  const [groupValue, setGroupValue] = useState('apple');
+  const [buttonValue, setButtonValue] = useState('a');
+  const [sizeValue, setSizeValue] = useState('middle');
+  const [labelValue, setLabelValue] = useState('a');
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Radio 组件</h2>
-      <p>单选框组件，支持单个使用和组模式。</p>
-      
-      {/* 基本使用示例 */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3>基本使用</h3>
-        <p>展示单选框的基本使用方式。</p>
-        
-        <h4>单个 Radio</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Radio checked={singleChecked} onChange={setSingleChecked}>
-            单个 Radio
-          </Radio>
-        </div>
-        
-        <h4>Radio 组模式</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Radio.Group>
-            <Radio value="option1">选项 1</Radio>
-            <Radio value="option2">选项 2</Radio>
-            <Radio value="option3">选项 3</Radio>
-          </Radio.Group>
-        </div>
-        
-        <h4>受控模式 Radio 组</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Radio.Group 
-            value={controlledValue} 
-            onChange={setControlledValue}
-          >
-            <Radio value="option1">选项 1</Radio>
-            <Radio value="option2">选项 2</Radio>
-            <Radio value="option3">选项 3</Radio>
-          </Radio.Group>
-          <div style={{ marginTop: '10px', color: '#666' }}>
-            当前选中值: <strong>{controlledValue}</strong>
-          </div>
-        </div>
-        
-        <h4>禁用状态</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <Radio disabled>禁用的单个 Radio</Radio>
-          
-          <div style={{ marginTop: '10px' }}>
-            <Radio.Group disabled>
-              <Radio value="option1">禁用的选项 1</Radio>
-              <Radio value="option2">禁用的选项 2</Radio>
-              <Radio value="option3">禁用的选项 3</Radio>
-            </Radio.Group>
-          </div>
-          
-          <div style={{ marginTop: '10px' }}>
-            <Radio.Group>
-              <Radio value="option1">可用选项 1</Radio>
-              <Radio value="option2" disabled>禁用选项 2</Radio>
-              <Radio value="option3">可用选项 3</Radio>
-            </Radio.Group>
-          </div>
-        </div>
-        
-        <h4>不同类型</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <h5>默认类型（Radio）</h5>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="radio">
-              <Radio value="option1">选项 1</Radio>
-              <Radio value="option2">选项 2</Radio>
-              <Radio value="option3">选项 3</Radio>
-            </Radio.Group>
-          </div>
-          
-          <h5>按钮类型</h5>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="button">
-              <Radio value="option1">选项 1</Radio>
-              <Radio value="option2">选项 2</Radio>
-              <Radio value="option3">选项 3</Radio>
-            </Radio.Group>
-          </div>
-        </div>
-        
-        <h4>按钮类型的不同尺寸</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="button" size="large">
-              <Radio value="option1">大尺寸</Radio>
-              <Radio value="option2">大尺寸</Radio>
-              <Radio value="option3">大尺寸</Radio>
-            </Radio.Group>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="button" size="middle">
-              <Radio value="option1">中尺寸</Radio>
-              <Radio value="option2">中尺寸</Radio>
-              <Radio value="option3">中尺寸</Radio>
-            </Radio.Group>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="button" size="small">
-              <Radio value="option1">小尺寸</Radio>
-              <Radio value="option2">小尺寸</Radio>
-              <Radio value="option3">小尺寸</Radio>
-            </Radio.Group>
-          </div>
-        </div>
-        
-        <h4>自定义宽高的按钮类型</h4>
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="button" style={{ width: '300px' }}>
-              <Radio value="option1">自定义宽度</Radio>
-              <Radio value="option2">自定义宽度</Radio>
-            </Radio.Group>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="button">
-              <Radio value="option1" style={{ width: '100px', height: '50px' }}>宽按钮</Radio>
-              <Radio value="option2" style={{ width: '150px', height: '50px' }}>更宽的按钮</Radio>
-              <Radio value="option3" style={{ width: '100px', height: '50px' }}>高按钮</Radio>
-            </Radio.Group>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Radio.Group type="button">
-              <Radio value="option1" style={{ height: '60px' }}>自定义高度</Radio>
-              <Radio value="option2" style={{ height: '60px' }}>自定义高度</Radio>
-            </Radio.Group>
-          </div>
-        </div>
-      </div>
-      
-      {/* API 文档 */}
-      <div style={{ marginBottom: '40px', padding: '20px', background: '#fafafa', borderRadius: '8px' }}>
-        <h3>API 参数</h3>
-        
-        <h4>Radio 组件</h4>
-        <Table pagination={false} columns={apiColumns} dataSource={radioApiDataSource} />
-        
-        <h4 style={{ marginTop: '30px' }}>Radio.Group 组件</h4>
-        <Table pagination={false} columns={apiColumns} dataSource={radioGroupApiDataSource} />
-      </div>
-      
-      {/* 代码示例 */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3>代码示例</h3>
-        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0' }}>
-{`import { Radio } from '@zjpcy/simple-design';
-import React, { useState } from 'react';
+      <h1>Radio 单选框</h1>
+      <p>单选框用于在一组选项中选择一个。</p>
 
-// 单个 Radio
-const SingleRadioExample = () => {
+      {/* 基础用法 */}
+      <Section title="基础用法">
+        <DemoRow title="默认单选框">
+          <Radio 
+            checked={basicChecked}
+            onChange={(checked) => setBasicChecked(checked)}
+          >
+            选项
+          </Radio>
+          <span style={{ marginLeft: '8px' }}>{basicChecked ? '已选中' : '未选中'}</span>
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
+
+const Demo = () => {
   const [checked, setChecked] = useState(false);
   
   return (
-    <Radio checked={checked} onChange={setChecked}>
-      单个 Radio
+    <Radio 
+      checked={checked}
+      onChange={(checked) => setChecked(checked)}
+    >
+      选项
     </Radio>
   );
-};
+};`} />
+      </Section>
 
-// Radio 组模式
-const RadioGroupExample = () => {
-  return (
-    <Radio.Group>
-      <Radio value="option1">选项 1</Radio>
-      <Radio value="option2">选项 2</Radio>
-      <Radio value="option3">选项 3</Radio>
-    </Radio.Group>
-  );
-};
+      {/* 默认值 */}
+      <Section title="默认值">
+        <DemoRow title="默认选中">
+          <Radio defaultChecked={true}>默认选中</Radio>
+        </DemoRow>
+        <DemoRow title="默认未选中">
+          <Radio defaultChecked={false}>默认未选中</Radio>
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
 
-// 受控模式 Radio 组
-const ControlledRadioGroupExample = () => {
-  const [value, setValue] = useState<string>('option1');
-  
-  return (
-    <>
-      <Radio.Group value={value} onChange={setValue}>
-        <Radio value="option1">选项 1</Radio>
-        <Radio value="option2">选项 2</Radio>
-        <Radio value="option3">选项 3</Radio>
-      </Radio.Group>
-      <p>当前选中值: {value}</p>
-    </>
-  );
-};
+// 默认选中
+<Radio defaultChecked={true}>默认选中</Radio>
 
-// 禁用状态
-const DisabledRadioExample = () => {
-  return (
-    <>
-      {/* 单个禁用 */}
-      <Radio disabled>禁用的单个 Radio</Radio>
-      
-      {/* 整个组禁用 */}
-      <Radio.Group disabled>
-        <Radio value="option1">禁用的选项 1</Radio>
-        <Radio value="option2">禁用的选项 2</Radio>
-        <Radio value="option3">禁用的选项 3</Radio>
-      </Radio.Group>
-      
-      {/* 部分禁用 */}
-      <Radio.Group>
-        <Radio value="option1">可用选项 1</Radio>
-        <Radio value="option2" disabled>禁用选项 2</Radio>
-        <Radio value="option3">可用选项 3</Radio>
-      </Radio.Group>
-    </>
-  );
-};
+// 默认未选中
+<Radio defaultChecked={false}>默认未选中</Radio>`} />
+      </Section>
 
-// 不同类型
-const RadioTypeExample = () => {
-  return (
-    <>
-      {/* 默认类型 */}
-      <div style={{ marginBottom: '20px' }}>
-        <h4>默认类型</h4>
-        <Radio.Group type="radio">
-          <Radio value="option1">选项 1</Radio>
-          <Radio value="option2">选项 2</Radio>
-          <Radio value="option3">选项 3</Radio>
-        </Radio.Group>
-      </div>
-      
+      {/* 禁用状态 */}
+      <Section title="禁用状态">
+        <DemoRow title="禁用未选中">
+          <Radio disabled={true}>禁用未选中</Radio>
+        </DemoRow>
+        <DemoRow title="禁用已选中">
+          <Radio disabled={true} defaultChecked={true}>禁用已选中</Radio>
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
+
+// 禁用未选中
+<Radio disabled>禁用未选中</Radio>
+
+// 禁用已选中
+<Radio disabled defaultChecked>禁用已选中</Radio>`} />
+      </Section>
+
+      {/* 不同尺寸 */}
+      <Section title="不同尺寸">
+        <DemoRow title="Large">
+          <Radio size="large" value="large" checked={sizeValue === 'large'} onChange={() => setSizeValue('large')}>
+            大尺寸
+          </Radio>
+        </DemoRow>
+        <DemoRow title="Middle">
+          <Radio size="middle" value="middle" checked={sizeValue === 'middle'} onChange={() => setSizeValue('middle')}>
+            中尺寸
+          </Radio>
+        </DemoRow>
+        <DemoRow title="Small">
+          <Radio size="small" value="small" checked={sizeValue === 'small'} onChange={() => setSizeValue('small')}>
+            小尺寸
+          </Radio>
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
+
+// 大尺寸
+<Radio size="large">大尺寸</Radio>
+
+// 中尺寸
+<Radio size="middle">中尺寸</Radio>
+
+// 小尺寸
+<Radio size="small">小尺寸</Radio>`} />
+      </Section>
+
+      {/* Radio.Group 用法 */}
+      <Section title="Radio.Group 用法">
+        <DemoRow title="单选组">
+          <Radio.Group value={groupValue} onChange={setGroupValue}>
+            <Radio value="apple">苹果</Radio>
+            <Radio value="banana">香蕉</Radio>
+            <Radio value="orange">橙子</Radio>
+          </Radio.Group>
+          <span style={{ marginLeft: '8px' }}>选中: {groupValue}</span>
+        </DemoRow>
+        <DemoRow title="默认值">
+          <Radio.Group defaultValue="banana">
+            <Radio value="apple">苹果</Radio>
+            <Radio value="banana">香蕉</Radio>
+            <Radio value="orange">橙子</Radio>
+          </Radio.Group>
+        </DemoRow>
+        <DemoRow title="禁用组">
+          <Radio.Group disabled={true}>
+            <Radio value="apple">苹果</Radio>
+            <Radio value="banana">香蕉</Radio>
+            <Radio value="orange">橙子</Radio>
+          </Radio.Group>
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
+
+// 单选组
+<Radio.Group value={value} onChange={setValue}>
+  <Radio value="apple">苹果</Radio>
+  <Radio value="banana">香蕉</Radio>
+  <Radio value="orange">橙子</Radio>
+</Radio.Group>
+
+// 默认值
+<Radio.Group defaultValue="banana">
+  <Radio value="apple">苹果</Radio>
+  <Radio value="banana">香蕉</Radio>
+  <Radio value="orange">橙子</Radio>
+</Radio.Group>
+
+// 禁用组
+<Radio.Group disabled>
+  <Radio value="apple">苹果</Radio>
+  <Radio value="banana">香蕉</Radio>
+  <Radio value="orange">橙子</Radio>
+</Radio.Group>`} />
+      </Section>
+
       {/* 按钮类型 */}
-      <div style={{ marginBottom: '20px' }}>
-        <h4>按钮类型</h4>
-        <Radio.Group type="button">
-          <Radio value="option1">选项 1</Radio>
-          <Radio value="option2">选项 2</Radio>
-          <Radio value="option3">选项 3</Radio>
-        </Radio.Group>
-      </div>
-      
-      {/* 按钮类型的不同尺寸 */}
-      <div style={{ marginBottom: '20px' }}>
-        <h4>按钮类型的不同尺寸</h4>
-        <div style={{ marginBottom: '10px' }}>
-          <Radio.Group type="button" size="large">
-            <Radio value="option1">大尺寸</Radio>
-            <Radio value="option2">大尺寸</Radio>
-            <Radio value="option3">大尺寸</Radio>
+      <Section title="按钮类型">
+        <DemoRow title="按钮组">
+          <Radio.Group type="button" value={buttonValue} onChange={setButtonValue}>
+            <Radio value="a">选项 A</Radio>
+            <Radio value="b">选项 B</Radio>
+            <Radio value="c">选项 C</Radio>
           </Radio.Group>
-        </div>
-        <div style={{ marginBottom: '10px' }}>
-          <Radio.Group type="button" size="middle">
-            <Radio value="option1">中尺寸</Radio>
-            <Radio value="option2">中尺寸</Radio>
-            <Radio value="option3">中尺寸</Radio>
+          <span style={{ marginLeft: '8px' }}>选中: {buttonValue}</span>
+        </DemoRow>
+        <DemoRow title="大尺寸按钮">
+          <Radio.Group type="button" size="large" defaultValue="a">
+            <Radio value="a">选项 A</Radio>
+            <Radio value="b">选项 B</Radio>
+            <Radio value="c">选项 C</Radio>
           </Radio.Group>
-        </div>
-        <div style={{ marginBottom: '10px' }}>
-          <Radio.Group type="button" size="small">
-            <Radio value="option1">小尺寸</Radio>
-            <Radio value="option2">小尺寸</Radio>
-            <Radio value="option3">小尺寸</Radio>
+        </DemoRow>
+        <DemoRow title="小尺寸按钮">
+          <Radio.Group type="button" size="small" defaultValue="a">
+            <Radio value="a">选项 A</Radio>
+            <Radio value="b">选项 B</Radio>
+            <Radio value="c">选项 C</Radio>
           </Radio.Group>
-        </div>
-      </div>
-      
-      {/* 按钮类型的自定义宽高 */}
-      <div>
-        <h4>按钮类型的自定义宽高</h4>
-        <div style={{ marginBottom: '10px' }}>
-          <Radio.Group type="button" style={{ width: '300px' }}>
-            <Radio value="option1">自定义宽度</Radio>
-            <Radio value="option2">自定义宽度</Radio>
-          </Radio.Group>
-        </div>
-        <div style={{ marginBottom: '10px' }}>
-          <Radio.Group type="button">
-            <Radio value="option1" style={{ width: '100px', height: '50px' }}>宽按钮</Radio>
-            <Radio value="option2" style={{ width: '150px', height: '50px' }}>更宽的按钮</Radio>
-            <Radio value="option3" style={{ width: '100px', height: '50px' }}>高按钮</Radio>
-          </Radio.Group>
-        </div>
-        <div style={{ marginBottom: '10px' }}>
-          <Radio.Group type="button">
-            <Radio value="option1" style={{ height: '60px' }}>自定义高度</Radio>
-            <Radio value="option2" style={{ height: '60px' }}>自定义高度</Radio>
-          </Radio.Group>
-        </div>
-      </div>
-    </>
-  );
-};
-`}
-        </SyntaxHighlighter>
-      </div>
-      
-      {/* 在其他项目中引用示例 */}
-      <div>
-        <h3>在其他项目中引用</h3>
-        <div style={{ margin: '15px 0' }}>
-          <h4>1. 安装</h4>
-          <SyntaxHighlighter language="bash" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-            {`npm i @zjpcy/simple-design`}
-          </SyntaxHighlighter>
-        </div>
-        <div>
-          <h4>2. 引用组件</h4>
-          <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
-{`// 方式一：单独引入
-import Radio from '@zjpcy/simple-design/lib/Radio';
-import '@zjpcy/simple-design/lib/Radio/Radio.css';
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
 
-// 方式二：批量引入
-import { Radio } from '@zjpcy/simple-design';
-import '@zjpcy/simple-design/lib/index.css';
+// 按钮组
+<Radio.Group type="button" value={value} onChange={setValue}>
+  <Radio value="a">选项 A</Radio>
+  <Radio value="b">选项 B</Radio>
+  <Radio value="c">选项 C</Radio>
+</Radio.Group>
 
-// 使用示例
-const App = () => {
-  return (
-    <Radio.Group>
-      <Radio value="option1">选项 1</Radio>
-      <Radio value="option2">选项 2</Radio>
-      <Radio value="option3">选项 3</Radio>
-    </Radio.Group>
-  );
-};
-`}
-          </SyntaxHighlighter>
-        </div>
-      </div>
+// 大尺寸按钮
+<Radio.Group type="button" size="large">
+  <Radio value="a">选项 A</Radio>
+  <Radio value="b">选项 B</Radio>
+  <Radio value="c">选项 C</Radio>
+</Radio.Group>
+
+// 小尺寸按钮
+<Radio.Group type="button" size="small">
+  <Radio value="a">选项 A</Radio>
+  <Radio value="b">选项 B</Radio>
+  <Radio value="c">选项 C</Radio>
+</Radio.Group>`} />
+      </Section>
+
+      {/* 标签 */}
+      <Section title="标签">
+        <DemoRow title="基本用法">
+          <Radio label="启用" checked={basicChecked} onChange={setBasicChecked}>
+            选项
+          </Radio>
+        </DemoRow>
+        <DemoRow title="自定义间距">
+          <Radio label="通知" labelGap={20} value="a" checked={labelValue === 'a'} onChange={() => setLabelValue('a')}>
+            选项 A
+          </Radio>
+        </DemoRow>
+        <DemoRow title="自定义样式">
+          <Radio
+            label="自动保存"
+            labelGap={12}
+            labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+            value="b"
+            checked={labelValue === 'b'}
+            onChange={() => setLabelValue('b')}
+          >
+            选项 B
+          </Radio>
+        </DemoRow>
+        <DemoRow title="自定义类名">
+          <Radio
+            label="同步"
+            labelGap={8}
+            labelClassName="custom-label"
+            value="c"
+            checked={labelValue === 'c'}
+            onChange={() => setLabelValue('c')}
+          >
+            选项 C
+          </Radio>
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
+
+// 基本用法
+<Radio label="启用" checked={checked} onChange={setChecked}>
+  选项
+</Radio>
+
+// 自定义间距
+<Radio label="通知" labelGap={20} value="a">
+  选项 A
+</Radio>
+
+// 自定义样式
+<Radio
+  label="自动保存"
+  labelGap={12}
+  labelStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+  value="b"
+>
+  选项 B
+</Radio>
+
+// 自定义类名
+<Radio
+  label="同步"
+  labelGap={8}
+  labelClassName="custom-label"
+  value="c"
+>
+  选项 C
+</Radio>`} />
+      </Section>
+
+      {/* 事件回调 */}
+      <Section title="事件回调">
+        <DemoRow title="监听变化">
+          <Radio.Group value={groupValue} onChange={(val) => console.log('选中值:', val)}>
+            <Radio value="apple">苹果</Radio>
+            <Radio value="banana">香蕉</Radio>
+            <Radio value="orange">橙子</Radio>
+          </Radio.Group>
+          <span style={{ marginLeft: '8px' }}>选中: {groupValue}</span>
+        </DemoRow>
+        <DemoRow title="单选框变化">
+          <Radio 
+            checked={basicChecked}
+            onChange={(checked, value) => console.log('状态:', checked, '值:', value)}
+          >
+            单选框
+          </Radio>
+        </DemoRow>
+        <CopyBlock code={`import { Radio } from '@idp/design';
+
+// 单选组监听变化
+<Radio.Group 
+  value={value} 
+  onChange={(val) => {
+    console.log('选中值:', val);
+    setValue(val);
+  }}
+>
+  <Radio value="apple">苹果</Radio>
+  <Radio value="banana">香蕉</Radio>
+  <Radio value="orange">橙子</Radio>
+</Radio.Group>
+
+// 单选框监听变化
+<Radio 
+  checked={checked}
+  onChange={(checked, value) => {
+    console.log('状态:', checked, '值:', value);
+  }}
+>
+  单选框
+</Radio>`} />
+      </Section>
+
+      {/* API 文档 */}
+      <Section title="API">
+        <h3>Radio Props</h3>
+        <Table
+          columns={[
+            { dataIndex: 'property', title: '属性', width: '150px', align: 'left' },
+            { dataIndex: 'description', title: '说明', width: '300px', align: 'left' },
+            { dataIndex: 'type', title: '类型', width: '200px', align: 'left' },
+            { dataIndex: 'default', title: '默认值', align: 'left' }
+          ]}
+          dataSource={[
+            { key: '1', property: 'value', description: '单选框的值', type: 'any', default: '-' },
+            { key: '2', property: 'checked', description: '指定当前是否选中（受控模式）', type: 'boolean', default: '-' },
+            { key: '3', property: 'defaultChecked', description: '初始是否选中（非受控模式）', type: 'boolean', default: 'false' },
+            { key: '4', property: 'onChange', description: '变化时的回调函数', type: '(checked: boolean, value: any) => void', default: '-' },
+            { key: '5', property: 'disabled', description: '是否禁用', type: 'boolean', default: 'false' },
+            { key: '6', property: 'size', description: '单选框大小', type: "'large' | 'middle' | 'small'", default: '-' },
+            { key: '7', property: 'children', description: '子元素', type: 'ReactNode', default: '-' },
+            { key: '8', property: 'className', description: 'CSS类名', type: 'string', default: '-' },
+            { key: '9', property: 'style', description: '内联样式', type: 'CSSProperties', default: '-' },
+            { key: '10', property: 'label', description: '标签文案，显示在单选按钮前面', type: 'string | ReactNode', default: '-' },
+            { key: '11', property: 'labelGap', description: '标签到单选按钮的距离', type: 'string | number', default: '8' },
+            { key: '12', property: 'labelClassName', description: '标签的CSS类名', type: 'string', default: '-' },
+            { key: '13', property: 'labelStyle', description: '标签的样式', type: 'CSSProperties', default: '-' }
+          ]}
+        />
+
+        <h3>Radio.Group Props</h3>
+        <Table
+          columns={[
+            { dataIndex: 'property', title: '属性', width: '150px', align: 'left' },
+            { dataIndex: 'description', title: '说明', width: '300px', align: 'left' },
+            { dataIndex: 'type', title: '类型', width: '200px', align: 'left' },
+            { dataIndex: 'default', title: '默认值', align: 'left' }
+          ]}
+          dataSource={[
+            { key: '1', property: 'value', description: '当前选中的值（受控模式）', type: 'any', default: '-' },
+            { key: '2', property: 'defaultValue', description: '初始选中的值（非受控模式）', type: 'any', default: '-' },
+            { key: '3', property: 'onChange', description: '变化时的回调函数', type: '(value: any) => void', default: '-' },
+            { key: '4', property: 'disabled', description: '是否禁用整个组', type: 'boolean', default: 'false' },
+            { key: '5', property: 'type', description: '单选框类型', type: "'radio' | 'button'", default: "'radio'" },
+            { key: '6', property: 'size', description: '单选框大小', type: "'large' | 'middle' | 'small'", default: "'middle'" },
+            { key: '7', property: 'children', description: '子元素', type: 'ReactNode', default: '-' },
+            { key: '8', property: 'className', description: 'CSS类名', type: 'string', default: '-' },
+            { key: '9', property: 'style', description: '内联样式', type: 'CSSProperties', default: '-' }
+          ]}
+        />
+      </Section>
     </div>
   );
 };

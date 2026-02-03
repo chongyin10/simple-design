@@ -108,6 +108,7 @@ const TabsExample: React.FC = () => {
     { name: 'onAdd', type: '() => void', default: '-', description: '增加标签页回调（仅 card 类型支持）' },
     { name: 'className', type: 'string', default: '-', description: '自定义类名' },
     { name: 'style', type: 'React.CSSProperties', default: '-', description: '容器样式' },
+    { name: 'contentClassName', type: 'string', default: '-', description: '内容区域自定义类名' },
     { name: 'contentStyle', type: 'React.CSSProperties', default: '-', description: '内容区域样式' },
     { name: 'draggable', type: 'boolean', default: 'false', description: '是否启用拖拽功能（仅支持顶部和底部的 line 类型）' },
     { name: 'onDragEnd', type: '(items: TabItem[]) => void', default: '-', description: '拖拽结束回调，返回新的 items 顺序' }
@@ -176,6 +177,20 @@ const TabsExample: React.FC = () => {
           <Tabs
             items={baseItems}
             contentStyle={{ minHeight: '80px' }}
+          />
+        </div>
+
+        <h4>自定义内容区域样式</h4>
+        <div style={{ marginBottom: '20px' }}>
+          <Tabs
+            items={baseItems}
+            contentClassName="custom-tabs-content"
+            contentStyle={{
+              background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)',
+              padding: '24px',
+              borderRadius: '0 0 8px 8px',
+              minHeight: '100px'
+            }}
           />
         </div>
 
@@ -361,6 +376,23 @@ const DraggableTabsExample = () => {
     />
   );
 };`}
+        </SyntaxHighlighter>
+
+        <h4 style={{ marginTop: '20px' }}>自定义内容区域样式</h4>
+        <SyntaxHighlighter language="tsx" style={vscDarkPlus} customStyle={{ borderRadius: '6px', margin: '0', fontSize: '14px', fontFamily: 'monospace' }}>
+{`// 通过 contentClassName 设置内容区域自定义类名
+// 通过 contentStyle 设置内容区域内联样式
+// 优先级：外部定义CSS > contentClassName > contentStyle > 内部样式
+
+<Tabs
+  items={items}
+  contentClassName="my-custom-content"  // 自定义类名
+  contentStyle={{
+    background: '#f5f7fa',
+    padding: '24px',
+    minHeight: '120px'
+  }}
+/>`}
         </SyntaxHighlighter>
       </div>
 

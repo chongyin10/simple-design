@@ -24,7 +24,11 @@ const Radio: React.FC<RadioProps> & { Group: React.FC<RadioGroupProps> } = ({
     size,
     children,
     className,
-    style
+    style,
+    label,
+    labelGap = 8,
+    labelClassName = '',
+    labelStyle
 }) => {
     // 使用Context获取Group的状态
     const groupContext = useContext(RadioGroupContext);
@@ -83,17 +87,32 @@ const Radio: React.FC<RadioProps> & { Group: React.FC<RadioGroupProps> } = ({
     
     return (
         <label className={classes} style={style}>
-            <input
-                type="radio"
-                className="idp-radio__input"
-                checked={isChecked}
-                onChange={handleChange}
-                disabled={disabled || (isGroupMode && groupContext.disabled)}
-                value={value}
-            />
-            {/* 按钮类型时隐藏span元素 */}
-            {!isButtonType && <span className="idp-radio__inner"></span>}
-            {children && <span className="idp-radio__label">{children}</span>}
+            <div className="idp-radio-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                {label && (
+                    <div
+                        className={`idp-radio-label ${labelClassName}`}
+                        style={{
+                            marginRight: typeof labelGap === 'number' ? `${labelGap}px` : labelGap,
+                            ...labelStyle
+                        }}
+                    >
+                        {label}
+                    </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                        type="radio"
+                        className="idp-radio__input"
+                        checked={isChecked}
+                        onChange={handleChange}
+                        disabled={disabled || (isGroupMode && groupContext.disabled)}
+                        value={value}
+                    />
+                    {/* 按钮类型时隐藏span元素 */}
+                    {!isButtonType && <span className="idp-radio__inner"></span>}
+                    {children && <span className="idp-radio__label">{children}</span>}
+                </div>
+            </div>
         </label>
     );
 };
