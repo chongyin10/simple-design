@@ -1,1 +1,0 @@
-export { locationToProjectPage } from "./locationToProjectPage"
