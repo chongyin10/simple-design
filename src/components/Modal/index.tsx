@@ -32,6 +32,7 @@ const Modal: React.FC<ModalProps> = ({
     zIndex = 1000,
     contentClassName,
     contentStyle: externalContentStyle,
+    destroyOnClose = false,
 }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
@@ -120,7 +121,7 @@ const Modal: React.FC<ModalProps> = ({
             }, animationDuration);
             return () => clearTimeout(timer);
         }
-    }, [visible, animationDuration, height, top]);
+    }, [visible, animationDuration, height, top, destroyOnClose]);
 
     const handleCancel = () => {
         setIsClosing(true);
@@ -257,7 +258,8 @@ const Modal: React.FC<ModalProps> = ({
                             )}
                             style={contentStyle}
                         >
-                            {children}
+                            {/* 当 destroyOnClose 为 true 且正在关闭动画时，不渲染子元素 */}
+                            {!(destroyOnClose && isClosing) ? children : null}
                         </div>
                     )}
 

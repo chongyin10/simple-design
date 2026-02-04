@@ -1,0 +1,158 @@
+.pay{
+  padding: 40px 32px 32px 32px;
+  font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+  font-weight: 700;
+  .pay-title{
+    font-size: 18px;
+    font-weight: 600;
+    padding-bottom: 18px;
+    border-bottom: 1px dashed #908f8f;
+    span{
+        color: #908f8f;
+        padding: 0 8px 0 8px;
+        font-size: 14px;
+        font-weight: 400;
+      span{
+        color: #ed4d67;
+        display: inline-block;
+        width: 125px;
+        text-align: justify;
+      }
+    }
+  }
+  .pay-style{
+    height: 44px;
+    margin: 10px 0;
+    font-size: 14px;
+    font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+    font-weight: normal;
+    color: #666666;
+    line-height: 44px;
+  }
+  .account-balance{
+    span{
+      color: #333;
+      font-size: 15px;
+    }
+  }
+  .pay-amount{
+    height: 44px;
+    line-height: 44px;
+    span{
+      color: #F59A22;
+      font-size: 18px;
+    }
+  }
+  .invite-code{
+    height: 85px;
+    .invite-warrper{
+      width: 320px;
+      display: flex;
+      justify-content: space-between;
+      height: 44px;
+      float: left;
+    }
+  }
+  .pay-handStatus {
+    button{
+      width: 96px;
+      height: 40px;
+    }
+  }
+
+}
+
+.loding{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffffb0;
+  .ant-spin-spinning{
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    margin-left: -50px;
+    margin-top: -50px;
+    .ant-spin-dot{
+      width: 100px;
+      height: 100px;
+      .ant-spin-dot-item{
+        width: 50px;
+        height: 50px;
+      }
+    }
+  }
+  .loding-txt{
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    font-size: 18px;
+    font-weight: 400;
+    margin-left: -43px;
+  }
+}
+.pay-result{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  .pay-warrper{
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    .pay-all{
+      width: 300px;
+      height: 300px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-left: -150px;
+      margin-top: -200px;
+      .pay-img{
+        width: 104px;
+        margin: 0 auto;
+        height: 124px;
+        padding-bottom: 20px;
+        img{
+          width: 100%;
+          height: 104px;
+        }
+      }
+      .payfail{
+        text-align: center;
+        color: #ED4D67;
+        font-size: 22px;
+        font-family: FZLTCHJW--GB1-0, FZLTCHJW--GB1;
+        font-weight: normal;
+        line-height: 26px;
+      }
+      .paysuccess{
+        text-align: center;
+        color: #48c400;
+        font-size: 22px;
+        font-family: FZLTCHJW--GB1-0, FZLTCHJW--GB1;
+        font-weight: normal;
+        line-height: 26px;
+      }
+      .paystatitle{
+        height: 30px;
+        font-size: 14px;
+        font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+        font-weight: normal;
+        color: #666666;
+        line-height: 30px;
+        text-align: center
+      }
+      .pay-btn{
+        width: 200px;
+        display: flex;
+        justify-content: space-between;
+        margin: 32px auto;
+      }
+    }
+  }
+}

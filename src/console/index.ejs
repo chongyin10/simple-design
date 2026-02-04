@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="IDP是面向算法工程师一站式人工智能开发平台，提供易用的集成开发环境，支持高速大规模分布式训练和故障自动恢复等功能，使人工智能开发更简单、高效。" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <script>
+        function getCookie(name) {
+            let cookies = document.cookie;
+            let list = cookies.split("; ");     // 解析出名/值对列表
+            for (let i = 0; i < list.length; i++) {
+                let arr = list[i].split("=");   // 解析出名和值
+                if (arr[0] == name)
+                    return decodeURIComponent(arr[1]);   // 对cookie值解码
+            }
+            return "";
+        }
+
+        function redirectPath() {
+            const tourist = window.location.pathname;
+            var userId = getCookie('userId');
+            var idToken = getCookie('id_token');
+            if (!idToken || !userId) {
+                if (!(tourist.includes('/studio/modelwarenhouse') > -1)) {
+                    window.location.href = '/login'
+                }
+            }
+        }
+        redirectPath();
+    </script>
+</head>
+
+<body>
+    <div id="loading-team-gif" style="text-align: center;width: 100%;height: calc(100vh - 200px); display: flex; justify-content: center; align-items: center; position: absolute;">
+        <img src=<%=htmlWebpackPlugin.options.loadingGifUrl %> />
+    </div>
+    <div id="root"></div>
+</body>
+
+<style type="text/css" id="less:color">
+    .test {
+        color: #ffffff;
+    }
+</style>
+
+</html>

@@ -1,0 +1,39 @@
+.router-view {
+  .order-container {
+    padding-left: 16px;
+    padding-right: 16px;
+    height: calc(100vh - 40px);
+    background-color: #fff;
+    .order-header {
+      padding-top: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      .order-header-left {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+
+    .order-table {
+      .ant-table {
+        font-size: 14px;
+        .ant-table-thead {
+          .ant-table-cell {
+            padding-top: 9px;
+            padding-bottom: 9px;
+            &:before {
+              display: none;
+            }
+          }
+        }
+        .ant-table-tbody {
+          .ant-table-cell {
+            padding-top: 9px;
+            padding-bottom: 9px;
+          }
+        }
+      }
+    }
+  }
+}

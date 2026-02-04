@@ -1,0 +1,189 @@
+.overview-main {
+    padding: 0px;
+    margin: 0px;
+    height: calc(100vh);
+    width: 100%;
+    background-color: #f7f7f7;
+
+    .overview-header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .overview-card {
+        flex: 1;
+        height: 140px;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, .08);
+        box-shadow: 0 0 4px 1px #ebebeb;
+        padding: 20px 25px;
+    }
+
+    .overview-left {
+        margin-right: 20px;
+    }
+
+    .overview-money-title {
+        font-size: 16px;
+        font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+        font-weight: 400;
+        color: #999;
+        line-height: 16px;
+        margin-bottom: 15px;
+    }
+
+    .overview-actios {
+        color: #333;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        position: relative;
+    }
+
+    .overview-unit {
+        font-size: 32px;
+        font-weight: 500;
+        font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+        margin-right: 5px;
+    }
+
+    .overview-sum {
+        font-size: 32px;
+        font-weight: 500;
+        font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+    }
+
+    .overview-btn {
+        position: absolute;
+        right: 0px;
+
+        .overview-ant-btn {
+            margin-left: 10px;
+            border-radius: 6px;
+        }
+    }
+
+    .overview-right {
+        display: flex;
+        width: 100%;
+        position: relative;
+
+        .overview-info {
+            display: flex;
+            flex-flow: column;
+
+            .overview-join {
+                font-size: 16px;
+                font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+                font-weight: 400;
+                color: #999;
+                line-height: 16px;
+                margin-bottom: 25px;
+            }
+
+            .overview-manage {
+                .overview-number {
+                    font-size: 24px;
+                    margin-right: 70px;
+                }
+            }
+
+            .overview-tc-actios {
+                position: absolute;
+                right: 20px;
+            }
+        }
+
+        .overview-member {
+            cursor: pointer;
+            font-size: 13px;
+            position: relative;
+            top: 10px;
+            text-decoration: underline;
+
+            &:hover {
+                color: rgb(24, 144, 255);
+            }
+        }
+
+        .overview-upgrade {
+            position: absolute;
+            right: 20px;
+            top: 58px;
+        }
+
+        .overview-version {
+
+            div:nth-child(1),
+            a {
+                font-size: 13px;
+                font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+                font-weight: 400;
+                color: #999;
+                line-height: 16px;
+                margin-bottom: 25px;
+            }
+
+            div:nth-child(2) {
+                font-size: 24px;
+                font-family: FZLTHJW--GB1-0, FZLTHJW--GB1;
+                font-weight: 400;
+                color: #F59A23;
+                line-height: 24px;
+            }
+        }
+
+        .overview-hr {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            margin: 0px 50px;
+
+            div {
+                width: 1px;
+                height: 30%;
+                border: 1px solid #333;
+                opacity: 0.5;
+                position: relative;
+                top: 8px;
+            }
+        }
+    }
+
+    .overview-table {
+        margin-top: 20px;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, .08);
+        box-shadow: 0 0 4px 1px #ebebeb;
+        padding: 20px 25px;
+        min-height: 300px;
+
+        .overview-preview {
+            font-weight: 500;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    }
+
+    .overview-table-top {
+        position: relative;
+        display: flex;
+        width: 100%;
+        align-items: center;
+    }
+
+    .overview-more {
+        position: absolute;
+        right: 0px;
+        top: 8px;
+        &:hover {
+            color: rgb(24, 144, 255);
+        }
+    }
+
+    .overview-more-title {
+        cursor: pointer;
+        margin-right: 5px;
+    }
+}

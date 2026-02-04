@@ -25,4 +25,6 @@ export interface ModalProps {
     contentClassName?: string;
     /** 内容区域的自定义style，优先级高于默认样式 */
     contentStyle?: React.CSSProperties;
+    /** 关闭时销毁 Modal 里的子元素 */
+    destroyOnClose?: boolean;
 }

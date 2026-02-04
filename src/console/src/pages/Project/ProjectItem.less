@@ -1,0 +1,47 @@
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-item {
+  // width: 1147px;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 8px;
+  box-shadow: 0 0 4px 1px #ebebeb;
+  display: flex;
+  flex-grow: 1;
+  font-family: 方正兰亭黑简体;
+
+  cursor: pointer;
+  &:hover {
+    box-shadow: -1px 2px 13px #9f9d9d;
+  }
+  .project-name {
+    padding-left: 80px;
+    padding-right: 10px;
+    flex: 1;
+    max-width: 500px;
+    .ellipsis();
+  }
+  .project-owner-name {
+    .ellipsis();
+    flex: 1;
+    vertical-align: middle;
+    > img {
+      margin-right: 3px;
+      margin-top: -3px;
+    }
+  }
+  .project-update-time {
+    flex: 1;
+  }
+  .project-actions {
+    flex: 0.4;
+    cursor: pointer;
+    >span{
+      margin-left: 40px;
+    }
+  }
+}
