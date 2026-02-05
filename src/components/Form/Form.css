@@ -10,6 +10,8 @@
   --form-error-font-size: 12px;
   --form-error-color: #f5222d;
   --form-error-padding: 4px 0;
+  --form-error-transition-duration: 0.6s;
+  --form-error-transform-offset: -20px;
   
   --form-help-font-size: 12px;
   --form-help-color: #00000073;

@@ -96,13 +96,13 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
       if (rule.required && (value === undefined || value === null || value === '')) {
         const errorMessage = rule.message || `${name} is required`;
         setErrors(prev => ({ ...prev, [name]: errorMessage }));
-        return;
+        return errorMessage;
       }
 
       if (rule.pattern && !rule.pattern.test(value)) {
         const errorMessage = rule.message || `${name} format is invalid`;
         setErrors(prev => ({ ...prev, [name]: errorMessage }));
-        return;
+        return errorMessage;
       }
 
       if (rule.type) {
@@ -139,26 +139,26 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
         if (!isValid) {
           const errorMessage = rule.message || `${name} must be a ${rule.type}`;
           setErrors(prev => ({ ...prev, [name]: errorMessage }));
-          return;
+          return errorMessage;
         }
       }
 
       if (rule.min !== undefined && value.length < rule.min) {
         const errorMessage = rule.message || `${name} must be at least ${rule.min} characters`;
         setErrors(prev => ({ ...prev, [name]: errorMessage }));
-        return;
+        return errorMessage;
       }
 
       if (rule.max !== undefined && value.length > rule.max) {
         const errorMessage = rule.message || `${name} must be at most ${rule.max} characters`;
         setErrors(prev => ({ ...prev, [name]: errorMessage }));
-        return;
+        return errorMessage;
       }
 
       if (rule.len !== undefined && value.length !== rule.len) {
         const errorMessage = rule.message || `${name} must be exactly ${rule.len} characters`;
         setErrors(prev => ({ ...prev, [name]: errorMessage }));
-        return;
+        return errorMessage;
       }
 
       if (rule.validator) {
@@ -167,7 +167,7 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : rule.message || `${name} validation failed`;
           setErrors(prev => ({ ...prev, [name]: errorMessage }));
-          return;
+          return errorMessage;
         }
       }
     }
@@ -177,19 +177,20 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
       delete newErrors[name];
       return newErrors;
     });
+    return null;
   }, []);
 
-  const validateFields = useCallback(async (names?: string[]) => {
+  const validateFields = useCallback(async (names?: string[]): Promise<Record<string, any>> => {
     const fieldNames = names || Array.from(itemsRef.current.keys());
-    const validationPromises = fieldNames.map(name => validateField(name));
-    await Promise.all(validationPromises);
+    const errorResults = await Promise.all(fieldNames.map(name => validateField(name)));
+    const hasError = errorResults.some(error => error !== null);
 
-    if (Object.keys(errors).length > 0) {
+    if (hasError) {
       throw new Error('Validation failed');
     }
 
     return values;
-  }, [validateField, errors]);
+  }, [validateField, values]);
 
   const resetFields = useCallback((names?: string[]) => {
     if (names) {
@@ -228,6 +229,7 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
     colon,
     requiredMark,
     values,
+    errors,
     setFieldValue,
     getFieldValue,
     setFieldValueList,
@@ -295,7 +297,7 @@ const FormItem: React.FC<FormItemProps & { registerItem?: (name: string, item: a
   };
 
   const isRequired = required || rules.some(rule => rule.required);
-  const error = (context && name ? context.values[`__error_${name}`] : '');
+  const error = (context && name ? context.errors[name] : '');
   const hasError = !!error || validateStatus === 'error';
 
   if (hidden) return null;

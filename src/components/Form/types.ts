@@ -64,6 +64,7 @@ export interface FormContextType {
   colon: boolean;
   requiredMark: boolean | 'optional';
   values: Record<string, any>;
+  errors: Record<string, string>;
   setFieldValue: (name: string, value: any) => void;
   getFieldValue: (name: string) => any;
   setFieldValueList: (values: Record<string, any>) => void;
