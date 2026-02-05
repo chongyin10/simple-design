@@ -35,3 +35,4 @@ export { default as Switch } from './Switch';
 export { default as Tabs } from './Tabs';
 export { default as Transfer } from './Transfer';
 export { default as Label } from './Label';
+export { default as Form } from './Form';

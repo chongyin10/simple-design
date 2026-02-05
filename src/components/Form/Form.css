@@ -1,0 +1,22 @@
+:root {
+  --form-label-font-size: 14px;
+  --form-label-color: #333;
+  --form-label-required-color: #f5222d;
+  --form-label-margin-bottom: 8px;
+  
+  --form-item-margin-bottom: 24px;
+  --form-item-error-margin-bottom: 4px;
+  
+  --form-error-font-size: 12px;
+  --form-error-color: #f5222d;
+  --form-error-padding: 4px 0;
+  
+  --form-help-font-size: 12px;
+  --form-help-color: #00000073;
+  --form-help-padding: 4px 0;
+  
+  --form-wrapper-padding: 24px;
+  --form-wrapper-border-radius: 4px;
+  
+  --form-inline-item-margin-right: 24px;
+}

@@ -4,7 +4,7 @@ import './Input.css';
 import Icon from '../Icon/Icon';
 
 export interface InputProps {
-    type?: 'text';
+    type?: 'text' | 'password';
     placeholder?: string;
     width?: string | number;
     className?: string;
@@ -121,7 +121,7 @@ const InputBase: React.FC<InputProps> = ({
                     type={type}
                     placeholder={placeholder}
                     className="input-inner"
-                    value={value}
+                    value={value != null ? String(value) : ''}
                     onChange={onChange}
                     onBlur={handleBlur}
                     onFocus={handleFocus}
