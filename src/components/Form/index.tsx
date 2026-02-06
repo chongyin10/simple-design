@@ -14,9 +14,11 @@ export const useForm = (): [FormInstance] => {
       getFieldsValue: () => ({}),
       setFieldValue: () => {},
       setFieldsValue: () => {},
+      setFields: () => {},
       resetFields: () => {},
       validateFields: () => Promise.reject(new Error('Form instance not initialized')),
-      submit: () => {}
+      submit: () => {},
+      destroy: () => {}
     };
   }
 
@@ -29,6 +31,7 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
   style,
   layout = 'horizontal',
   labelSpan,
+  wrapperSpan,
   initialValues = {},
   onFinish,
   onFinishFailed,
@@ -205,6 +208,24 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
     },
     setFieldValue,
     setFieldsValue: setFieldValueList,
+    setFields: (fields: { name: string; errors?: string[]; value?: any }[]) => {
+      const newValues = { ...values };
+      const newErrors = { ...errors };
+      
+      fields.forEach(field => {
+        if (field.value !== undefined) {
+          newValues[field.name] = field.value;
+        }
+        if (field.errors && field.errors.length > 0) {
+          newErrors[field.name] = field.errors[0];
+        } else {
+          delete newErrors[field.name];
+        }
+      });
+      
+      setValues(newValues);
+      setErrors(newErrors);
+    },
     resetFields,
     validateFields,
     submit: () => {
@@ -214,6 +235,12 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
           formElement.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
         }
       });
+    },
+    destroy: () => {
+      setValues({});
+      setErrors({});
+      itemsRef.current.clear();
+      formInstanceRef.current = null;
     }
   };
 
@@ -227,9 +254,11 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
       externalForm.getFieldsValue = formInstance.getFieldsValue;
       externalForm.setFieldValue = formInstance.setFieldValue;
       externalForm.setFieldsValue = formInstance.setFieldsValue;
+      externalForm.setFields = formInstance.setFields;
       externalForm.resetFields = formInstance.resetFields;
       externalForm.validateFields = formInstance.validateFields;
       externalForm.submit = formInstance.submit;
+      externalForm.destroy = formInstance.destroy;
     }
   }, [formInstance, formRef, externalForm]);
 
@@ -253,6 +282,7 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
   const contextValue: FormContextType = {
     layout,
     labelSpan,
+    wrapperSpan,
     colon,
     requiredMark,
     values,
@@ -296,6 +326,7 @@ const FormItem: React.FC<FormItemProps & { registerItem?: (name: string, item: a
   validateStatus,
   colon,
   labelSpan: itemLabelSpan,
+  wrapperSpan: itemWrapperSpan,
   hidden = false,
   extra,
   styles,
@@ -329,8 +360,24 @@ const FormItem: React.FC<FormItemProps & { registerItem?: (name: string, item: a
   const hasError = !!error || validateStatus === 'error';
 
   const currentLabelSpan = itemLabelSpan !== undefined ? itemLabelSpan : context?.labelSpan;
+  const currentWrapperSpan = itemWrapperSpan !== undefined ? itemWrapperSpan : context?.wrapperSpan;
+  
   const labelWidth = currentLabelSpan ? (currentLabelSpan / 24) * 100 : undefined;
-  const controlWidth = currentLabelSpan ? ((24 - currentLabelSpan) / 24) * 100 : undefined;
+  
+  let controlWidth = undefined;
+  if (currentLabelSpan !== undefined) {
+    const maxWrapperSpan = 24 - currentLabelSpan;
+    let actualWrapperSpan = currentWrapperSpan !== undefined ? currentWrapperSpan : maxWrapperSpan;
+    
+    if (actualWrapperSpan > maxWrapperSpan) {
+      actualWrapperSpan = maxWrapperSpan;
+    }
+    if (actualWrapperSpan < 1) {
+      actualWrapperSpan = 1;
+    }
+    
+    controlWidth = (actualWrapperSpan / 24) * 100;
+  }
 
   if (hidden) return null;
 

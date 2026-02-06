@@ -6,7 +6,7 @@ export interface ModalProps {
     headerHeight?: number | string;
     footerHeight?: number | string;
     confirmLoading?: boolean;
-    direction?: 'center' | 'top-right' | 'bottom-right' | 'normal';
+    direction?: 'center' | 'top-right' | 'bottom-right' | 'bottom-left' | 'normal';
     top?: number;
     footer?: null | React.ReactNode;
     bordered?: boolean;

@@ -62,12 +62,13 @@ export const FormItemWrapper = styled.div<{ $layout: 'horizontal' | 'vertical' |
   ${({ $styles }) => $styles && Object.entries($styles).map(([key, value]) => `${key}: ${value};`).join('\n')}
 `;
 
-export const FormLabel = styled.label<{ $required?: boolean; $colon?: boolean; $styles?: any }>`
+export const FormLabel = styled.label<{ $required?: boolean; $colon?: boolean; $labelAlign?: 'start' | 'center' | 'end'; $styles?: any }>`
   display: block;
   font-size: ${getCSSVar('--form-label-font-size', '14px')};
   color: ${getCSSVar('--form-label-color', '#333')};
   margin-bottom: ${getCSSVar('--form-label-margin-bottom', '8px')};
   white-space: nowrap;
+  text-align: ${({ $labelAlign }) => $labelAlign || 'end'};
 
   &.form-label {
     /* 外部可通过 .form-label 选择器覆盖样式 */

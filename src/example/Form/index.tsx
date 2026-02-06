@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Input, Button } from '../../components';
+import { Input, Button, Table, Flex, Modal } from '../../components';
 import Form, { useForm } from '../../components/Form';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import type { Column } from '../../components/Table';
 
 const CopyBlock: React.FC<{ code: string }> = ({ code }) => {
   const [copied, setCopied] = useState(false);
@@ -57,9 +58,14 @@ const DemoBox: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
+
+
 const FormExample: React.FC = () => {
   const [form1] = useForm();
   const [form6] = useForm();
+  const [modalForm] = useForm();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
   const handleHorizontalFinish = (values: any) => {
     console.log('Horizontal form values:', values);
@@ -105,12 +111,84 @@ const FormExample: React.FC = () => {
     });
   };
 
+  // API 表格列定义
+  const formPropsColumns: Column[] = [
+    { dataIndex: 'property', title: '属性', width: '150px' },
+    { dataIndex: 'description', title: '说明', width: '200px' },
+    { dataIndex: 'type', title: '类型', width: '250px' },
+    { dataIndex: 'default', title: '默认值', width: '120px' }
+  ];
+
+  const formItemPropsColumns: Column[] = [
+    { dataIndex: 'property', title: '属性', width: '150px' },
+    { dataIndex: 'description', title: '说明', width: '200px' },
+    { dataIndex: 'type', title: '类型', width: '250px' },
+    { dataIndex: 'default', title: '默认值', width: '120px' }
+  ];
+
+  const ruleColumns: Column[] = [
+    { dataIndex: 'property', title: '属性', width: '150px' },
+    { dataIndex: 'description', title: '说明', width: '300px' },
+    { dataIndex: 'type', title: '类型', width: '300px' }
+  ];
+
+  const formInstanceColumns: Column[] = [
+    { dataIndex: 'method', title: '方法', width: '150px' },
+    { dataIndex: 'description', title: '说明', width: '200px' },
+    { dataIndex: 'params', title: '参数', width: '250px' },
+    { dataIndex: 'return', title: '返回值', width: '150px' }
+  ];
+
+  // API 数据源
+  const formPropsDataSource = [
+    { property: 'layout', description: '表单布局', type: "'horizontal' | 'vertical' | 'inline'", default: "'horizontal'" },
+    { property: 'labelSpan', description: 'label 标签的宽度占比（24栅格系统）', type: 'number', default: '6' },
+    { property: 'wrapperSpan', description: '表单控件的宽度占比（24栅格系统，范围1-24-labelSpan）', type: 'number', default: '24-labelSpan' },
+    { property: 'initialValues', description: '表单默认值', type: 'Record<string, any>', default: '{}' },
+    { property: 'onFinish', description: '提交表单且数据验证成功后回调', type: '(values: Record<string, any>) => void', default: '-' },
+    { property: 'onFinishFailed', description: '提交表单且数据验证失败后回调', type: '(errorInfo: any) => void', default: '-' },
+    { property: 'form', description: '表单实例', type: 'FormInstance', default: '-' }
+  ];
+
+  const formItemPropsDataSource = [
+    { property: 'name', description: '字段名', type: 'string', default: '-' },
+    { property: 'label', description: 'label 标签的文本', type: 'ReactNode', default: '-' },
+    { property: 'labelSpan', description: 'label 标签的宽度占比（24栅格系统）', type: 'number', default: '继承Form' },
+    { property: 'wrapperSpan', description: '表单控件的宽度占比（24栅格系统，范围1-24-labelSpan）', type: 'number', default: '继承Form' },
+    { property: 'required', description: '是否必填', type: 'boolean', default: 'false' },
+    { property: 'rules', description: '校验规则', type: 'Rule[]', default: '-' },
+    { property: 'help', description: '提示信息', type: 'ReactNode', default: '-' },
+    { property: 'extra', description: '额外提示信息', type: 'ReactNode', default: '-' },
+    { property: 'validateStatus', description: '校验状态', type: "'success' | 'warning' | 'error' | 'validating'", default: '-' }
+  ];
+
+  const ruleDataSource = [
+    { property: 'required', description: '是否必填', type: 'boolean' },
+    { property: 'message', description: '校验失败提示信息', type: 'string' },
+    { property: 'pattern', description: '正则表达式校验', type: 'RegExp' },
+    { property: 'min', description: '最小长度', type: 'number' },
+    { property: 'max', description: '最大长度', type: 'number' },
+    { property: 'type', description: '类型校验', type: "'email' | 'url' | 'phone' | 'number'" },
+    { property: 'validator', description: '自定义校验函数', type: '(value: any) => boolean | string' }
+  ];
+
+  const formInstanceDataSource = [
+    { method: 'getFieldValue', description: '获取单个字段的值', params: 'name: string', return: 'any' },
+    { method: 'getFieldsValue', description: '获取多个字段的值', params: 'names?: string[]', return: 'Record<string, any>' },
+    { method: 'setFieldValue', description: '设置单个字段的值', params: 'name: string, value: any', return: 'void' },
+    { method: 'setFieldsValue', description: '设置多个字段的值', params: 'values: Record<string, any>', return: 'void' },
+    { method: 'resetFields', description: '重置表单字段', params: '-', return: 'void' },
+    { method: 'validateFields', description: '验证表单字段', params: '-', return: 'Promise<Record<string, any>>' },
+    { method: 'destroy', description: '销毁表单实例，清空所有数据', params: '-', return: 'void' }
+  ];
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Form 表单</h1>
-      <p>具有数据收集、校验和提交功能的表单。</p>
+      <p>具有数据收集、校验和提交功能的表单组件。</p>
 
       <Section title="基础用法">
+        <p>最简单的用法，使用 Form.Item 包裹输入控件。</p>
         <DemoBox>
           <Form
             layout="horizontal"
@@ -148,7 +226,7 @@ const Demo = () => {
   const [form] = useForm();
   
   const onFinish = (values) => {
-    console.log('Horizontal form values:', values);
+    console.log('表单值:', values);
   };
 
   return (
@@ -185,6 +263,7 @@ const Demo = () => {
       </Section>
 
       <Section title="垂直布局">
+        <p>通过设置 layout="vertical" 实现垂直布局。</p>
         <DemoBox>
           <Form
             layout="vertical"
@@ -206,7 +285,7 @@ const Demo = () => {
               label="手机号"
               rules={[
                 { required: true, message: '请输入手机号' },
-                { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' }
+                { pattern: /^1[3-9]\\d{9}$/, message: '请输入有效的手机号' }
               ]}
             >
               <Input placeholder="请输入手机号" />
@@ -258,6 +337,7 @@ const Demo = () => {
       </Section>
 
       <Section title="行内布局">
+        <p>通过设置 layout="inline" 实现行内布局。</p>
         <DemoBox>
           <Form
             layout="inline"
@@ -305,6 +385,7 @@ const Demo = () => {
       </Section>
 
       <Section title="表单验证">
+        <p>支持多种验证规则：必填、类型、正则、自定义验证等。</p>
         <DemoBox>
           <Form
             layout="horizontal"
@@ -368,8 +449,7 @@ const Demo = () => {
   return (
     <Form
       layout="horizontal"
-      labelCol={5}
-      wrapperCol={19}
+      labelSpan={6}
       onFinish={(values) => console.log('验证通过:', values)}
     >
       <Form.Item
@@ -392,112 +472,7 @@ const Demo = () => {
       >
         <Input placeholder="example@email.com" />
       </Form.Item>
-      <Form.Item
-        name="age"
-        label="年龄"
-        rules={[
-          { required: true, message: '请输入年龄' },
-          { type: 'number', message: '请输入有效的数字' }
-        ]}
-      >
-        <Input placeholder="请输入年龄" />
-      </Form.Item>
-      <Form.Item
-        name="website"
-        label="网站"
-        rules={[
-          { required: true, message: '请输入网站地址' },
-          { type: 'url', message: '请输入有效的URL地址' }
-        ]}
-      >
-        <Input placeholder="https://example.com" />
-      </Form.Item>
-      <Form.Item wrapperCol={{ offset: 5, span: 19 }}>
-        <Button variant="primary" type="submit">提交</Button>
-      </Form.Item>
-    </Form>
-  );
-};`} />
-      </Section>
-
-      <Section title="自定义校验">
-        <DemoBox>
-          <Form
-            layout="horizontal"
-            labelSpan={6}
-            initialValues={{ password: '', confirmPassword: '' }}
-            onFinish={(values) => console.log('验证通过:', values)}
-          >
-            <Form.Item
-              name="password"
-              label="密码"
-              rules={[
-                { required: true, message: '请输入密码' },
-                { min: 6, message: '密码至少6位' }
-              ]}
-            >
-              <Input type="password" placeholder="请输入密码" />
-            </Form.Item>
-            <Form.Item
-              name="confirmPassword"
-              label="确认密码"
-              rules={[
-                { required: true, message: '请确认密码' },
-                {
-                  validator: async (_rule: any, value: any) => {
-                    // 简化实现，仅做基本验证
-                    if (!value) {
-                      throw new Error('请确认密码');
-                    }
-                  }
-                }
-              ]}
-            >
-              <Input type="password" placeholder="请再次输入密码" />
-            </Form.Item>
-            <Form.Item>
-              <Button variant="primary" type="submit">提交</Button>
-            </Form.Item>
-          </Form>
-        </DemoBox>
-        <CopyBlock code={`import { Form, Input, Button } from '@idp/design';
-
-const Demo = () => {
-  return (
-    <Form
-      layout="horizontal"
-      labelCol={5}
-      wrapperCol={19}
-      onFinish={(values) => console.log('验证通过:', values)}
-    >
-      <Form.Item
-        name="password"
-        label="密码"
-        rules={[
-          { required: true, message: '请输入密码' },
-          { min: 6, message: '密码至少6位' }
-        ]}
-      >
-        <Input type="password" placeholder="请输入密码" />
-      </Form.Item>
-      <Form.Item
-        name="confirmPassword"
-        label="确认密码"
-        rules={[
-          { required: true, message: '请确认密码' },
-          {
-            validator: async (rule, value) => {
-                    const formValues = {
-                      password: rule?.form?.getFieldValue('password') || ''
-                    };
-                    if (value !== formValues.password) {
-                      throw new Error('两次输入的密码不一致');
-                    }
-                  }
-      >
-        <Input type="password" placeholder="请再次输入密码" />
-      </Form.Item>
-      <Form.Item wrapperCol={{ offset: 5, span: 19 }}>
+      <Form.Item>
         <Button variant="primary" type="submit">提交</Button>
       </Form.Item>
     </Form>
@@ -506,6 +481,7 @@ const Demo = () => {
       </Section>
 
       <Section title="帮助文本">
+        <p>使用 help 和 extra 属性添加帮助文本。</p>
         <DemoBox>
           <Form
             layout="horizontal"
@@ -538,12 +514,7 @@ const Demo = () => {
 
 const Demo = () => {
   return (
-    <Form
-      layout="horizontal"
-      labelCol={5}
-      wrapperCol={19}
-      onFinish={(values) => console.log('表单值:', values)}
-    >
+    <Form layout="horizontal" labelSpan={6}>
       <Form.Item
         name="username"
         label="用户名"
@@ -560,200 +531,72 @@ const Demo = () => {
       >
         <Input placeholder="请输入邮箱" />
       </Form.Item>
-      <Form.Item wrapperCol={{ offset: 5, span: 19 }}>
-        <Button variant="primary" type="submit">提交</Button>
+    </Form>
+  );
+};`} />
+      </Section>
+
+      <Section title="自定义布局宽度">
+        <p>通过 labelSpan 和 wrapperSpan 自定义表单布局宽度（基于24栅格系统）。</p>
+        <DemoBox>
+          <Form
+            layout="horizontal"
+            labelSpan={4}
+            wrapperSpan={20}
+            initialValues={{ title: '', content: '' }}
+            onFinish={(values) => console.log('表单值:', values)}
+          >
+            <Form.Item
+              name="title"
+              label="标题"
+              rules={[{ required: true, message: '请输入标题' }]}
+            >
+              <Input placeholder="labelSpan=4, wrapperSpan=20" />
+            </Form.Item>
+            <Form.Item
+              name="content"
+              label="内容"
+              labelSpan={6}
+              wrapperSpan={18}
+              rules={[{ required: true, message: '请输入内容' }]}
+            >
+              <Input placeholder="Item级别: labelSpan=6, wrapperSpan=18" />
+            </Form.Item>
+            <Form.Item>
+              <Button variant="primary" type="submit">提交</Button>
+            </Form.Item>
+          </Form>
+        </DemoBox>
+        <CopyBlock code={`import { Form, Input, Button } from '@idp/design';
+
+const Demo = () => {
+  return (
+    <Form
+      layout="horizontal"
+      labelSpan={4}
+      wrapperSpan={20}
+    >
+      {/* 继承Form的labelSpan和wrapperSpan */}
+      <Form.Item name="title" label="标题">
+        <Input placeholder="labelSpan=4, wrapperSpan=20" />
+      </Form.Item>
+      
+      {/* Item级别覆盖 */}
+      <Form.Item
+        name="content"
+        label="内容"
+        labelSpan={6}
+        wrapperSpan={18}
+      >
+        <Input placeholder="Item级别覆盖" />
       </Form.Item>
     </Form>
   );
 };`} />
       </Section>
 
-      <Section title="API">
-        <h3>Form Props</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '16px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>默认值</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>layout</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>表单布局</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'horizontal' | 'vertical' | 'inline'</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'horizontal'</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>labelCol</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>label 标签布局</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>5</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>wrapperCol</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>需要为输入控件设置布局样式时</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>19</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>initialValues</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>表单默认值</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>Record&lt;string, any&gt;</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{}</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onFinish</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>提交表单且数据验证成功后回调事件</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>(values: Record&lt;string, any&gt;) =&gt; void</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onFinishFailed</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>提交表单且数据验证失败后回调事件</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>(errorInfo: any) =&gt; void</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>colon</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>配置 label 的冒号</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>true</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>requiredMark</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>必选样式</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean | 'optional'</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>true</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3>Form.Item Props</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '16px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>默认值</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>name</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>字段名</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>label</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>label 标签的文本</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>required</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否必填</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>rules</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>校验规则</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>Rule[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>help</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>提示信息</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>extra</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>额外提示信息</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>ReactNode</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>validateStatus</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>校验状态</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'success' | 'warning' | 'error' | 'validating'</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>colon</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>配置 label 的冒号</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>hidden</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否隐藏</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3>Rule</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>属性</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>类型</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>required</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否必填</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>message</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>校验失败提示信息</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>string</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>pattern</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>正则表达式校验</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>RegExp</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>min</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>最小长度</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>max</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>最大长度</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>len</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>字段长度</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>type</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>类型校验</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>'string' | 'number' | 'boolean' | 'method' | 'regexp' | 'integer' | 'float' | 'array' | 'object' | 'enum' | 'date' | 'url' | 'hex' | 'email'</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>validator</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>自定义校验函数</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>(rule: Rule, value: any) =&gt; Promise&lt;void&gt; | void</td>
-            </tr>
-          </tbody>
-        </table>
-      </Section>
-
-      <Section title="FormInstance 方法使用">
+      <Section title="FormInstance 方法">
+        <p>通过 useForm 获取表单实例，可以调用各种方法来操作表单。</p>
         <DemoBox>
           <Form
             layout="horizontal"
@@ -790,11 +633,13 @@ const Demo = () => {
               <Input placeholder="请输入年龄" />
             </Form.Item>
             <Form.Item>
-              <Button variant="primary" type="submit" style={{ marginRight: '8px' }}>提交</Button>
-              <Button onClick={handleSetValues} style={{ marginRight: '8px' }}>设置值</Button>
-              <Button onClick={handleGetValues} style={{ marginRight: '8px' }}>获取值</Button>
-              <Button onClick={handleReset} style={{ marginRight: '8px' }}>重置</Button>
-              <Button onClick={handleValidate}>验证</Button>
+              <Flex gap="small">
+                <Button variant="primary" type="submit">提交</Button>
+                <Button onClick={handleSetValues}>设置值</Button>
+                <Button onClick={handleGetValues}>获取值</Button>
+                <Button onClick={handleReset}>重置</Button>
+                <Button onClick={handleValidate}>验证</Button>
+              </Flex>
             </Form.Item>
           </Form>
         </DemoBox>
@@ -804,10 +649,6 @@ import { useForm } from '@idp/design/components/Form';
 const Demo = () => {
   const [form] = useForm();
   
-  const handleFinish = (values) => {
-    console.log('Form instance values:', values);
-  };
-
   const handleSetValues = () => {
     form.setFieldsValue({
       username: 'testuser',
@@ -818,8 +659,7 @@ const Demo = () => {
 
   const handleGetValues = () => {
     const values = form.getFieldsValue();
-    console.log('Form values:', values);
-    alert(JSON.stringify(values, null, 2));
+    console.log('表单值:', values);
   };
 
   const handleReset = () => {
@@ -827,119 +667,222 @@ const Demo = () => {
   };
 
   const handleValidate = () => {
-    form.validateFields().then(values => {
-      console.log('Validation passed:', values);
-      alert('Validation passed!');
-    }).catch(error => {
-      console.log('Validation failed:', error);
-      alert('Validation failed!');
-    });
+    form.validateFields()
+      .then(values => {
+        console.log('验证通过:', values);
+      })
+      .catch(error => {
+        console.log('验证失败:', error);
+      });
+  };
+
+  const handleDestroy = () => {
+    form.destroy();
+    console.log('表单已销毁');
+    alert('表单实例已销毁，所有数据已清空');
   };
 
   return (
-    <Form
-      layout="horizontal"
-      labelSpan={6}
-      initialValues={{ username: '', email: '', age: '' }}
-      onFinish={handleFinish}
-      form={form}
-    >
-      <Form.Item
-        name="username"
-        label="用户名"
-        rules={[{ required: true, message: '请输入用户名' }]}
-      >
+    <Form form={form} layout="horizontal" labelSpan={6}>
+      <Form.Item name="username" label="用户名" rules={[{ required: true }]}>
         <Input placeholder="请输入用户名" />
       </Form.Item>
-      <Form.Item
-        name="email"
-        label="邮箱"
-        rules={[
-          { required: true, message: '请输入邮箱' },
-          { type: 'email', message: '请输入有效的邮箱地址' }
-        ]}
-      >
+      <Form.Item name="email" label="邮箱" rules={[{ required: true, type: 'email' }]}>
         <Input placeholder="请输入邮箱" />
       </Form.Item>
-      <Form.Item
-        name="age"
-        label="年龄"
-        rules={[
-          { required: true, message: '请输入年龄' },
-          { type: 'number', message: '请输入有效的数字' }
-        ]}
-      >
-        <Input placeholder="请输入年龄" />
-      </Form.Item>
       <Form.Item>
-        <Button variant="primary" type="submit" style={{ marginRight: '8px' }}>提交</Button>
-        <Button onClick={handleSetValues} style={{ marginRight: '8px' }}>设置值</Button>
-        <Button onClick={handleGetValues} style={{ marginRight: '8px' }}>获取值</Button>
-        <Button onClick={handleReset} style={{ marginRight: '8px' }}>重置</Button>
+        <Button onClick={handleSetValues}>设置值</Button>
+        <Button onClick={handleGetValues}>获取值</Button>
+        <Button onClick={handleReset}>重置</Button>
         <Button onClick={handleValidate}>验证</Button>
+        <Button variant="danger" onClick={handleDestroy}>销毁</Button>
       </Form.Item>
     </Form>
   );
 };`} />
       </Section>
 
-      <Section title="FormInstance API">
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>方法</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>说明</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>参数</th>
-              <th style={{ border: '1px solid #d9d9d9', padding: '8px', textAlign: 'left' }}>返回值</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>getFieldValue</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>获取单个字段的值</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>name: string</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>any</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>getFieldsValue</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>获取多个字段的值</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>names?: string[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>Record&lt;string, any&gt;</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>setFieldValue</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>设置单个字段的值</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>name: string, value: any</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>void</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>setFieldsValue</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>设置多个字段的值</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>values: Record&lt;string, any&gt;</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>void</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>resetFields</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>重置表单字段</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>names?: string[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>void</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>validateFields</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>验证表单字段</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>names?: string[]</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>Promise&lt;Record&lt;string, any&gt;&gt;</td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>submit</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>提交表单</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
-              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>void</td>
-            </tr>
-          </tbody>
-        </table>
+      <Section title="在 Modal 中使用">
+        <p>Form 组件可以与 Modal 组件结合使用，实现弹窗表单的场景。</p>
+        <DemoBox>
+          <Button variant="primary" onClick={() => setModalVisible(true)}>
+            打开表单弹窗
+          </Button>
+
+          <Modal
+            visible={modalVisible}
+            title="新建用户"
+            width={560}
+            confirmLoading={modalLoading}
+            onCancel={() => {
+              setModalVisible(false);
+              modalForm.resetFields();
+            }}
+            onOk={() => {
+              modalForm.validateFields().then(values => {
+                setModalLoading(true);
+                setTimeout(() => {
+                  setModalLoading(false);
+                  setModalVisible(false);
+                  console.log('表单提交成功:', values);
+                  alert('提交成功！\n' + JSON.stringify(values, null, 2));
+                  modalForm.resetFields();
+                }, 1500);
+              }).catch(error => {
+                console.log('表单验证失败:', error);
+              });
+            }}
+          >
+            <Form
+              form={modalForm}
+              layout="horizontal"
+              labelSpan={5}
+              wrapperSpan={19}
+              initialValues={{
+                username: '',
+                email: '',
+                phone: '',
+                department: ''
+              }}
+            >
+              <Form.Item
+                name="username"
+                label="用户名"
+                rules={[
+                  { required: true, message: '请输入用户名' },
+                  { min: 2, max: 20, message: '用户名长度为2-20位' }
+                ]}
+              >
+                <Input placeholder="请输入用户名" />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                label="邮箱"
+                rules={[
+                  { required: true, message: '请输入邮箱' },
+                  { type: 'email', message: '请输入有效的邮箱地址' }
+                ]}
+              >
+                <Input placeholder="example@email.com" />
+              </Form.Item>
+              <Form.Item
+                name="phone"
+                label="手机号"
+                rules={[
+                  { required: true, message: '请输入手机号' },
+                  { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' }
+                ]}
+              >
+                <Input placeholder="请输入手机号" />
+              </Form.Item>
+              <Form.Item
+                name="department"
+                label="部门"
+                help="请输入所属部门"
+              >
+                <Input placeholder="请输入部门名称" />
+              </Form.Item>
+            </Form>
+          </Modal>
+        </DemoBox>
+        <CopyBlock code={`import { Form, Input, Button, Modal } from '@idp/design';
+import { useForm } from '@idp/design/components/Form';
+import { useState } from 'react';
+
+const Demo = () => {
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form] = useForm();
+
+  const handleOk = () => {
+    form.validateFields().then(values => {
+      setLoading(true);
+      // 模拟异步提交
+      setTimeout(() => {
+        setLoading(false);
+        setVisible(false);
+        console.log('表单提交成功:', values);
+        form.resetFields();
+      }, 1500);
+    }).catch(error => {
+      console.log('表单验证失败:', error);
+    });
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+    form.resetFields();
+  };
+
+  return (
+    <>
+      <Button onClick={() => setVisible(true)}>
+        打开表单弹窗
+      </Button>
+      <Modal
+        visible={visible}
+        title="新建用户"
+        width={560}
+        confirmLoading={loading}
+        onCancel={handleCancel}
+        onOk={handleOk}
+      >
+        <Form
+          form={form}
+          layout="horizontal"
+          labelSpan={5}
+          wrapperSpan={19}
+        >
+          <Form.Item
+            name="username"
+            label="用户名"
+            rules={[
+              { required: true, message: '请输入用户名' },
+              { min: 2, max: 20, message: '用户名长度为2-20位' }
+            ]}
+          >
+            <Input placeholder="请输入用户名" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="邮箱"
+            rules={[
+              { required: true, message: '请输入邮箱' },
+              { type: 'email', message: '请输入有效的邮箱地址' }
+            ]}
+          >
+            <Input placeholder="example@email.com" />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            label="手机号"
+            rules={[
+              { required: true, message: '请输入手机号' },
+              { pattern: /^1[3-9]\\d{9}$/, message: '请输入有效的手机号' }
+            ]}
+          >
+            <Input placeholder="请输入手机号" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
+};`} />
       </Section>
 
+      <Section title="API">
+        <h3>Form Props</h3>
+        <Table columns={formPropsColumns} dataSource={formPropsDataSource} />
+
+        <h3>Form.Item Props</h3>
+        <Table columns={formItemPropsColumns} dataSource={formItemPropsDataSource} />
+
+        <h3>Rule</h3>
+        <Table columns={ruleColumns} dataSource={ruleDataSource} />
+
+        <h3>FormInstance 方法</h3>
+        <Table columns={formInstanceColumns} dataSource={formInstanceDataSource} />
+      </Section>
     </div>
   );
 };

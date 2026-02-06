@@ -51,12 +51,12 @@
 
 /* 中心动画 */
 .idp-modal-container--center {
-    animation: centerAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: centerAnimateIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 /* 中心动画（设置了top） - 从指定top位置的垂直中心开始 */
 .idp-modal-container--center-top {
-    animation: centerTopAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: centerTopAnimateIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes centerAnimateIn {
@@ -83,7 +83,7 @@
 
 /* 正常动画（从点击位置缓慢过渡） */
 .idp-modal-container--normal {
-    animation: normalAnimateIn 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: normalAnimateIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes normalAnimateIn {
@@ -99,12 +99,12 @@
 
 /* 右上角动画 */
 .idp-modal-container--top-right {
-    animation: topRightAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: topRightAnimateIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes topRightAnimateIn {
     from {
-        transform: translate(100%, -100%) scale(0.5);
+        transform: translate(calc(50vw + 50%), calc(-50vh - 50%)) scale(0.5);
         opacity: 0;
     }
     to {
@@ -115,12 +115,12 @@
 
 /* 右下角动画 */
 .idp-modal-container--bottom-right {
-    animation: bottomRightAnimateIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: bottomRightAnimateIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes bottomRightAnimateIn {
     from {
-        transform: translate(100%, 100%) scale(0.5);
+        transform: translate(calc(50vw + 50%), calc(50vh + 50%)) scale(0.5);
         opacity: 0;
     }
     to {
@@ -131,12 +131,12 @@
 
 /* 中心消失 */
 .idp-modal-container--closing-center {
-    animation: centerAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: centerAnimateOut 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 /* 中心消失（设置了top） - 回到指定top位置的垂直中心 */
 .idp-modal-container--closing-center-top {
-    animation: centerTopAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: centerTopAnimateOut 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes centerAnimateOut {
@@ -163,7 +163,7 @@
 
 /* 正常消失（回到点击位置缓慢消失） */
 .idp-modal-container--closing-normal {
-    animation: normalAnimateOut 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: normalAnimateOut 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes normalAnimateOut {
@@ -179,32 +179,76 @@
 
 /* 右上角消失 */
 .idp-modal-container--closing-top-right {
-    animation: topRightAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: topRightAnimateOut 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes topRightAnimateOut {
-    from {
+    0% {
         transform: translate(0, 0) scale(1);
         opacity: 1;
     }
-    to {
-        transform: translate(100%, -100%) scale(0.5);
+    50% {
+        transform: translate(25vw, -25vh) scale(0.8);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(calc(50vw + 50%), calc(-50vh - 50%)) scale(0.5);
         opacity: 0;
     }
 }
 
 /* 右下角消失 */
 .idp-modal-container--closing-bottom-right {
-    animation: bottomRightAnimateOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: bottomRightAnimateOut 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 @keyframes bottomRightAnimateOut {
-    from {
+    0% {
         transform: translate(0, 0) scale(1);
         opacity: 1;
     }
+    50% {
+        transform: translate(25vw, 25vh) scale(0.8);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(calc(50vw + 50%), calc(50vh + 50%)) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* 左下角动画 */
+.idp-modal-container--bottom-left {
+    animation: bottomLeftAnimateIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes bottomLeftAnimateIn {
+    from {
+        transform: translate(calc(-50vw - 50%), calc(50vh + 50%)) scale(0.5);
+        opacity: 0;
+    }
     to {
-        transform: translate(100%, 100%) scale(0.5);
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* 左下角消失 */
+.idp-modal-container--closing-bottom-left {
+    animation: bottomLeftAnimateOut 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes bottomLeftAnimateOut {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-25vw, 25vh) scale(0.8);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(calc(-50vw - 50%), calc(50vh + 50%)) scale(0.5);
         opacity: 0;
     }
 }

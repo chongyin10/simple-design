@@ -6,6 +6,7 @@ export interface FormProps {
   style?: CSSProperties;
   layout?: 'horizontal' | 'vertical' | 'inline';
   labelSpan?: number;
+  wrapperSpan?: number;
   initialValues?: Record<string, any>;
   onFinish?: (values: Record<string, any>) => void;
   onFinishFailed?: (errorInfo: any) => void;
@@ -31,6 +32,7 @@ export interface FormItemProps {
   validateStatus?: 'success' | 'warning' | 'error' | 'validating';
   colon?: boolean;
   labelSpan?: number;
+  wrapperSpan?: number;
   hidden?: boolean;
   tooltip?: ReactNode;
   extra?: ReactNode;
@@ -60,6 +62,7 @@ export interface Rule {
 export interface FormContextType {
   layout: 'horizontal' | 'vertical' | 'inline';
   labelSpan?: number;
+  wrapperSpan?: number;
   colon: boolean;
   requiredMark: boolean | 'optional';
   values: Record<string, any>;
@@ -77,7 +80,9 @@ export interface FormInstance {
   getFieldsValue: (names?: string[]) => Record<string, any>;
   setFieldValue: (name: string, value: any) => void;
   setFieldsValue: (values: Record<string, any>) => void;
+  setFields: (fields: { name: string; errors?: string[]; value?: any }[]) => void;
   resetFields: (names?: string[]) => void;
   validateFields: (names?: string[]) => Promise<Record<string, any>>;
   submit: () => void;
+  destroy: () => void;
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, startTransition } from 'react';
 import Button from '../Button';
+import Input from '../Input';
 import { NavigationProps, NavigationItem } from './types';
 import './Navigation.css';
 
@@ -126,9 +127,44 @@ const Navigation: React.FC<NavigationProps> = ({
     const [internalOpenKeys, setInternalOpenKeys] = useState<string[]>(defaultOpenKeys);
     const [internalSelectedKey, setInternalSelectedKey] = useState<string>('');
     const [internalCollapsed, setInternalCollapsed] = useState<boolean>(externalCollapsed ?? false);
+    const [searchValue, setSearchValue] = useState<string>('');
     const lastSelectedKeyRef = useRef<string>('');
     const containerRef = useRef<HTMLDivElement | null>(null);
     const isHorizontal = mode === 'horizontal';
+
+    // 递归过滤菜单项
+    const filterItems = useCallback((menuItems: NavigationItem[], keyword: string): NavigationItem[] => {
+        if (!keyword.trim()) return menuItems;
+        
+        const lowerKeyword = keyword.toLowerCase();
+        
+        return menuItems.reduce<NavigationItem[]>((acc, item) => {
+            const matchKey = item.key.toLowerCase().includes(lowerKeyword);
+            const matchName = item.name.toLowerCase().includes(lowerKeyword);
+            const matchDescription = item.description?.toLowerCase().includes(lowerKeyword);
+            
+            // 如果有子菜单，递归过滤
+            let filteredChildren: NavigationItem[] | undefined;
+            if (item.childrens && item.childrens.length > 0) {
+                filteredChildren = filterItems(item.childrens, keyword);
+            }
+            
+            // 当前项匹配或有匹配的子项
+            if (matchKey || matchName || matchDescription || (filteredChildren && filteredChildren.length > 0)) {
+                acc.push({
+                    ...item,
+                    childrens: filteredChildren
+                });
+            }
+            
+            return acc;
+        }, []);
+    }, []);
+
+    // 过滤后的菜单项
+    const filteredItems = useMemo(() => {
+        return filterItems(items, searchValue);
+    }, [items, searchValue, filterItems]);
 
     const { rootMap, pathMap } = useMemo(() => {
         const nextRootMap = new Map<string, string>();
@@ -294,16 +330,37 @@ const Navigation: React.FC<NavigationProps> = ({
                 <div className="navigation-header">
                     {header ?? (
                         <>
-                            {!collapsed && (
-                                <h2 className="navigation-title">IDP Design</h2>
+                            {!collapsed ? (
+                                <>
+                                    <div className="navigation-header-row">
+                                        <h2 className="navigation-title">IDP Design</h2>
+                                        <Button
+                                            onClick={toggleCollapsed}
+                                            className="navigation-collapse-button"
+                                            variant="secondary"
+                                        >
+                                            ←
+                                        </Button>
+                                    </div>
+                                    {/* 搜索框 */}
+                                    <div className="navigation-search">
+                                        <Input.Search
+                                            placeholder="搜索组件..."
+                                            value={searchValue}
+                                            onChange={(e) => setSearchValue(e.target.value)}
+                                            clear
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <Button
+                                    onClick={toggleCollapsed}
+                                    className="navigation-collapse-button"
+                                    variant="secondary"
+                                >
+                                    →
+                                </Button>
                             )}
-                            <Button
-                                onClick={toggleCollapsed}
-                                className="navigation-collapse-button"
-                                variant="secondary"
-                            >
-                                {collapsed ? '→' : '←'}
-                            </Button>
                         </>
                     )}
                 </div>
@@ -311,19 +368,25 @@ const Navigation: React.FC<NavigationProps> = ({
 
             {/* 菜单列表 */}
             <div className="navigation-list">
-                {items.map(item => (
-                    <NavigationItemComponent
-                        key={item.key}
-                        item={item}
-                        level={0}
-                        collapsed={collapsed}
-                        mode={mode}
-                        openKeySet={openKeySet}
-                        selectedKey={selectedKey}
-                        onItemClick={handleItemClick}
-                        onToggleOpen={toggleOpenKey}
-                    />
-                ))}
+                {filteredItems.length > 0 ? (
+                    filteredItems.map(item => (
+                        <NavigationItemComponent
+                            key={item.key}
+                            item={item}
+                            level={0}
+                            collapsed={collapsed}
+                            mode={mode}
+                            openKeySet={openKeySet}
+                            selectedKey={selectedKey}
+                            onItemClick={handleItemClick}
+                            onToggleOpen={toggleOpenKey}
+                        />
+                    ))
+                ) : (
+                    <div className="navigation-empty">
+                        <span>未找到匹配的组件</span>
+                    </div>
+                )}
             </div>
 
             {/* 底部信息 */}

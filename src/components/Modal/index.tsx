@@ -213,6 +213,7 @@ const Modal: React.FC<ModalProps> = ({
                             // 显示动画 - 其他方向
                             'idp-modal-container--top-right': isVisible && !isClosing && effectiveDirection === 'top-right',
                             'idp-modal-container--bottom-right': isVisible && !isClosing && effectiveDirection === 'bottom-right',
+                            'idp-modal-container--bottom-left': isVisible && !isClosing && effectiveDirection === 'bottom-left',
                             'idp-modal-container--normal': isVisible && !isClosing && effectiveDirection === 'normal',
                             
                             // 关闭状态 - center + top
@@ -222,6 +223,7 @@ const Modal: React.FC<ModalProps> = ({
                             // 关闭状态 - 其他方向
                             'idp-modal-container--closing-top-right': isClosing && effectiveDirection === 'top-right',
                             'idp-modal-container--closing-bottom-right': isClosing && effectiveDirection === 'bottom-right',
+                            'idp-modal-container--closing-bottom-left': isClosing && effectiveDirection === 'bottom-left',
                             'idp-modal-container--closing-normal': isClosing && effectiveDirection === 'normal',
                             'idp-modal-container--bordered': bordered,
                             // 当设置了 height 参数时，添加此类名以取消最小高度限制

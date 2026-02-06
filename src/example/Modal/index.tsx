@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Flex, Input } from '../../components';
+import Form, { useForm } from '../../components/Form';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -79,8 +80,11 @@ const ModalExample: React.FC = () => {
     const [visible18, setVisible18] = useState(false);
     const [visible19, setVisible19] = useState(false);
     const [visible20, setVisible20] = useState(false);
+    const [visible21, setVisible21] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [formLoading, setFormLoading] = useState(false);
     const customContainerRef = React.useRef<HTMLDivElement>(null);
+    const [form] = useForm();
 
     const handleOk = () => {
         setConfirmLoading(true);
@@ -837,7 +841,7 @@ const customContainerRef = useRef<HTMLDivElement>(null);
 
             <Section title="状态重置演示">
                 <p>Modal 关闭后会销毁内容区域的 DOM 节点，再次打开时会重新挂载子组件，表单状态会自动重置。</p>
-                
+
                 <DemoRow title="表单状态重置">
                     <Button variant="primary" onClick={() => setVisible20(true)}>
                         打开表单弹窗
@@ -863,7 +867,7 @@ const customContainerRef = useRef<HTMLDivElement>(null);
                         <Input placeholder="请输入备注" />
                     </div>
                 </Modal>
-                
+
                 <CopyBlock code={`import { Modal, Button, Input } from '@zjpcy/simple-design';
 import { useState } from 'react';
 
@@ -889,6 +893,175 @@ function App() {
 }
 // 注意：Modal 关闭后会销毁内容区域的 DOM 节点
 // 再次打开时会重新挂载子组件，表单状态会自动重置`} />
+            </Section>
+
+            <Section title="Modal 中使用 Form 表单">
+                <p>在 Modal 中使用 Form 组件进行数据收集和验证，支持表单提交、重置等操作。</p>
+
+                <DemoRow title="表单弹窗">
+                    <Button variant="primary" onClick={() => setVisible21(true)}>
+                        打开表单弹窗
+                    </Button>
+                </DemoRow>
+
+                <Modal
+                    visible={visible21}
+                    title="用户信息"
+                    width={560}
+                    confirmLoading={formLoading}
+                    onCancel={() => {
+                        setVisible21(false);
+                        form.resetFields();
+                    }}
+                    onOk={() => {
+                        form.validateFields().then(values => {
+                            setFormLoading(true);
+                            setTimeout(() => {
+                                setFormLoading(false);
+                                setVisible21(false);
+                                console.log('表单提交成功:', values);
+                                alert('提交成功！\n' + JSON.stringify(values, null, 2));
+                                form.resetFields();
+                            }, 1500);
+                        }).catch(error => {
+                            console.log('表单验证失败:', error);
+                        });
+                    }}
+                >
+                    <Form
+                        form={form}
+                        layout="horizontal"
+                        labelSpan={3}
+                        initialValues={{
+                            username: '',
+                            email: '',
+                            phone: '',
+                            department: ''
+                        }}
+                    >
+                        <Form.Item
+                            name="username"
+                            label="用户名"
+                            rules={[
+                                { required: true, message: '请输入用户名' },
+                                { min: 2, max: 20, message: '用户名长度为2-20位' }
+                            ]}
+                        >
+                            <Input placeholder="请输入用户名" />
+                        </Form.Item>
+                        <Form.Item
+                            name="email"
+                            label="邮箱"
+                            rules={[
+                                { required: true, message: '请输入邮箱' },
+                                { type: 'email', message: '请输入有效的邮箱地址' }
+                            ]}
+                        >
+                            <Input placeholder="example@email.com" />
+                        </Form.Item>
+                        <Form.Item
+                            name="phone"
+                            label="手机号"
+                            rules={[
+                                { required: true, message: '请输入手机号' },
+                                { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' }
+                            ]}
+                        >
+                            <Input placeholder="请输入手机号" />
+                        </Form.Item>
+                        <Form.Item
+                            name="department"
+                            label="部门"
+                            help="请选择所属部门"
+                        >
+                            <Input placeholder="请输入部门名称" />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+
+                <CopyBlock code={`import { Modal, Button } from '@zjpcy/simple-design';
+import Form, { useForm } from '@zjpcy/simple-design/components/Form';
+import { useState } from 'react';
+
+function App() {
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [form] = useForm();
+
+    const handleOk = () => {
+        form.validateFields().then(values => {
+            setLoading(true);
+            // 模拟异步提交
+            setTimeout(() => {
+                setLoading(false);
+                setVisible(false);
+                console.log('表单提交成功:', values);
+                form.resetFields();
+            }, 1500);
+        }).catch(error => {
+            console.log('表单验证失败:', error);
+        });
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+        form.resetFields();
+    };
+
+    return (
+        <>
+            <Button onClick={() => setVisible(true)}>
+                打开表单弹窗
+            </Button>
+            <Modal
+                visible={visible}
+                title="用户信息"
+                width={560}
+                confirmLoading={loading}
+                onCancel={handleCancel}
+                onOk={handleOk}
+            >
+                <Form
+                    form={form}
+                    layout="horizontal"
+                    labelSpan={5}
+                    wrapperSpan={19}
+                >
+                    <Form.Item
+                        name="username"
+                        label="用户名"
+                        rules={[
+                            { required: true, message: '请输入用户名' },
+                            { min: 2, max: 20, message: '用户名长度为2-20位' }
+                        ]}
+                    >
+                        <Input placeholder="请输入用户名" />
+                    </Form.Item>
+                    <Form.Item
+                        name="email"
+                        label="邮箱"
+                        rules={[
+                            { required: true, message: '请输入邮箱' },
+                            { type: 'email', message: '请输入有效的邮箱地址' }
+                        ]}
+                    >
+                        <Input placeholder="example@email.com" />
+                    </Form.Item>
+                    <Form.Item
+                        name="phone"
+                        label="手机号"
+                        rules={[
+                            { required: true, message: '请输入手机号' },
+                            { pattern: /^1[3-9]\\d{9}$/, message: '请输入有效的手机号' }
+                        ]}
+                    >
+                        <Input placeholder="请输入手机号" />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
+    );
+}`} />
             </Section>
 
             <Section title="API">
