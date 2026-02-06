@@ -10,6 +10,7 @@ export interface InputProps {
     className?: string;
     style?: React.CSSProperties;
     value?: string;
+    defaultValue?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -38,6 +39,7 @@ const InputBase: React.FC<InputProps> = ({
     className = '',
     style,
     value,
+    defaultValue,
     onChange,
     onBlur,
     onFocus,
@@ -54,6 +56,7 @@ const InputBase: React.FC<InputProps> = ({
     labelStyle,
     ...rest
 }) => {
+    const [internalValue, setInternalValue] = React.useState<string>(defaultValue || '');
     const [isFocused, setIsFocused] = React.useState(false);
     
     const renderIcon = (icon: string | React.ReactNode) => {
@@ -75,25 +78,49 @@ const InputBase: React.FC<InputProps> = ({
         setIsFocused(false);
         onBlur?.(e);
     };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (value === undefined) {
+            // 非受控模式，更新内部状态
+            setInternalValue(e.target.value);
+        }
+        onChange?.(e);
+    };
     
     const handleClear = () => {
-        if (onChange && !disabled && !readOnly) {
-            // 创建一个模拟的ChangeEvent，将value设置为空字符串
-            const mockEvent = {
-                target: { value: '' }
-            } as React.ChangeEvent<HTMLInputElement>;
-            onChange(mockEvent);
+        if (!disabled && !readOnly) {
+            if (value !== undefined) {
+                // 受控模式
+                if (onChange) {
+                    const mockEvent = {
+                        target: { value: '' }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(mockEvent);
+                }
+            } else {
+                // 非受控模式
+                setInternalValue('');
+                if (onChange) {
+                    const mockEvent = {
+                        target: { value: '' }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(mockEvent);
+                }
+            }
         }
     };
     
+    // 确定实际使用的值
+    const actualValue = value !== undefined ? value : internalValue;
+
     // 确定是否显示清除按钮
-    const showClearButton = clear && 
-                          !disabled && 
-                          !readOnly && 
-                          isFocused && 
-                          value !== undefined && 
-                          value !== null && 
-                          value.toString().length > 0;
+    const showClearButton = clear &&
+                          !disabled &&
+                          !readOnly &&
+                          isFocused &&
+                          actualValue !== undefined &&
+                          actualValue !== null &&
+                          actualValue.toString().length > 0;
 
     return (
         <div className="input-base-container">
@@ -121,8 +148,8 @@ const InputBase: React.FC<InputProps> = ({
                     type={type}
                     placeholder={placeholder}
                     className="input-inner"
-                    value={value != null ? String(value) : ''}
-                    onChange={onChange}
+                    value={value != null ? String(value) : actualValue}
+                    onChange={handleChange}
                     onBlur={handleBlur}
                     onFocus={handleFocus}
                     disabled={disabled}

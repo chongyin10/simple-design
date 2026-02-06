@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, ReactNode } from 'react';
 import Empty from '../Empty';
 import Pagination from '../Pagination';
+import Tooltip from '../Tooltip';
 import './Table.css';
 
 export interface Column {
@@ -12,6 +13,8 @@ export interface Column {
     fixed?: boolean | 'start' | 'end';
     /** 限制单元格内容显示的最大行数，超出时显示省略号 */
     maxLines?: number;
+    /** 是否显示提示气泡框 */
+    tooltip?: boolean;
     render?: (value: any, record: any, index: number) => ReactNode;
     [key: string]: any;
 }
@@ -242,6 +245,20 @@ const Table = ({
         );
     };
 
+    // 从 React 节点中提取文本内容
+    const extractTextFromReactNode = (node: any): string => {
+        if (node === null || node === undefined) return '';
+        if (typeof node === 'string') return node;
+        if (typeof node === 'number') return String(node);
+        if (Array.isArray(node)) {
+            return node.map(extractTextFromReactNode).join('');
+        }
+        if (typeof node === 'object' && node.props && node.props.children) {
+            return extractTextFromReactNode(node.props.children);
+        }
+        return '';
+    };
+
     // 渲染表格单元格
     const renderTableCell = (column: Column, record: any, rowIndex: number, colIndex: number, colGroup: Column[]) => {
         const style: React.CSSProperties = {
@@ -283,11 +300,29 @@ const Table = ({
 
         // 处理 maxLines 属性
         const shouldApplyMaxLines = column.maxLines && column.maxLines > 0;
+
+        // 处理 tooltip 属性
+        let tooltipTitle = '';
+        if (column.tooltip) {
+            tooltipTitle = extractTextFromReactNode(content);
+            // 获取原始数据作为 tooltip（优先使用原始数据）
+            if (!tooltipTitle && column.dataIndex) {
+                tooltipTitle = String(record[column.dataIndex] || '');
+            }
+        }
+
         const cellContent = shouldApplyMaxLines ? (
             <div className="idp-table-cell-ellipsis" style={{ WebkitLineClamp: column.maxLines }}>
                 {content}
             </div>
         ) : content;
+
+        // 如果有 tooltip，用 Tooltip 包裹
+        const finalContent = tooltipTitle ? (
+            <Tooltip title={tooltipTitle} placement="top">
+                {cellContent as React.ReactElement}
+            </Tooltip>
+        ) : cellContent;
 
         return (
             <td
@@ -295,7 +330,7 @@ const Table = ({
                 style={style}
                 className={`${shouldShowLeftShadow ? 'idp-table-fixed-left-shadow' : ''}${shouldShowRightShadow ? ' idp-table-fixed-right-shadow' : ''}${shouldApplyMaxLines ? ' idp-table-cell-has-ellipsis' : ''}`}
             >
-                {cellContent}
+                {finalContent}
             </td>
         );
     };

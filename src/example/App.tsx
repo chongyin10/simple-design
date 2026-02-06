@@ -5,6 +5,7 @@ import NoticeExample from './Notice';
 import MarqueeExample from './Marquee';
 import TableExample from './Table';
 import TopExample from './Top';
+import TooltipExample from './Tooltip';
 import IconExample from './Icon';
 import DividerExample from './Divider';
 import InputExample from './Input';
@@ -87,6 +88,7 @@ const App: React.FC = () => {
         { key: 'table', name: 'Table', description: '表格组件', icon: '📊' },
         { key: 'tabs', name: 'Tabs', description: '选项卡组件', icon: '🗂️' },
         { key: 'top', name: 'Top', description: '回到顶部组件', icon: '⬆️' },
+        { key: 'tooltip', name: 'Tooltip', description: '提示框组件', icon: '💬' },
         { key: 'transfer', name: 'Transfer', description: '穿梭框组件', icon: '🔄' },
         { key: 'treeselect', name: 'TreeSelect', description: '树型选择器组件', icon: '🌲' },
         { key: 'typography', name: 'Typography', description: '排版组件', icon: '📝' },
@@ -142,6 +144,7 @@ const App: React.FC = () => {
         { key: 'table', name: 'Table', description: '表格组件' },
         { key: 'tabs', name: 'Tabs', description: '选项卡组件' },
         { key: 'top', name: 'Top', description: '回到顶部组件' },
+        { key: 'tooltip', name: 'Tooltip', description: '提示框组件' },
         { key: 'transfer', name: 'Transfer', description: '穿梭框组件' },
         { key: 'treeselect', name: 'TreeSelect', description: '树型选择器组件' },
         { key: 'typography', name: 'Typography', description: '排版组件' },
@@ -346,6 +349,10 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <SwitchExample />;
             case 'tabs':
                 return <TabsExample />;
+            case 'top':
+                return <TopExample />;
+            case 'tooltip':
+                return <TooltipExample />;
             case 'rate':
                 return <RateExample />;
             case 'transfer':

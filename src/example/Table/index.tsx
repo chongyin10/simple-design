@@ -221,6 +221,63 @@ const columns = [
 />`} />
       </Section>
 
+      {/* Tooltip 提示 */}
+      <Section title="单元格 Tooltip 提示">
+        <p>设置 <code>tooltip=true</code> 为单元格内容添加鼠标悬停提示，支持美观的气泡提示框，鼠标移入即显示，无延迟。</p>
+        <DemoRow title="基础 Tooltip">
+          <Table
+            columns={[
+              { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
+              { dataIndex: 'name', title: '姓名', width: '100px' },
+              { dataIndex: 'email', title: '邮箱', tooltip: true },
+              { dataIndex: 'address', title: '地址', tooltip: true }
+            ]}
+            dataSource={[
+              { id: 1, name: '张三', email: 'zhangsan@example.com', address: '北京市朝阳区建国路88号SOHO现代城A座1201室' },
+              { id: 2, name: '李四', email: 'lisi@example.com', address: '上海市浦东新区陆家嘴环路1000号恒生银行大厦28层' },
+              { id: 3, name: '王五', email: 'wangwu@example.com', address: '广州市天河区珠江新城华夏路30号富力盈通大厦15层' }
+            ]}
+            bordered
+          />
+        </DemoRow>
+        <CopyBlock code={`<Table
+  columns={[
+    { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
+    { dataIndex: 'name', title: '姓名', width: '100px' },
+    { dataIndex: 'email', title: '邮箱', tooltip: true },
+    { dataIndex: 'address', title: '地址', tooltip: true }
+  ]}
+  dataSource={dataSource}
+  bordered
+/>`} />
+
+        <DemoRow title="Tooltip + maxLines 组合使用">
+          <Table
+            columns={[
+              { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
+              { dataIndex: 'title', title: '标题', width: '120px' },
+              { dataIndex: 'content', title: '内容（限制1行 + Tooltip）', maxLines: 1, tooltip: true }
+            ]}
+            dataSource={[
+              { id: 1, title: '项目简介', content: '这是一个非常长的项目简介，包含了项目的详细背景、目标、范围和预期成果。项目将在未来六个月内完成，涉及多个团队和部门的协作。' },
+              { id: 2, title: '技术方案', content: '采用前后端分离架构，前端使用React + TypeScript，后端使用Node.js + MySQL。整个系统将部署在云服务器上，并使用Docker容器化。' },
+              { id: 3, title: '团队介绍', content: '我们的团队由资深工程师、产品经理、UI设计师和测试工程师组成。团队成员平均工作经验超过5年，具备丰富的项目经验。' }
+            ]}
+            bordered
+          />
+        </DemoRow>
+        <CopyBlock code={`<Table
+  columns={[
+    { dataIndex: 'id', title: 'ID', width: '80px', align: 'center' },
+    { dataIndex: 'title', title: '标题', width: '120px' },
+    { dataIndex: 'content', title: '内容（限制1行 + Tooltip）', maxLines: 1, tooltip: true }
+  ]}
+  dataSource={dataSource}
+  bordered
+/>`} />
+        <p style={{ color: '#666', fontSize: '14px' }}>💡 提示：鼠标移入单元格后立即显示美观的气泡提示框</p>
+      </Section>
+
       {/* 分页功能 */}
       <Section title="分页功能">
         <DemoRow title="基础分页">
@@ -654,6 +711,12 @@ const columns = [
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>限制单元格内容显示的最大行数</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>number</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>tooltip</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否显示鼠标悬停提示（美观气泡框，无延迟）</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
             </tr>
             <tr>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>render</td>

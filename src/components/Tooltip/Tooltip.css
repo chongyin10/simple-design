@@ -1,0 +1,67 @@
+:root {
+    --tooltip-bg-color: rgba(0, 0, 0, 0.85);
+    --tooltip-text-color: #fff;
+    --tooltip-font-size: 14px;
+    --tooltip-padding: 8px 12px;
+    --tooltip-border-radius: 6px;
+    --tooltip-max-width: 350px;
+    --tooltip-arrow-size: 6px;
+}
+
+.idp-tooltip {
+    position: fixed;
+    background-color: var(--tooltip-bg-color);
+    color: var(--tooltip-text-color);
+    font-size: var(--tooltip-font-size);
+    padding: var(--tooltip-padding);
+    border-radius: var(--tooltip-border-radius);
+    max-width: var(--tooltip-max-width);
+    white-space: normal;
+    word-wrap: break-word;
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+                0 6px 16px 0 rgba(0, 0, 0, 0.08),
+                0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    line-height: 1.5;
+    pointer-events: auto;
+}
+
+.idp-tooltip-content {
+    position: relative;
+    z-index: 1;
+}
+
+.idp-tooltip-arrow {
+    position: absolute;
+    width: var(--tooltip-arrow-size);
+    height: var(--tooltip-arrow-size);
+    background-color: var(--tooltip-bg-color);
+    transform: rotate(45deg);
+}
+
+/* Top placement */
+.idp-tooltip-top .idp-tooltip-arrow {
+    bottom: calc(var(--tooltip-arrow-size) * -0.5);
+    left: 50%;
+    margin-left: calc(var(--tooltip-arrow-size) * -0.5);
+}
+
+/* Bottom placement */
+.idp-tooltip-bottom .idp-tooltip-arrow {
+    top: calc(var(--tooltip-arrow-size) * -0.5);
+    left: 50%;
+    margin-left: calc(var(--tooltip-arrow-size) * -0.5);
+}
+
+/* Left placement */
+.idp-tooltip-left .idp-tooltip-arrow {
+    right: calc(var(--tooltip-arrow-size) * -0.5);
+    top: 50%;
+    margin-top: calc(var(--tooltip-arrow-size) * -0.5);
+}
+
+/* Right placement */
+.idp-tooltip-right .idp-tooltip-arrow {
+    left: calc(var(--tooltip-arrow-size) * -0.5);
+    top: 50%;
+    margin-top: calc(var(--tooltip-arrow-size) * -0.5);
+}

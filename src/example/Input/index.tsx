@@ -178,7 +178,7 @@ const Demo = () => {
           />
         </DemoRow>
         <DemoRow title="禁用状态">
-          <Input placeholder="禁用状态" value="禁用内容" disabled clear width="300px" />
+          <Input placeholder="禁用状态" defaultValue="禁用内容" disabled clear width="300px" />
         </DemoRow>
         <CopyBlock code={`// 基本用法
 <Input
@@ -192,7 +192,7 @@ const Demo = () => {
 <Input placeholder="带前缀" prefix="user" clear />
 
 // 禁用状态
-<Input placeholder="禁用状态" value="禁用内容" disabled clear />`} />
+<Input placeholder="禁用状态" defaultValue="禁用内容" disabled clear />`} />
       </Section>
 
       {/* 提示信息 */}
