@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Navigation } from '../components';
 import ButtonExample from './Button';
+import CheckboxExample from './Checkbox';
 import NoticeExample from './Notice';
 import MarqueeExample from './Marquee';
 import TableExample from './Table';
@@ -57,6 +58,7 @@ const App: React.FC = () => {
         { key: 'anchor', name: 'Anchor', description: '锚点导航组件', icon: '🔗' },
         { key: 'breadcrumb', name: 'Breadcrumb', description: '面包屑组件', icon: '📁' },
         { key: 'button', name: 'Button', description: '按钮组件', icon: '🔘' },
+        { key: 'checkbox', name: 'Checkbox', description: '复选框组件', icon: '☑️' },
         { key: 'cascader', name: 'Cascader', description: '级联选择器组件', icon: '🔀' },
         { key: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件', icon: '🎨' },
         { key: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件', icon: '📋' },
@@ -113,6 +115,7 @@ const App: React.FC = () => {
         { key: 'anchor', name: 'Anchor', description: '锚点导航组件' },
         { key: 'breadcrumb', name: 'Breadcrumb', description: '面包屑组件' },
         { key: 'button', name: 'Button', description: '按钮组件' },
+        { key: 'checkbox', name: 'Checkbox', description: '复选框组件' },
         { key: 'cascader', name: 'Cascader', description: '级联选择器组件' },
         { key: 'colorpicker', name: 'ColorPicker', description: '颜色选择器组件' },
         { key: 'copytoclipboard', name: 'CopyToClipboard', description: '剪贴板复制组件' },
@@ -333,6 +336,8 @@ yarn add git+https://github.com/your-repo/idp-design.git#branch-name
                 return <AnchorExample />;
             case 'breadcrumb':
                 return <BreadcrumbExample />;
+            case 'checkbox':
+                return <CheckboxExample />;
             case 'cascader':
                 return <CascaderExample />;
             case 'dropdown':

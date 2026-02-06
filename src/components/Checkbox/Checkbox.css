@@ -1,0 +1,109 @@
+@import '../variables.css';
+
+.idp-checkbox {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    color: var(--idp-text-color);
+}
+
+.idp-checkbox__input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.idp-checkbox__inner {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--idp-border-color);
+    border-radius: 2px;
+    background-color: #fff;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.idp-checkbox:hover .idp-checkbox__inner {
+    border-color: var(--idp-primary-color);
+}
+
+.idp-checkbox--checked .idp-checkbox__inner {
+    background-color: var(--idp-primary-color);
+    border-color: var(--idp-primary-color);
+}
+
+.idp-checkbox--checked .idp-checkbox__inner::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.idp-checkbox--indeterminate .idp-checkbox__inner {
+    background-color: var(--idp-primary-color);
+    border-color: var(--idp-primary-color);
+}
+
+.idp-checkbox--indeterminate .idp-checkbox__inner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 2px;
+    background-color: white;
+}
+
+.idp-checkbox--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.idp-checkbox--disabled .idp-checkbox__inner {
+    background-color: var(--idp-disabled-bg);
+    border-color: var(--idp-disabled-border-color);
+}
+
+.idp-checkbox--disabled.idp-checkbox--checked .idp-checkbox__inner {
+    background-color: var(--idp-disabled-bg);
+    border-color: var(--idp-disabled-border-color);
+}
+
+.idp-checkbox--disabled.idp-checkbox--checked .idp-checkbox__inner::after {
+    border-color: var(--idp-disabled-text-color);
+}
+
+.idp-checkbox--disabled.idp-checkbox--indeterminate .idp-checkbox__inner {
+    background-color: var(--idp-disabled-bg);
+    border-color: var(--idp-disabled-border-color);
+}
+
+.idp-checkbox--disabled.idp-checkbox--indeterminate .idp-checkbox__inner::after {
+    background-color: var(--idp-disabled-text-color);
+}
+
+.idp-checkbox__label {
+    margin-left: 8px;
+}
+
+.idp-checkbox-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.idp-checkbox-group--horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
