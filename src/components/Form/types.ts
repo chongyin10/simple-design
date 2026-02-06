@@ -1,12 +1,11 @@
-import { CSSProperties, ReactNode } from 'react';
+import { CSSProperties, ReactNode, MutableRefObject } from 'react';
 
 export interface FormProps {
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
   layout?: 'horizontal' | 'vertical' | 'inline';
-  labelCol?: number;
-  wrapperCol?: number;
+  labelSpan?: number;
   initialValues?: Record<string, any>;
   onFinish?: (values: Record<string, any>) => void;
   onFinishFailed?: (errorInfo: any) => void;
@@ -17,6 +16,8 @@ export interface FormProps {
     item?: CSSProperties;
     label?: CSSProperties;
   };
+  formRef?: MutableRefObject<FormInstance | null>;
+  form?: FormInstance;
 }
 
 export interface FormItemProps {
@@ -29,8 +30,7 @@ export interface FormItemProps {
   help?: ReactNode;
   validateStatus?: 'success' | 'warning' | 'error' | 'validating';
   colon?: boolean;
-  labelCol?: number | { span: number; offset?: number };
-  wrapperCol?: number | { span: number; offset?: number };
+  labelSpan?: number;
   hidden?: boolean;
   tooltip?: ReactNode;
   extra?: ReactNode;
@@ -59,8 +59,7 @@ export interface Rule {
 
 export interface FormContextType {
   layout: 'horizontal' | 'vertical' | 'inline';
-  labelCol: number;
-  wrapperCol: number;
+  labelSpan?: number;
   colon: boolean;
   requiredMark: boolean | 'optional';
   values: Record<string, any>;

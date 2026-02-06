@@ -5,37 +5,22 @@ import './Form.css';
 
 const FormContext = createContext<FormContextType | null>(null);
 
-export const useForm = (): FormInstance => {
-  const context = useContext(FormContext);
-  if (!context) {
-    throw new Error('useForm must be used within a Form component');
+export const useForm = (): [FormInstance] => {
+  const formInstanceRef = useRef<FormInstance | null>(null);
+
+  if (!formInstanceRef.current) {
+    formInstanceRef.current = {
+      getFieldValue: () => undefined,
+      getFieldsValue: () => ({}),
+      setFieldValue: () => {},
+      setFieldsValue: () => {},
+      resetFields: () => {},
+      validateFields: () => Promise.reject(new Error('Form instance not initialized')),
+      submit: () => {}
+    };
   }
 
-  const formInstance: FormInstance = {
-    getFieldValue: context.getFieldValue,
-    getFieldsValue: (names?: string[]) => {
-      if (!names) return context.values;
-      const result: Record<string, any> = {};
-      names.forEach(name => {
-        result[name] = context.values[name];
-      });
-      return result;
-    },
-    setFieldValue: context.setFieldValue,
-    setFieldsValue: context.setFieldValueList,
-    resetFields: context.resetFields,
-    validateFields: context.validateFields,
-    submit: () => {
-      context.validateFields().then(() => {
-        const formElement = document.querySelector('form');
-        if (formElement) {
-          formElement.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-        }
-      });
-    }
-  };
-
-  return formInstance;
+  return [formInstanceRef.current];
 };
 
 const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
@@ -43,19 +28,21 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
   className = '',
   style,
   layout = 'horizontal',
-  labelCol = 5,
-  wrapperCol = 19,
+  labelSpan,
   initialValues = {},
   onFinish,
   onFinishFailed,
   colon = true,
   requiredMark = true,
-  styles
+  styles,
+  formRef,
+  form: externalForm
 }) => {
   const [values, setValues] = useState<Record<string, any>>(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const formRef = useRef<HTMLFormElement>(null);
+  const formRefElement = useRef<HTMLFormElement>(null);
   const itemsRef = useRef<Map<string, any>>(new Map());
+  const formInstanceRef = useRef<FormInstance | null>(null);
 
   const setFieldValue = useCallback((name: string, value: any) => {
     setValues(prev => ({ ...prev, [name]: value }));
@@ -89,7 +76,8 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
     const item = itemsRef.current.get(name);
     if (!item) return;
 
-    const { rules, value } = item;
+    const { rules } = item;
+    const value = values[name];
     if (!rules || rules.length === 0) return;
 
     for (const rule of rules) {
@@ -178,7 +166,7 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
       return newErrors;
     });
     return null;
-  }, []);
+  }, [values]);
 
   const validateFields = useCallback(async (names?: string[]): Promise<Record<string, any>> => {
     const fieldNames = names || Array.from(itemsRef.current.keys());
@@ -205,6 +193,46 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
     setErrors({});
   }, [values, initialValues]);
 
+  const formInstance: FormInstance = {
+    getFieldValue,
+    getFieldsValue: (names?: string[]) => {
+      if (!names) return values;
+      const result: Record<string, any> = {};
+      names.forEach(name => {
+        result[name] = values[name];
+      });
+      return result;
+    },
+    setFieldValue,
+    setFieldsValue: setFieldValueList,
+    resetFields,
+    validateFields,
+    submit: () => {
+      validateFields().then(() => {
+        const formElement = document.querySelector('form');
+        if (formElement) {
+          formElement.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    formInstanceRef.current = formInstance;
+    if (formRef) {
+      formRef.current = formInstance;
+    }
+    if (externalForm) {
+      externalForm.getFieldValue = formInstance.getFieldValue;
+      externalForm.getFieldsValue = formInstance.getFieldsValue;
+      externalForm.setFieldValue = formInstance.setFieldValue;
+      externalForm.setFieldsValue = formInstance.setFieldsValue;
+      externalForm.resetFields = formInstance.resetFields;
+      externalForm.validateFields = formInstance.validateFields;
+      externalForm.submit = formInstance.submit;
+    }
+  }, [formInstance, formRef, externalForm]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -224,8 +252,7 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
 
   const contextValue: FormContextType = {
     layout,
-    labelCol,
-    wrapperCol,
+    labelSpan,
     colon,
     requiredMark,
     values,
@@ -241,7 +268,7 @@ const Form: React.FC<FormProps> & { Item: typeof FormItem } = ({
   return (
     <FormContext.Provider value={contextValue}>
       <FormWrapper
-        ref={formRef}
+        ref={formRefElement}
         className={`form-wrapper ${className}`}
         style={style}
         $styles={styles?.wrapper}
@@ -268,6 +295,7 @@ const FormItem: React.FC<FormItemProps & { registerItem?: (name: string, item: a
   help,
   validateStatus,
   colon,
+  labelSpan: itemLabelSpan,
   hidden = false,
   extra,
   styles,
@@ -279,9 +307,9 @@ const FormItem: React.FC<FormItemProps & { registerItem?: (name: string, item: a
 
   useEffect(() => {
     if (registerItem && name) {
-      return registerItem(name, { rules, value: localValue });
+      return registerItem(name, { rules });
     }
-  }, [registerItem, name, rules, localValue]);
+  }, [registerItem, name, rules]);
 
   useEffect(() => {
     if (context && name) {
@@ -300,6 +328,10 @@ const FormItem: React.FC<FormItemProps & { registerItem?: (name: string, item: a
   const error = (context && name ? context.errors[name] : '');
   const hasError = !!error || validateStatus === 'error';
 
+  const currentLabelSpan = itemLabelSpan !== undefined ? itemLabelSpan : context?.labelSpan;
+  const labelWidth = currentLabelSpan ? (currentLabelSpan / 24) * 100 : undefined;
+  const controlWidth = currentLabelSpan ? ((24 - currentLabelSpan) / 24) * 100 : undefined;
+
   if (hidden) return null;
 
   return (
@@ -314,12 +346,21 @@ const FormItem: React.FC<FormItemProps & { registerItem?: (name: string, item: a
           className="form-label"
           $required={isRequired}
           $colon={colon !== undefined ? colon : context?.colon}
-          $styles={styles?.label}
+          $styles={{
+            ...styles?.label,
+            ...(labelWidth !== undefined ? { width: `${labelWidth}%` } : {})
+          }}
         >
           {label}
         </FormLabel>
       )}
-      <FormControl className="form-control" $styles={styles?.input}>
+      <FormControl 
+        className="form-control" 
+        $styles={{
+          ...styles?.input,
+          ...(controlWidth !== undefined ? { width: `${controlWidth}%` } : {})
+        }}
+      >
         {React.Children.map(
           React.Children.toArray(children).filter(child => React.isValidElement(child)),
           (child: React.ReactElement) => {
