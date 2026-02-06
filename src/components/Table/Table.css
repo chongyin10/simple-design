@@ -376,3 +376,113 @@
     transform: rotate(360deg);
   }
 }
+
+/* 可编辑单元格样式 */
+.idp-table-editable-cell {
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.idp-table-editable-cell:hover {
+  background-color: #fafafa !important;
+}
+
+.idp-table-editable-cell:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #1890ff36;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* 非编辑状态的编辑图标 */
+.idp-table-edit-icon-wrapper {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s;
+  pointer-events: none;
+}
+
+.idp-table-editable-cell:hover .idp-table-edit-icon-wrapper {
+  opacity: 1;
+  right: 4px;
+}
+
+.idp-table-edit-icon-wrapper svg {
+  display: block;
+}
+
+/* 编辑单元格容器 */
+.idp-table-edit-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px;
+  width: 100%;
+}
+
+.idp-table-edit-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.88);
+  outline: none;
+  transition: all 0.2s;
+  background-color: #fff;
+  min-width: 0;
+}
+
+.idp-table-edit-input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(26, 41, 128, 0.1);
+  background-color: #fff;
+}
+
+.idp-table-edit-input::placeholder {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+/* 编辑操作图标 */
+.idp-table-edit-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.idp-table-edit-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+.idp-table-edit-icon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.idp-table-edit-icon:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}

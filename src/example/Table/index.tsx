@@ -74,6 +74,28 @@ const TableExample: React.FC = () => {
     { id: 3, name: '王五', age: 28, gender: '男', email: 'wangwu@example.com' }
   ];
 
+  // 可编辑单元格数据
+  const [editableDataSource, setEditableDataSource] = useState([
+    { id: 1, name: '张三', age: 25, department: '研发部' },
+    { id: 2, name: '李四', age: 30, department: '市场部' },
+    { id: 3, name: '王五', age: 28, department: '财务部' }
+  ]);
+
+  const editableColumns: Column[] = [
+    { dataIndex: 'id', title: 'ID', width: '60px', align: 'center' },
+    { dataIndex: 'name', title: '姓名', width: '120px', editable: true, onSave: (record, value) => handleSave(record, value, 'name') },
+    { dataIndex: 'age', title: '年龄', width: '80px', align: 'center' },
+    { dataIndex: 'department', title: '部门', width: '120px', editable: true, onSave: (record, value) => handleSave(record, value, 'department') }
+  ];
+
+  const handleSave = (record: any, value: string, dataIndex: string) => {
+    setEditableDataSource((prevData) =>
+      prevData.map((item) =>
+        item.id === record.id ? { ...item, [dataIndex]: value } : item
+      )
+    );
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Table 表格</h1>
@@ -583,6 +605,41 @@ const columns = [
 />`} />
       </Section>
 
+      {/* 可编辑单元格 */}
+      <Section title="可编辑单元格">
+        <p>点击单元格即可编辑内容，编辑完成后点击✓保存，点击✕取消编辑。</p>
+        <DemoRow title="可编辑表格">
+          <Table columns={editableColumns} dataSource={editableDataSource} />
+        </DemoRow>
+        <CopyBlock code={`import { useState } from 'react';
+import { Table } from '@zjpcy/simple-design';
+
+const TableExample = () => {
+  const [dataSource, setDataSource] = useState([
+    { id: 1, name: '张三', age: 25, department: '研发部' },
+    { id: 2, name: '李四', age: 30, department: '市场部' },
+    { id: 3, name: '王五', age: 28, department: '财务部' }
+  ]);
+
+  const columns = [
+    { dataIndex: 'id', title: 'ID', width: '60px', align: 'center' },
+    { dataIndex: 'name', title: '姓名', width: '120px', editable: true, onSave: (record, value) => handleSave(record, value, 'name') },
+    { dataIndex: 'age', title: '年龄', width: '80px', align: 'center' },
+    { dataIndex: 'department', title: '部门', width: '120px', editable: true, onSave: (record, value) => handleSave(record, value, 'department') }
+  ];
+
+  const handleSave = (record: any, value: string, dataIndex: string) => {
+    setDataSource((prevData) =>
+      prevData.map((item) =>
+        item.id === record.id ? { ...item, [dataIndex]: value } : item
+      )
+    );
+  };
+
+  return <Table columns={columns} dataSource={dataSource} />;
+};`} />
+      </Section>
+
       {/* API 文档 */}
       <Section title="API">
         <h3>Table Props</h3>
@@ -717,6 +774,18 @@ const columns = [
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否显示鼠标悬停提示（美观气泡框，无延迟）</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>editable</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>是否可编辑</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>boolean</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>false</td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>onSave</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>编辑完成时的回调函数</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>{`(record, value) => void`}</td>
+              <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>-</td>
             </tr>
             <tr>
               <td style={{ border: '1px solid #d9d9d9', padding: '8px' }}>render</td>
